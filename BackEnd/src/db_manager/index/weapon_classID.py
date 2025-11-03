@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 武器ClassID表模型
-用于存储各平台武器的模板ID和相关信息（悠悠有品、BUFF、Steam）
+用于存储各平台武器的模板ID和相关信息（youpin、BUFF、Steam）
 """
 
 from typing import Dict, Any, List

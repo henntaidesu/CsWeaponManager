@@ -18,7 +18,7 @@ class read_conf:
             # 打包后的 exe，使用 exe 所在目录
             return os.path.dirname(sys.executable)
         else:
-            # 开发环境，使用当前文件所在目录的上两级（blankEndApi 目录）
+            # 开发环境，使用当前文件所在目录的上两级（BackEnd 目录）
             return os.path.dirname(os.path.dirname(__file__))
 
     def _load_config(self):
@@ -34,7 +34,7 @@ class read_conf:
         sqlite_file = self.config.get('database', 'sqlite_file', fallback='csweaponmanager.db')
         # 确保 SQLite 文件路径是绝对路径
         if not os.path.isabs(sqlite_file):
-            # 使用基础路径（exe 所在目录或开发环境的 blankEndApi 目录）
+            # 使用基础路径（exe 所在目录或开发环境的 BackEnd 目录）
             sqlite_file = os.path.join(self._get_base_path(), sqlite_file)
         
         db = sqlite3.connect(sqlite_file, check_same_thread=False, timeout=30.0)

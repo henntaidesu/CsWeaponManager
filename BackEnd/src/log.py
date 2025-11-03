@@ -18,7 +18,7 @@ class Log:
             # 打包后的 exe，使用 exe 所在目录
             base_path = os.path.dirname(sys.executable)
         else:
-            # 开发环境，使用 blankEndApi 目录
+            # 开发环境，使用 BackEnd 目录
             base_path = os.path.dirname(os.path.dirname(__file__))
         
         log_dir = os.path.join(base_path, 'log')

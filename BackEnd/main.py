@@ -34,7 +34,7 @@ from src.db_manager import init_database
 app = Flask(__name__)
 CORS(app)
 
-def blankEndApi():
+def main():
     # print("Blank End API Start")
     # 只在主进程中初始化数据库，避免Flask debug模式重复初始化
     if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
@@ -74,5 +74,5 @@ def blankEndApi():
     app.run(debug=True, port=9001, host='0.0.0.0')
 
 if __name__ == '__main__':
-    blankEndApi()
+    main()
 

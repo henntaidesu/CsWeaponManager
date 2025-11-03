@@ -19,7 +19,7 @@
               <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
                 <span class="config-name">{{ config.dataName }}</span>
                 <el-tag :type="config.platformType === 'buff' ? 'warning' : 'success'" size="small">
-                  {{ config.platformType === 'buff' ? 'BUFF' : '悠悠有品' }}
+                  {{ config.platformType === 'buff' ? 'BUFF' : 'youpin' }}
                 </el-tag>
               </div>
             </div>
@@ -485,7 +485,7 @@ export default {
         let confirmMessage = `确定要开始查询改名饰品吗？\n\n`
         confirmMessage += `配置名称: ${crawlForm.value.configName}\n`
         confirmMessage += `Steam ID: ${crawlForm.value.steamId}\n`
-        confirmMessage += `平台类型: ${crawlForm.value.platformType === 'buff' ? 'BUFF' : '悠悠有品'}\n`
+        confirmMessage += `平台类型: ${crawlForm.value.platformType === 'buff' ? 'BUFF' : 'youpin'}\n`
         confirmMessage += `监控饰品: ${weaponNames}\n`
         confirmMessage += `饰品数量: ${crawlForm.value.weaponId.length} 个`
         
@@ -743,7 +743,7 @@ export default {
     // 获取来源标签
     const getSourceLabel = (source) => {
       const labels = {
-        youpin: '悠悠有品',
+        youpin: 'youpin',
         buff: 'BUFF',
         steam: 'Steam库存'
       }
@@ -1045,7 +1045,7 @@ export default {
       const weaponId = getWeaponIdByPlatform(row)
       
       if (!weaponId) {
-        const platformName = crawlForm.value.platformType === 'buff' ? 'BUFF' : '悠悠有品'
+        const platformName = crawlForm.value.platformType === 'buff' ? 'BUFF' : 'youpin'
         ElMessage.warning(`该饰品没有${platformName}ID`)
         return
       }
@@ -1062,7 +1062,7 @@ export default {
         name: row.market_listing_item_name || row.name || '未知饰品'
       })
       
-      const platformName = crawlForm.value.platformType === 'buff' ? 'BUFF' : '悠悠有品'
+      const platformName = crawlForm.value.platformType === 'buff' ? 'BUFF' : 'youpin'
       ElMessage.success(`已添加${platformName}饰品: ${row.market_listing_item_name || row.name}`)
     }
 

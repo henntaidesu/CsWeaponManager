@@ -1522,10 +1522,10 @@ export default {
     
     // GetAppToken 相关状态
     const buffTokenLoading = ref(false)  // BUFF Token 获取loading
-    const yyypTokenLoading = ref(false)  // 悠悠有品 Token 获取loading
+    const yyypTokenLoading = ref(false)  // youpin Token 获取loading
     const perfectWorldTokenLoading = ref(false)  // 完美世界APP Token 获取loading
     const buffTokenStatus = ref('')  // BUFF Token 获取状态: waiting, success, failed
-    const yyypTokenStatus = ref('')  // 悠悠有品 Token 获取状态: waiting, success, failed
+    const yyypTokenStatus = ref('')  // youpin Token 获取状态: waiting, success, failed
     const perfectWorldTokenStatus = ref('')  // 完美世界APP Token 获取状态: waiting, success, failed
     const tokenCheckTimer = ref(null)  // Token 获取状态检查定时器
     const proxyAddress = ref('')  // 代理地址 (从后端获取)
@@ -1679,7 +1679,7 @@ export default {
         steam_login: 'Steam市场(登录)',
         perfectworld: '完美世界APP',
         buff: '网易BUFF',
-        youpin: '悠悠有品'
+        youpin: 'youpin'
       }
       return labels[type] || type
     }
@@ -2181,7 +2181,7 @@ export default {
       }
     }
 
-    // ===== 悠悠有品 Token 获取相关函数 =====
+    // ===== youpin Token 获取相关函数 =====
     const startYyypTokenCollection = async (isEdit = false) => {
       try {
         yyypTokenLoading.value = true
@@ -2269,7 +2269,7 @@ export default {
               inputForm.value.deviceInfo = data.device_info
             }
             
-            ElMessage.success('悠悠有品 Token 获取成功!')
+            ElMessage.success('youpin Token 获取成功!')
             yyypTokenStatus.value = 'success'
             yyypTokenLoading.value = false
             
@@ -2293,7 +2293,7 @@ export default {
             }, 1000)
           } else if (response.data.code === 202) {
             // 数据正在收集中
-            console.log('悠悠有品 Token 收集中...')
+            console.log('youpin Token 收集中...')
           }
         } catch (error) {
           console.error('获取悠悠有品数据失败:', error)
