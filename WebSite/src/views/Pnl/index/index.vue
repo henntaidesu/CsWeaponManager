@@ -1,0 +1,294 @@
+<template>
+  <div class="pnl-page">
+    <!-- 头部:筛选 + 操作 -->
+    <div class="pnl-header card">
+      <div class="header-row">
+        <div class="header-left">
+          <h2 class="pnl-title">盈亏统计</h2>
+          <el-select
+            v-model="dataUserFilter"
+            placeholder="全部账号"
+            class="data-user-select"
+            clearable
+            @change="onDataUserChange"
+          >
+            <el-option v-for="u in dataUserList" :key="u" :label="u" :value="u" />
+          </el-select>
+        </div>
+        <div class="header-right">
+          <el-button type="primary" :loading="loading" @click="runAutoPairing">
+            执行自动配对
+          </el-button>
+        </div>
+      </div>
+
+      <!-- 总览卡片 -->
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-label">当月总盈亏</div>
+          <div class="stat-value" :class="profitClass(overallStats.total_profit)">
+            {{ Number(overallStats.total_profit || 0).toFixed(2) }}
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">盈利合计</div>
+          <div class="stat-value profit-positive">
+            {{ Number(overallStats.win_profit || 0).toFixed(2) }}
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">亏损合计</div>
+          <div class="stat-value profit-negative">
+            {{ Number(overallStats.loss_profit || 0).toFixed(2) }}
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">配对件数</div>
+          <div class="stat-value">{{ overallStats.paired_quantity || 0 }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">配对笔数</div>
+          <div class="stat-value">{{ overallStats.pair_count || 0 }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">已剔除</div>
+          <div class="stat-value">{{ overallStats.excluded_count || 0 }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主体 Tabs -->
+    <div class="card pnl-main">
+      <el-tabs v-model="activeTab" @tab-change="onTabChange">
+        <!-- 盈亏日历 -->
+        <el-tab-pane label="盈亏日历" name="calendar">
+          <el-calendar v-model="calendarRefDate">
+            <template #date-cell="{ data }">
+              <div
+                class="cal-cell"
+                :class="cellColor(data)"
+                @click="openDayDetail(data.day)"
+              >
+                <div class="cal-day">{{ data.day.split('-').slice(2).join('') }}</div>
+                <template v-if="dayInfo(data.day)">
+                  <div class="cal-profit" :class="profitClass(dayInfo(data.day).profit)">
+                    {{ Number(dayInfo(data.day).profit).toFixed(2) }}
+                  </div>
+                  <div class="cal-meta">
+                    {{ dayInfo(data.day).paired_quantity }}件 / {{ dayInfo(data.day).pair_count }}笔
+                  </div>
+                  <div v-if="dayInfo(data.day).excluded_count" class="cal-excluded">
+                    剔除 {{ dayInfo(data.day).excluded_count }}
+                  </div>
+                </template>
+              </div>
+            </template>
+          </el-calendar>
+        </el-tab-pane>
+
+        <!-- 孤立卖出 -->
+        <el-tab-pane label="孤立卖出" name="orphans">
+          <div class="orphan-filters">
+            <el-input
+              v-model="orphans.search"
+              placeholder="按物品名/hash 搜索"
+              class="orphan-search"
+              clearable
+              @keyup.enter="loadOrphans"
+            />
+            <el-date-picker
+              v-model="orphans.date_range"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              @change="(val) => { orphans.start_date = val && val[0] || ''; orphans.end_date = val && val[1] || ''; }"
+              clearable
+            />
+            <el-button type="primary" :loading="loading" @click="() => { orphans.page = 1; loadOrphans(); }">
+              搜索
+            </el-button>
+          </div>
+
+          <el-table :data="orphans.list" v-loading="loading" stripe size="small">
+            <el-table-column prop="item_name" label="物品名称" min-width="200" show-overflow-tooltip />
+            <el-table-column prop="weapon_float" label="磨损" width="100">
+              <template #default="{ row }">
+                {{ row.weapon_float ? Number(row.weapon_float).toFixed(6) : '-' }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="sell_price" label="实收价" width="100">
+              <template #default="{ row }">
+                {{ Number(row.sell_price || 0).toFixed(2) }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="sell_from" label="平台" width="90" />
+            <el-table-column prop="data_user" label="账号" width="120" show-overflow-tooltip />
+            <el-table-column prop="sell_order_time" label="出售时间" width="160" />
+            <el-table-column label="操作" width="120" fixed="right">
+              <template #default="{ row }">
+                <el-button size="small" type="primary" @click="openPairDialog(row)">
+                  手动配对
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <div class="orphan-pager">
+            <el-pagination
+              background
+              layout="total, prev, pager, next, sizes"
+              :total="orphans.total"
+              v-model:current-page="orphans.page"
+              v-model:page-size="orphans.page_size"
+              :page-sizes="[20, 50, 100]"
+              @current-change="loadOrphans"
+              @size-change="() => { orphans.page = 1; loadOrphans(); }"
+            />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+
+    <!-- 当日明细抽屉 -->
+    <el-drawer
+      v-model="detailDrawerVisible"
+      :title="`${detailDate} 盈亏明细`"
+      direction="rtl"
+      size="65%"
+    >
+      <el-table :data="detailRows" stripe size="small">
+        <el-table-column prop="item_name" label="物品" min-width="180" show-overflow-tooltip />
+        <el-table-column label="磨损" width="100">
+          <template #default="{ row }">
+            {{ row.weapon_float ? Number(row.weapon_float).toFixed(6) : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="买入" width="180">
+          <template #default="{ row }">
+            <div>{{ Number(row.buy_price || 0).toFixed(2) }} @ {{ row.buy_from }}</div>
+            <div class="time-faded">{{ row.buy_order_time }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="卖出" width="180">
+          <template #default="{ row }">
+            <div>{{ Number(row.sell_price || 0).toFixed(2) }} @ {{ row.sell_from }}</div>
+            <div class="time-faded">{{ row.sell_order_time }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="数量" width="60" prop="quantity" />
+        <el-table-column label="盈亏" width="100">
+          <template #default="{ row }">
+            <span :class="[profitClass(row.profit), { 'text-strike': row.is_excluded }]">
+              {{ Number(row.profit || 0).toFixed(2) }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="类型" width="80">
+          <template #default="{ row }">
+            <el-tag size="small" :type="row.pair_type === 'manual' ? 'warning' : 'info'">
+              {{ row.pair_type === 'manual' ? '手动' : '自动' }}
+            </el-tag>
+            <el-tag v-if="row.is_excluded" size="small" type="danger" style="margin-left:4px;">剔除</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="180" fixed="right">
+          <template #default="{ row }">
+            <el-button
+              v-if="!row.is_excluded"
+              size="small"
+              type="warning"
+              @click="setExcluded(row.pairing_id, true)"
+            >剔除</el-button>
+            <el-button
+              v-else
+              size="small"
+              type="success"
+              @click="setExcluded(row.pairing_id, false)"
+            >恢复</el-button>
+            <el-button size="small" type="danger" @click="unpair(row.pairing_id)">解绑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div v-if="!detailRows.length" class="empty-tip">该日暂无配对记录</div>
+    </el-drawer>
+
+    <!-- 手动配对对话框 -->
+    <el-dialog
+      v-model="pairDialogVisible"
+      title="手动配对买入"
+      width="80%"
+      destroy-on-close
+    >
+      <div v-if="pairTargetSell" class="pair-target">
+        <div class="pair-target-title">目标出售记录</div>
+        <div class="pair-target-grid">
+          <div><span class="label">物品:</span>{{ pairTargetSell.item_name }}</div>
+          <div><span class="label">磨损:</span>{{ pairTargetSell.weapon_float ? Number(pairTargetSell.weapon_float).toFixed(6) : '-' }}</div>
+          <div><span class="label">实收价:</span>{{ Number(pairTargetSell.sell_price || 0).toFixed(2) }}</div>
+          <div><span class="label">平台:</span>{{ pairTargetSell.sell_from }}</div>
+          <div><span class="label">账号:</span>{{ pairTargetSell.data_user || '-' }}</div>
+          <div><span class="label">时间:</span>{{ pairTargetSell.sell_order_time }}</div>
+        </div>
+      </div>
+
+      <div class="pair-candidates-header">
+        <span>候选买入(同 hash 同账号,有剩余可配数)</span>
+        <div class="pair-relax">
+          <el-checkbox v-model="pairRelaxHash" @change="loadCandidates">放宽 hash(按物品名)</el-checkbox>
+          <el-checkbox v-model="pairRelaxUser" @change="loadCandidates">放宽账号(跨账号)</el-checkbox>
+        </div>
+      </div>
+
+      <el-table :data="pairCandidates" stripe size="small" max-height="400">
+        <el-table-column prop="item_name" label="物品" min-width="180" show-overflow-tooltip />
+        <el-table-column label="磨损" width="100">
+          <template #default="{ row }">
+            {{ row.weapon_float ? Number(row.weapon_float).toFixed(6) : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="买入价" width="100">
+          <template #default="{ row }">
+            {{ Number(row.buy_price || 0).toFixed(2) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="buy_from" label="平台" width="80" />
+        <el-table-column prop="data_user" label="账号" width="110" show-overflow-tooltip />
+        <el-table-column prop="buy_order_time" label="买入时间" width="160" />
+        <el-table-column label="可用/总数" width="100">
+          <template #default="{ row }">
+            {{ row.remaining }} / {{ row.qty }}
+          </template>
+        </el-table-column>
+        <el-table-column label="预估盈亏" width="100">
+          <template #default="{ row }">
+            <span :class="profitClass((pairTargetSell?.sell_price || 0) - (row.buy_price || 0))">
+              {{ ((pairTargetSell?.sell_price || 0) - (row.buy_price || 0)).toFixed(2) }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="{ row }">
+            <el-button size="small" type="primary" @click="confirmManualPair(row)">配对</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div v-if="!pairCandidates.length" class="empty-tip">未找到候选买入,可勾选「放宽」按钮扩大搜索范围</div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { usePnl } from './usePnl.js'
+
+export default {
+  name: 'Pnl',
+  setup() {
+    return usePnl()
+  },
+}
+</script>
+
+<style scoped src="./styles.css"></style>

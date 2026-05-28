@@ -4,6 +4,7 @@ import Home from '@/views/Home/index.vue'
 import ItemSearch from '@/views/ItemSearch/index/index.vue'
 import Buy from '@/views/Buy/index.vue'
 import Sell from '@/views/Sell/index/index.vue'
+import Pnl from '@/views/Pnl/index/index.vue'
 import OnSaleContainer from '@/views/on_sale/OnSaleContainer/index.vue'
 import Rental from '@/views/Rental/index/index.vue'
 import Lent from '@/views/Lent/index/index.vue'
@@ -51,6 +52,12 @@ const routes = [
         name: 'Sell',
         component: Sell,
         meta: { title: '已出售' }
+      },
+      {
+        path: '/pnl',
+        name: 'Pnl',
+        component: Pnl,
+        meta: { title: '盈亏统计' }
       },
       {
         path: '/on-sale',

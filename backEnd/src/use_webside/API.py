@@ -16,6 +16,7 @@ from .stock_components.API import stock_components_blueprint
 from .settings.API import settings_blueprint
 from .Units.images.API import images_blueprint
 from .data_spider.API import data_spider_blueprint
+from .pnl.API import pnl_blueprint
 
 web_display_blueprint = Blueprint('web_display', __name__)
 web_display_blueprint.register_blueprint(home_blueprint, url_prefix='/use_webside')
@@ -29,3 +30,4 @@ web_display_blueprint.register_blueprint(stock_components_blueprint, url_prefix=
 web_display_blueprint.register_blueprint(settings_blueprint, url_prefix='/use_webside')
 web_display_blueprint.register_blueprint(images_blueprint, url_prefix='/use_webside')
 web_display_blueprint.register_blueprint(data_spider_blueprint, url_prefix='/use_webside')
+web_display_blueprint.register_blueprint(pnl_blueprint, url_prefix='/use_webside')

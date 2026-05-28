@@ -8,7 +8,7 @@ from .base_model import BaseModel
 from .database import DatabaseManager
 
 # 导入所有模型
-from .index.model import ConfigModel, FundsModel, BuyModel, SellModel, LeaseModel, LentModel, RentalModel, WeaponClassIDModel, AutoSearchWeaponModel, YyypWeaponPriceHistoryModel, SysMessageModel
+from .index.model import ConfigModel, FundsModel, BuyModel, SellModel, LeaseModel, LentModel, RentalModel, WeaponClassIDModel, AutoSearchWeaponModel, YyypWeaponPriceHistoryModel, SysMessageModel, PnlPairingModel
 from .youpin.model import YyypBuyModel, YyypSellModel, YyypLentModel, YyypMessageboxModel
 from .BUFF.model import BuffLentModel, BuffMessageboxModel
 from .csfloat.model import CsFloatBuyModel, CsFloatSellModel
@@ -37,6 +37,7 @@ class DBManager:
             AutoSearchWeaponModel,  # 自动搜索饰品结果表
             YyypWeaponPriceHistoryModel,  # 悠悠有品饰品价格历史表
             SysMessageModel,  # 系统消息表
+            PnlPairingModel,  # 盈亏配对表（买入↔出售关联）
 
             # YYYP表
             YyypBuyModel,

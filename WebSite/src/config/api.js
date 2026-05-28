@@ -747,7 +747,19 @@ export const API_CONFIG = {
 
   // 悠悠有品库存租借相关（V2 API） - 顶层配置（向后兼容）
   YOUPIN_GET_INVENTORY_EXTEND_INFO: '/spiderApiV2/src/web_site/youping/units/inventory/lent/getInventoryExtendInfo',  // 获取库存扩展信息
-  YOUPIN_UPLOAD_RENT: '/spiderApiV2/src/web_site/youping/units/inventory/lent/uploadRent'  // 上传租借饰品
+  YOUPIN_UPLOAD_RENT: '/spiderApiV2/src/web_site/youping/units/inventory/lent/uploadRent',  // 上传租借饰品
+
+  // 盈亏统计（V2 API）
+  PNL_CALENDAR: '/backENDV2/src/use_webside/pnl/units/data/getCalendar',
+  PNL_OVERALL_STATS: '/backENDV2/src/use_webside/pnl/units/data/getOverallStats',
+  PNL_DAILY_DETAIL: '/backENDV2/src/use_webside/pnl/units/data/getDailyDetail',
+  PNL_ORPHAN_SELLS: '/backENDV2/src/use_webside/pnl/units/data/getOrphanSells',
+  PNL_CANDIDATE_BUYS: '/backENDV2/src/use_webside/pnl/units/data/getCandidateBuys',
+  PNL_DATA_USER_LIST: '/backENDV2/src/use_webside/pnl/units/filters/getDataUserList',
+  PNL_RUN_AUTO_PAIRING: '/backENDV2/src/use_webside/pnl/units/ops/runAutoPairing',
+  PNL_MANUAL_PAIR: '/backENDV2/src/use_webside/pnl/units/ops/manualPair',
+  PNL_UNPAIR: '/backENDV2/src/use_webside/pnl/units/ops/unpair',
+  PNL_SET_EXCLUDED: '/backENDV2/src/use_webside/pnl/units/ops/setExcluded'
 
 }
 
@@ -1462,6 +1474,18 @@ export const apiUrls = {
   searchPendantItemsList: () => getApiUrl(API_CONFIG.ENDPOINTS.SEARCH_PENDANT_ITEMS_LIST),
   searchPendantItemUpdateStatus: () => getApiUrl(API_CONFIG.ENDPOINTS.SEARCH_PENDANT_ITEM_UPDATE_STATUS),
   searchPendantItemsClear: () => getApiUrl(API_CONFIG.ENDPOINTS.SEARCH_PENDANT_ITEMS_CLEAR),
+
+  // 盈亏统计 API
+  pnlCalendar: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_CALENDAR),
+  pnlOverallStats: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_OVERALL_STATS),
+  pnlDailyDetail: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_DAILY_DETAIL),
+  pnlOrphanSells: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_ORPHAN_SELLS),
+  pnlCandidateBuys: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_CANDIDATE_BUYS),
+  pnlDataUserList: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_DATA_USER_LIST),
+  pnlRunAutoPairing: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_RUN_AUTO_PAIRING),
+  pnlManualPair: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_MANUAL_PAIR),
+  pnlUnpair: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_UNPAIR),
+  pnlSetExcluded: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_SET_EXCLUDED),
 
 }
 
