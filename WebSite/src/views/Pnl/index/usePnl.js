@@ -16,6 +16,16 @@ function monthRange(year, monthIndex) {
   return { start: ymd(first), end: ymd(last) }
 }
 
+function curMonthStr() {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+}
+
+// 'YYYY-MM' 字符串(零填充等长,字典序即时间序)
+function ym(y, m) {
+  return `${y}-${String(m).padStart(2, '0')}`
+}
+
 export function usePnl() {
   const activeTab = ref('calendar')
   const loading = ref(false)
@@ -26,6 +36,33 @@ export function usePnl() {
   const calendarRefDate = ref(new Date())
   const calendarRangeStart = ref('')
   const calendarRangeEnd = ref('')
+  const rangeMin = ref('') // 'YYYY-MM' 数据库最老月
+  const rangeMax = ref('') // 'YYYY-MM' 最新可选月(至少当前月)
+  const selectedYear = ref(null) // number
+  const selectedMonthNum = ref(null) // 1-12
+  // 可选年份(最新在前)
+  const yearOptions = computed(() => {
+    if (!rangeMin.value || !rangeMax.value) return []
+    const minY = parseInt(rangeMin.value.slice(0, 4), 10)
+    const maxY = parseInt(rangeMax.value.slice(0, 4), 10)
+    const arr = []
+    for (let y = maxY; y >= minY; y -= 1) arr.push(y)
+    return arr
+  })
+  // 选定年份下的可选月份(最新在前),并受数据库最老/最新月约束
+  const monthOptionsOfYear = computed(() => {
+    const y = selectedYear.value
+    if (!y || !rangeMin.value || !rangeMax.value) return []
+    const minY = parseInt(rangeMin.value.slice(0, 4), 10)
+    const minM = parseInt(rangeMin.value.slice(5, 7), 10)
+    const maxY = parseInt(rangeMax.value.slice(0, 4), 10)
+    const maxM = parseInt(rangeMax.value.slice(5, 7), 10)
+    const start = y === minY ? minM : 1
+    const end = y === maxY ? maxM : 12
+    const arr = []
+    for (let m = end; m >= start; m -= 1) arr.push(m)
+    return arr
+  })
   const calendarMap = reactive({}) // 'YYYY-MM-DD' -> { profit, pair_count, paired_quantity, excluded_count }
   const overallStats = reactive({
     total_profit: 0,
@@ -107,15 +144,107 @@ export function usePnl() {
     loadCalendar(d.getFullYear(), d.getMonth())
   }
 
-  // 监听 el-calendar 头部上下个月切换(通过 v-model 双向绑定的日期变化)
-  let lastLoadedMonth = ''
-  watch(calendarRefDate, (val) => {
-    if (!val) return
-    const d = new Date(val)
-    const key = `${d.getFullYear()}-${d.getMonth()}`
-    if (key === lastLoadedMonth) return
-    lastLoadedMonth = key
-    loadCalendar(d.getFullYear(), d.getMonth())
+  // 指定年月是否落在可选范围内
+  function isSelectable(y, m) {
+    const s = ym(y, m)
+    return !!rangeMin.value && !!rangeMax.value && s >= rangeMin.value && s <= rangeMax.value
+  }
+
+  // 根据 selectedYear/selectedMonthNum 同步日历并加载
+  function applySelectedMonth() {
+    const y = selectedYear.value
+    const m = selectedMonthNum.value
+    if (!y || !m) return
+    calendarRefDate.value = new Date(y, m - 1, 1)
+    loadCalendar(y, m - 1)
+  }
+
+  // 加载可选月份范围:最老不超过数据库最老月,最新到当前月
+  async function loadMonthRange() {
+    const cur = curMonthStr()
+    let minMonth = cur
+    let maxMonth = cur
+    try {
+      const payload = {}
+      if (dataUserFilter.value) payload.data_user = dataUserFilter.value
+      const r = await axios.post(apiUrls.pnlMonthRange(), payload)
+      if (r.data && r.data.success && r.data.data) {
+        minMonth = r.data.data.min_month || cur
+        maxMonth = r.data.data.max_month || cur
+      }
+    } catch (e) {
+      console.error('加载月份范围失败', e)
+    }
+    // 始终允许查看到当前月;最老仍以数据库最老月为下限
+    if (maxMonth < cur) maxMonth = cur
+    if (minMonth > cur) minMonth = cur
+    rangeMin.value = minMonth
+    rangeMax.value = maxMonth
+
+    // 选中项:保留当前有效选择,否则默认当前月,再不行取最新可选月
+    const now = new Date()
+    if (selectedYear.value && selectedMonthNum.value
+        && isSelectable(selectedYear.value, selectedMonthNum.value)) {
+      // 保持不变
+    } else if (isSelectable(now.getFullYear(), now.getMonth() + 1)) {
+      selectedYear.value = now.getFullYear()
+      selectedMonthNum.value = now.getMonth() + 1
+    } else {
+      selectedYear.value = parseInt(maxMonth.slice(0, 4), 10)
+      selectedMonthNum.value = parseInt(maxMonth.slice(5, 7), 10)
+    }
+  }
+
+  function onYearChange(y) {
+    selectedYear.value = y
+    // 月份校正到该年可选范围(优先保留当前月份数字,否则取该年最新可选月)
+    const months = monthOptionsOfYear.value
+    if (!months.includes(selectedMonthNum.value)) {
+      selectedMonthNum.value = months[0]
+    }
+    applySelectedMonth()
+  }
+
+  function onMonthNumChange(m) {
+    selectedMonthNum.value = m
+    applySelectedMonth()
+  }
+
+  // 上一月 / 下一月(受可选范围约束)
+  function prevMonth() {
+    let y = selectedYear.value
+    let m = selectedMonthNum.value - 1
+    if (m < 1) { m = 12; y -= 1 }
+    if (!isSelectable(y, m)) return
+    selectedYear.value = y
+    selectedMonthNum.value = m
+    applySelectedMonth()
+  }
+
+  function nextMonth() {
+    let y = selectedYear.value
+    let m = selectedMonthNum.value + 1
+    if (m > 12) { m = 1; y += 1 }
+    if (!isSelectable(y, m)) return
+    selectedYear.value = y
+    selectedMonthNum.value = m
+    applySelectedMonth()
+  }
+
+  // 是否已到范围边界(用于禁用按钮)
+  const canPrevMonth = computed(() => {
+    if (!selectedYear.value || !selectedMonthNum.value) return false
+    let y = selectedYear.value
+    let m = selectedMonthNum.value - 1
+    if (m < 1) { m = 12; y -= 1 }
+    return isSelectable(y, m)
+  })
+  const canNextMonth = computed(() => {
+    if (!selectedYear.value || !selectedMonthNum.value) return false
+    let y = selectedYear.value
+    let m = selectedMonthNum.value + 1
+    if (m > 12) { m = 1; y += 1 }
+    return isSelectable(y, m)
   })
 
   async function openDayDetail(dateStr) {
@@ -177,8 +306,8 @@ export function usePnl() {
       if (r.data && r.data.success) {
         const d = r.data.data || {}
         ElMessage.success(`新增配对 ${d.pairs_created || 0} 对,匹配数量 ${d.paired_quantity || 0} 件`)
-        const ref = calendarRefDate.value || new Date()
-        await loadCalendar(ref.getFullYear(), ref.getMonth())
+        await loadMonthRange()
+        applySelectedMonth()
       } else {
         ElMessage.error(r.data?.message || '自动配对失败')
       }
@@ -308,8 +437,8 @@ export function usePnl() {
 
   onMounted(async () => {
     await loadDataUserList()
-    const now = new Date()
-    await loadCalendar(now.getFullYear(), now.getMonth())
+    await loadMonthRange()
+    applySelectedMonth()
   })
 
   function onTabChange(name) {
@@ -320,9 +449,10 @@ export function usePnl() {
     }
   }
 
-  function onDataUserChange() {
-    const ref = calendarRefDate.value || new Date()
-    loadCalendar(ref.getFullYear(), ref.getMonth())
+  async function onDataUserChange() {
+    // 账号变化可能改变可选月份范围
+    await loadMonthRange()
+    applySelectedMonth()
     if (activeTab.value === 'orphans') {
       orphans.page = 1
       loadOrphans()
@@ -433,6 +563,9 @@ export function usePnl() {
     onCalendarDateChange, openDayDetail,
     cellColor, dayInfo,
     runAutoPairing,
+    selectedYear, selectedMonthNum, yearOptions, monthOptionsOfYear,
+    onYearChange, onMonthNumChange,
+    prevMonth, nextMonth, canPrevMonth, canNextMonth,
     // 当日明细
     detailDrawerVisible, detailDate, detailRows,
     unpair, setExcluded,

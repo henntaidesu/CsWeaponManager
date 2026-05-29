@@ -34,7 +34,7 @@ export function useLayout() {
     {
       path: '/pnl',
       title: '盈亏统计',
-      icon: '/icons/sell.png'
+      icon: '/icons/_日历.png'
     },
     {
       path: '/rental',

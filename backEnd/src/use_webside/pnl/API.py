@@ -19,6 +19,7 @@ pnl_blueprint.route('/pnl/units/data/getCandidateBuys', methods=['POST'])(PnlDat
 
 # 筛选选项路由
 pnl_blueprint.route('/pnl/units/filters/getDataUserList', methods=['GET'])(PnlData.get_data_user_list)
+pnl_blueprint.route('/pnl/units/filters/getMonthRange', methods=['POST'])(PnlData.get_month_range)
 
 # 写操作路由
 pnl_blueprint.route('/pnl/units/ops/runAutoPairing', methods=['POST'])(PnlOps.run_auto_pairing)

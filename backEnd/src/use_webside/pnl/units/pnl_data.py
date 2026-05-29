@@ -354,6 +354,42 @@ class PnlData:
             return jsonify({'success': False, 'message': str(e), 'data': []}), 500
 
     @staticmethod
+    def get_month_range():
+        """
+        日历月份下拉范围:返回 pnl_pairing 中最老/最新的月份(YYYY-MM)
+        Request JSON: { data_user? }
+        Response: { min_month, max_month }  无数据时为 None
+        """
+        try:
+            data = request.get_json(silent=True) or {}
+            data_user = data.get('data_user')
+
+            sql = """
+            SELECT MIN(DATE(sell_order_time)), MAX(DATE(sell_order_time))
+            FROM pnl_pairing
+            WHERE sell_order_time IS NOT NULL
+            """
+            params = []
+            if data_user:
+                sql += " AND data_user = ?"
+                params.append(data_user)
+
+            db = DatabaseManager()
+            row = db.execute_query(sql, tuple(params))
+            min_date = row[0][0] if row and row[0] else None
+            max_date = row[0][1] if row and row[0] else None
+            return jsonify({
+                'success': True,
+                'data': {
+                    'min_month': min_date[:7] if min_date else None,
+                    'max_month': max_date[:7] if max_date else None,
+                }
+            }), 200
+        except Exception as e:
+            print(f"月份范围查询失败: {e}")
+            return jsonify({'success': False, 'message': str(e)}), 500
+
+    @staticmethod
     def get_data_user_list():
         """配对数据涉及到的 data_user 列表(buy ∪ sell)"""
         try:

@@ -14,6 +14,10 @@
           >
             <el-option v-for="u in dataUserList" :key="u" :label="u" :value="u" />
           </el-select>
+          <el-radio-group v-model="activeTab" class="view-switch" @change="onTabChange">
+            <el-radio-button label="calendar">盈亏日历</el-radio-button>
+            <el-radio-button label="orphans">孤立卖出</el-radio-button>
+          </el-radio-group>
         </div>
         <div class="header-right">
           <el-button type="primary" :loading="loading" @click="runAutoPairing">
@@ -57,17 +61,54 @@
       </div>
     </div>
 
-    <!-- 主体 Tabs -->
-    <div class="card pnl-main">
-      <el-tabs v-model="activeTab" @tab-change="onTabChange">
-        <!-- 盈亏日历 -->
-        <el-tab-pane label="盈亏日历" name="calendar">
+    <!-- 主体 -->
+    <div class="pnl-main">
+      <!-- 盈亏日历 -->
+      <div v-show="activeTab === 'calendar'" class="card calendar-panel">
           <el-calendar v-model="calendarRefDate">
+            <template #header>
+              <div class="cal-header">
+                <el-button
+                  size="small"
+                  :disabled="!canPrevMonth"
+                  @click="prevMonth"
+                >上一月</el-button>
+                <el-select
+                  v-model="selectedYear"
+                  class="year-select"
+                  @change="onYearChange"
+                >
+                  <el-option
+                    v-for="y in yearOptions"
+                    :key="y"
+                    :label="`${y} 年`"
+                    :value="y"
+                  />
+                </el-select>
+                <el-select
+                  v-model="selectedMonthNum"
+                  class="month-select"
+                  @change="onMonthNumChange"
+                >
+                  <el-option
+                    v-for="m in monthOptionsOfYear"
+                    :key="m"
+                    :label="`${m} 月`"
+                    :value="m"
+                  />
+                </el-select>
+                <el-button
+                  size="small"
+                  :disabled="!canNextMonth"
+                  @click="nextMonth"
+                >下一月</el-button>
+              </div>
+            </template>
             <template #date-cell="{ data }">
               <div
                 class="cal-cell"
-                :class="cellColor(data)"
-                @click="openDayDetail(data.day)"
+                :class="[cellColor(data), { 'cal-cell-clickable': dayInfo(data.day) }]"
+                @click="dayInfo(data.day) && openDayDetail(data.day)"
               >
                 <div class="cal-day">{{ data.day.split('-').slice(2).join('') }}</div>
                 <template v-if="dayInfo(data.day)">
@@ -84,10 +125,10 @@
               </div>
             </template>
           </el-calendar>
-        </el-tab-pane>
+      </div>
 
-        <!-- 孤立卖出 -->
-        <el-tab-pane label="孤立卖出" name="orphans">
+      <!-- 孤立卖出 -->
+      <div v-show="activeTab === 'orphans'">
           <div class="orphan-filters">
             <el-input
               v-model="orphans.search"
@@ -112,7 +153,13 @@
             </el-button>
           </div>
 
-          <el-table :data="orphans.list" v-loading="loading" stripe size="small">
+          <el-table
+            :data="orphans.list"
+            v-loading="loading"
+            size="small"
+            :row-style="{ backgroundColor: 'transparent' }"
+            :header-row-style="{ backgroundColor: 'var(--bg-tertiary)' }"
+          >
             <el-table-column label="图片" width="120" align="center">
               <template #default="{ row }">
                 <div class="weapon-image-cell">
@@ -218,8 +265,7 @@
               @size-change="() => { orphans.page = 1; loadOrphans(); }"
             />
           </div>
-        </el-tab-pane>
-      </el-tabs>
+      </div>
     </div>
 
     <!-- 当日明细抽屉 -->
@@ -228,8 +274,14 @@
       :title="`${detailDate} 盈亏明细`"
       direction="rtl"
       size="78%"
+      class="pnl-detail-drawer"
     >
-      <el-table :data="detailRows" stripe size="small">
+      <el-table
+        :data="detailRows"
+        size="small"
+        :row-style="{ backgroundColor: 'transparent' }"
+        :header-row-style="{ backgroundColor: 'var(--bg-tertiary)' }"
+      >
         <el-table-column label="图片" width="120" align="center">
           <template #default="{ row }">
             <div class="weapon-image-cell">
@@ -432,3 +484,15 @@ export default {
 </script>
 
 <style scoped src="./styles.css"></style>
+
+<!-- 抽屉为 teleport 到 body 的全局节点,作用域样式无法命中,这里用非作用域规则将抽屉主体置为页面黑色背景 -->
+<style>
+.pnl-detail-drawer .el-drawer__body {
+  background-color: var(--bg-primary);
+}
+.pnl-detail-drawer .el-drawer__header {
+  background-color: var(--bg-primary);
+  margin-bottom: 0;
+  padding-bottom: 16px;
+}
+</style>
