@@ -113,10 +113,80 @@
           </div>
 
           <el-table :data="orphans.list" v-loading="loading" stripe size="small">
-            <el-table-column prop="item_name" label="物品名称" min-width="200" show-overflow-tooltip />
-            <el-table-column prop="weapon_float" label="磨损" width="100">
+            <el-table-column label="图片" width="120" align="center">
               <template #default="{ row }">
-                {{ row.weapon_float ? Number(row.weapon_float).toFixed(6) : '-' }}
+                <div class="weapon-image-cell">
+                  <img
+                    v-if="getWeaponImage(row.steam_hash_name)"
+                    :src="getWeaponImage(row.steam_hash_name)"
+                    :alt="row.item_name"
+                    class="weapon-img"
+                    @error="(e) => e.target.style.display = 'none'"
+                  />
+                  <span v-else class="no-image">无图</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="商品" min-width="220" show-overflow-tooltip>
+              <template #default="{ row }">
+                <div class="item-name-cell">
+                  <div class="item-title">{{ getItemTitle(row) }}</div>
+                  <div class="item-extras" v-if="hasExtras(row)">
+                    <!-- 印花图片 -->
+                    <div class="sticker-list" v-if="row.sticker">
+                      <div
+                        v-for="(sticker, idx) in parseStickers(row.sticker)"
+                        :key="idx"
+                        class="sticker-item"
+                        :title="sticker.name || '未知贴纸'"
+                      >
+                        <img
+                          v-if="sticker.image"
+                          :src="sticker.image"
+                          :alt="sticker.name"
+                          class="sticker-img"
+                          @error="(e) => e.target.style.display = 'none'"
+                        />
+                        <div v-else class="sticker-placeholder">?</div>
+                      </div>
+                    </div>
+                    <!-- 挂件图片 -->
+                    <div class="pendant-list" v-if="row.pendant">
+                      <img
+                        v-if="parsePendant(row.pendant)?.image"
+                        :src="parsePendant(row.pendant).image"
+                        :alt="parsePendant(row.pendant)?.name"
+                        class="pendant-img"
+                        @error="(e) => e.target.style.display = 'none'"
+                      />
+                    </div>
+                    <!-- 改名显示 -->
+                    <div class="rename-text" v-if="row.rename">
+                      <span class="rename-value">{{ row.rename }}</span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="磨损" width="200">
+              <template #default="{ row }">
+                <div v-if="row.weapon_float">
+                  <div style="font-family: monospace; font-size: 0.8rem; margin-bottom: 4px;">
+                    {{ row.weapon_float }}
+                  </div>
+                  <div class="float-bar">
+                    <div class="float-segment fn"></div>
+                    <div class="float-segment mw"></div>
+                    <div class="float-segment ft"></div>
+                    <div class="float-segment ww"></div>
+                    <div class="float-segment bs"></div>
+                    <div
+                      class="float-pointer"
+                      :style="{ left: `${parseFloat(row.weapon_float) * 100}%` }"
+                    ></div>
+                  </div>
+                </div>
+                <span v-else style="color: #888;">-</span>
               </template>
             </el-table-column>
             <el-table-column prop="sell_price" label="实收价" width="100">
@@ -157,13 +227,83 @@
       v-model="detailDrawerVisible"
       :title="`${detailDate} 盈亏明细`"
       direction="rtl"
-      size="65%"
+      size="78%"
     >
       <el-table :data="detailRows" stripe size="small">
-        <el-table-column prop="item_name" label="物品" min-width="180" show-overflow-tooltip />
-        <el-table-column label="磨损" width="100">
+        <el-table-column label="图片" width="120" align="center">
           <template #default="{ row }">
-            {{ row.weapon_float ? Number(row.weapon_float).toFixed(6) : '-' }}
+            <div class="weapon-image-cell">
+              <img
+                v-if="getWeaponImage(row.steam_hash_name)"
+                :src="getWeaponImage(row.steam_hash_name)"
+                :alt="row.item_name"
+                class="weapon-img"
+                @error="(e) => e.target.style.display = 'none'"
+              />
+              <span v-else class="no-image">无图</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="商品" min-width="220" show-overflow-tooltip>
+          <template #default="{ row }">
+            <div class="item-name-cell">
+              <div class="item-title">{{ getItemTitle(row) }}</div>
+              <div class="item-extras" v-if="hasExtras(row)">
+                <!-- 印花图片 -->
+                <div class="sticker-list" v-if="row.sticker">
+                  <div
+                    v-for="(sticker, idx) in parseStickers(row.sticker)"
+                    :key="idx"
+                    class="sticker-item"
+                    :title="sticker.name || '未知贴纸'"
+                  >
+                    <img
+                      v-if="sticker.image"
+                      :src="sticker.image"
+                      :alt="sticker.name"
+                      class="sticker-img"
+                      @error="(e) => e.target.style.display = 'none'"
+                    />
+                    <div v-else class="sticker-placeholder">?</div>
+                  </div>
+                </div>
+                <!-- 挂件图片 -->
+                <div class="pendant-list" v-if="row.pendant">
+                  <img
+                    v-if="parsePendant(row.pendant)?.image"
+                    :src="parsePendant(row.pendant).image"
+                    :alt="parsePendant(row.pendant)?.name"
+                    class="pendant-img"
+                    @error="(e) => e.target.style.display = 'none'"
+                  />
+                </div>
+                <!-- 改名显示 -->
+                <div class="rename-text" v-if="row.rename">
+                  <span class="rename-value">{{ row.rename }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="磨损" width="200">
+          <template #default="{ row }">
+            <div v-if="row.weapon_float">
+              <div style="font-family: monospace; font-size: 0.8rem; margin-bottom: 4px;">
+                {{ row.weapon_float }}
+              </div>
+              <div class="float-bar">
+                <div class="float-segment fn"></div>
+                <div class="float-segment mw"></div>
+                <div class="float-segment ft"></div>
+                <div class="float-segment ww"></div>
+                <div class="float-segment bs"></div>
+                <div
+                  class="float-pointer"
+                  :style="{ left: `${parseFloat(row.weapon_float) * 100}%` }"
+                ></div>
+              </div>
+            </div>
+            <span v-else style="color: #888;">-</span>
           </template>
         </el-table-column>
         <el-table-column label="买入" width="180">

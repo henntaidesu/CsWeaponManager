@@ -336,10 +336,98 @@ export function usePnl() {
     return 'profit-zero'
   }
 
+  // ---- 商品图片 / 印花 / 挂件渲染(与 Buy 列表一致) ----
+  const sourceLabel = (val) => {
+    const map = {
+      yyyp: '悠悠有品', buff: 'BUFF', csfloat: 'CsFloat',
+      SMK: 'steam市场', ING: '游戏内购',
+      c5: 'C5GAME', c5game: 'C5GAME', C5game: 'C5GAME', C5: 'C5GAME', C5GAME: 'C5GAME',
+    }
+    return map[val] || val
+  }
+
+  const getWeaponImage = (steamHashName) => {
+    if (!steamHashName) return null
+    const imageName = steamHashName
+      .replace(/\s*\|\s*/g, '___')
+      .replace(/\s/g, '_')
+      .replace(/\*/g, '_')
+      + '.png'
+    return apiUrls.weaponImage(imageName)
+  }
+
+  const getItemTitle = (item) => {
+    const weaponName = (item.weapon_name || '').trim()
+    const itemName = (item.item_name || '').trim()
+    const parts = []
+    if (weaponName && itemName) {
+      if (weaponName === itemName) parts.push(itemName)
+      else { parts.push(weaponName); parts.push(itemName) }
+    } else if (weaponName) parts.push(weaponName)
+    else if (itemName) parts.push(itemName)
+    let title = parts.join(' | ')
+    if (item.float_range) title += `（${item.float_range}）`
+    return title
+  }
+
+  const hasExtras = (item) => !!(item.sticker || item.pendant || item.rename)
+
+  const parseStickers = (stickerData) => {
+    if (!stickerData) return []
+    try {
+      const parsed = typeof stickerData === 'string' ? JSON.parse(stickerData) : stickerData
+      if (!Array.isArray(parsed)) return []
+      return parsed.map((sticker) => {
+        const name = sticker.name || '未知贴纸'
+        const hashName = sticker.hashName || sticker.steam_hash_name || sticker.steamHashName
+        let imageUrl = null
+        if (hashName) {
+          const fullHashName = hashName.startsWith('Sticker | ') ? hashName : `Sticker | ${hashName}`
+          const imageName = fullHashName
+            .replace(/\s*\|\s*/g, '___')
+            .replace(/\s/g, '_')
+            .replace(/\*/g, '_')
+            .replace(/™/g, '?')
+          imageUrl = apiUrls.weaponImage(`${imageName}.png`)
+        }
+        return { name, image: imageUrl }
+      })
+    } catch (e) {
+      console.error('解析印花数据失败:', e)
+      return []
+    }
+  }
+
+  const parsePendant = (pendantData) => {
+    if (!pendantData) return null
+    try {
+      const parsed = typeof pendantData === 'string' ? JSON.parse(pendantData) : pendantData
+      const pendantObj = Array.isArray(parsed) ? parsed[0] : parsed
+      if (!pendantObj || typeof pendantObj !== 'object') return null
+      const hashName = pendantObj.hashName || pendantObj.steam_hash_name || pendantObj.steamHashName
+      let imageUrl = null
+      if (hashName) {
+        const fullHashName = hashName.startsWith('Charm | ') ? hashName : `Charm | ${hashName}`
+        const imageName = fullHashName
+          .replace(/\s*\|\s*/g, '___')
+          .replace(/\s/g, '_')
+          .replace(/\*/g, '_')
+          .replace(/™/g, '?')
+          + '.png'
+        imageUrl = apiUrls.weaponImage(imageName)
+      }
+      return { name: pendantObj.name || '挂件', image: imageUrl }
+    } catch (e) {
+      console.error('解析挂件数据失败:', e)
+      return null
+    }
+  }
+
   return {
     // 通用
     activeTab, loading, dataUserList, dataUserFilter,
     onTabChange, onDataUserChange, profitClass,
+    sourceLabel, getWeaponImage, getItemTitle, hasExtras, parseStickers, parsePendant,
     // 日历
     calendarRefDate, calendarMap, overallStats,
     onCalendarDateChange, openDayDetail,

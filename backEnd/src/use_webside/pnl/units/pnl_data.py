@@ -144,7 +144,9 @@ class PnlData:
             sql = """
             SELECT p.id, p.buy_id, p.buy_id_sub, p.buy_from,
                    p.sell_id, p.sell_id_sub,
-                   p.data_user, p.steam_hash_name, p.quantity,
+                   p.data_user,
+                   COALESCE(p.steam_hash_name, s.steam_hash_name, b.steam_hash_name) AS steam_hash_name,
+                   p.quantity,
                    p.buy_price, p.sell_price, p.profit,
                    p.pair_type, p.is_excluded, p.exclude_reason,
                    p.sell_order_time, p.buy_order_time,
@@ -152,7 +154,10 @@ class PnlData:
                    COALESCE(s.item_name, b.item_name) AS item_name,
                    COALESCE(s.weapon_name, b.weapon_name) AS weapon_name,
                    COALESCE(s.weapon_float, b.weapon_float) AS weapon_float,
-                   COALESCE(s.float_range, b.float_range) AS float_range
+                   COALESCE(s.float_range, b.float_range) AS float_range,
+                   COALESCE(b.sticker, s.sticker) AS sticker,
+                   COALESCE(b.pendant, s.pendant) AS pendant,
+                   COALESCE(b.rename, s.rename) AS rename
             FROM pnl_pairing p
             LEFT JOIN sell s
               ON s.ID = p.sell_id
@@ -190,6 +195,7 @@ class PnlData:
                     'sell_from': r[17],
                     'item_name': r[18], 'weapon_name': r[19],
                     'weapon_float': r[20], 'float_range': r[21],
+                    'sticker': r[22], 'pendant': r[23], 'rename': r[24],
                 })
             return jsonify({'success': True, 'data': data_list}), 200
         except Exception as e:
@@ -234,7 +240,8 @@ class PnlData:
             list_sql = f"""
             SELECT s.ID, s.ID_sub, s.[from], s.item_name, s.weapon_name,
                    s.weapon_float, s.float_range, s.price, s.order_time,
-                   s.steam_hash_name, s.data_user, s.status, s.status_sub
+                   s.steam_hash_name, s.data_user, s.status, s.status_sub,
+                   s.sticker, s.pendant, s.rename
             FROM sell s
             {where}
             ORDER BY s.order_time DESC
@@ -250,6 +257,7 @@ class PnlData:
                     'sell_order_time': r[8],
                     'steam_hash_name': r[9], 'data_user': r[10],
                     'status': r[11], 'status_sub': r[12],
+                    'sticker': r[13], 'pendant': r[14], 'rename': r[15],
                 }
                 for r in rows
             ]

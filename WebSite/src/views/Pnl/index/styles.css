@@ -1,13 +1,16 @@
 .pnl-page {
   padding: 16px;
+  background: var(--bg-primary);
+  min-height: 100%;
 }
 
 .card {
-  background: #fff;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .pnl-header .header-row {
@@ -27,6 +30,7 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .data-user-select {
@@ -41,7 +45,8 @@
 }
 
 .stat-card {
-  background: #f7f8fa;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
   padding: 10px 12px;
   text-align: center;
@@ -49,19 +54,19 @@
 
 .stat-label {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .profit-positive { color: #67c23a; }
 .profit-negative { color: #f56c6c; }
-.profit-zero     { color: #909399; }
+.profit-zero     { color: var(--text-secondary); }
 
 .pnl-main {
   padding-top: 0;
@@ -79,15 +84,58 @@
   border-radius: 4px;
   transition: background 0.15s;
 }
-.cal-cell:hover { background: rgba(64, 158, 255, 0.08); }
-.cal-day { font-size: 12px; color: #909399; }
+.cal-cell:hover { background: rgba(88, 166, 255, 0.12); }
+.cal-day { font-size: 12px; color: var(--text-secondary); }
 .cal-profit { font-size: 15px; font-weight: 600; }
-.cal-meta { font-size: 11px; color: #909399; }
+.cal-meta { font-size: 11px; color: var(--text-secondary); }
 .cal-excluded { font-size: 11px; color: #f56c6c; }
 
-.pnl-cell-positive { background: rgba(103, 194, 58, 0.08); }
-.pnl-cell-negative { background: rgba(245, 108, 108, 0.08); }
-.pnl-cell-zero     { background: rgba(144, 147, 153, 0.05); }
+.pnl-cell-positive { background: rgba(103, 194, 58, 0.14); }
+.pnl-cell-negative { background: rgba(245, 108, 108, 0.14); }
+.pnl-cell-zero     { background: rgba(125, 133, 144, 0.10); }
+
+/* el-calendar 暗色适配(日历为内联组件,scoped :deep 可生效) */
+:deep(.el-calendar) {
+  background: transparent;
+  --el-calendar-cell-width: auto;
+}
+:deep(.el-calendar__header) {
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+:deep(.el-calendar__title) {
+  color: var(--text-primary);
+}
+:deep(.el-calendar__body) {
+  background: transparent;
+}
+:deep(.el-calendar-table thead th) {
+  color: var(--text-secondary);
+  padding: 8px 0;
+}
+:deep(.el-calendar-table td) {
+  border: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+}
+:deep(.el-calendar-table td.is-selected) {
+  background: var(--bg-tertiary);
+}
+:deep(.el-calendar-table td.is-today .cal-day) {
+  color: var(--text-accent);
+  font-weight: 700;
+}
+:deep(.el-calendar-table:not(.is-range) td.next .cal-day),
+:deep(.el-calendar-table:not(.is-range) td.prev .cal-day) {
+  opacity: 0.45;
+}
+:deep(.el-calendar-table .el-calendar-day) {
+  height: auto;
+  min-height: 70px;
+  padding: 0;
+}
+:deep(.el-calendar-table .el-calendar-day:hover) {
+  background: transparent;
+}
 
 /* 孤立卖出筛选 */
 .orphan-filters {
@@ -104,16 +152,17 @@
 }
 
 /* 抽屉/对话框 */
-.time-faded { color: #909399; font-size: 11px; }
+.time-faded { color: var(--text-secondary); font-size: 11px; }
 .text-strike { text-decoration: line-through; opacity: 0.7; }
 .empty-tip {
   padding: 32px;
   text-align: center;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .pair-target {
-  background: #f7f8fa;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 12px;
@@ -121,15 +170,17 @@
 .pair-target-title {
   font-weight: 600;
   margin-bottom: 6px;
+  color: var(--text-primary);
 }
 .pair-target-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   font-size: 13px;
+  color: var(--text-primary);
 }
 .pair-target-grid .label {
-  color: #909399;
+  color: var(--text-secondary);
   margin-right: 4px;
 }
 .pair-candidates-header {
@@ -138,11 +189,136 @@
   align-items: center;
   margin-bottom: 8px;
   font-size: 13px;
-  color: #606266;
+  color: var(--text-secondary);
 }
 .pair-relax {
   display: flex;
   gap: 12px;
+}
+
+/* 当日明细:商品图片 / 印花 / 挂件 / 磨损条(与 Buy 列表一致) */
+.weapon-image-cell {
+  width: 100%;
+  height: 100%;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 4px;
+  box-sizing: border-box;
+  background: transparent;
+  border-radius: 4px;
+  transition: transform 0.2s ease;
+}
+.weapon-image-cell:hover { transform: scale(1.05); }
+.weapon-img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 72px;
+  object-fit: contain;
+  object-position: center;
+  background: transparent;
+  border-radius: 4px;
+  display: block;
+}
+.no-image { color: var(--text-secondary); font-size: 0.75rem; }
+
+.item-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.item-title { line-height: 1.4; color: var(--text-primary); }
+.item-extras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.sticker-list { display: flex; gap: 4px; flex-wrap: wrap; }
+.sticker-item {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sticker-item:hover {
+  transform: scale(2);
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+.sticker-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+.sticker-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 1rem;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pendant-list { display: flex; gap: 4px; }
+.pendant-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.rename-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #999;
+}
+.rename-value { color: #4CAF50; font-weight: 500; }
+
+.float-bar {
+  position: relative;
+  height: 8px;
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.float-segment { height: 100%; transition: opacity 0.2s; }
+.float-segment.fn { flex: 7; background: linear-gradient(to right, #4CAF50, #66BB6A); }
+.float-segment.mw { flex: 8; background: linear-gradient(to right, #8BC34A, #9CCC65); }
+.float-segment.ft { flex: 23; background: linear-gradient(to right, #FFC107, #FFB300); }
+.float-segment.ww { flex: 7; background: linear-gradient(to right, #FF9800, #FB8C00); }
+.float-segment.bs { flex: 55; background: linear-gradient(to right, #F44336, #E53935); }
+.float-pointer {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 16px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 255, 255, 0.8);
+  z-index: 10;
+  pointer-events: none;
 }
 
 /* 小屏适配 */
