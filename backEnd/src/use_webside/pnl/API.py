@@ -7,11 +7,13 @@ Pnl API 模块
 from flask import Blueprint
 from .units.pnl_data import PnlData
 from .units.pnl_ops import PnlOps
+from .units.pnl_inventory import PnlInventory
 
 pnl_blueprint = Blueprint('pnl_v2', __name__)
 
 # 数据查询路由
 pnl_blueprint.route('/pnl/units/data/getCalendar', methods=['POST'])(PnlData.get_calendar)
+pnl_blueprint.route('/pnl/units/data/getInventoryCalendar', methods=['POST'])(PnlInventory.get_inventory_calendar)
 pnl_blueprint.route('/pnl/units/data/getOverallStats', methods=['POST'])(PnlData.get_overall_stats)
 pnl_blueprint.route('/pnl/units/data/getDailyDetail', methods=['POST'])(PnlData.get_daily_detail)
 pnl_blueprint.route('/pnl/units/data/getOrphanSells', methods=['POST'])(PnlData.get_orphan_sells)
@@ -26,3 +28,4 @@ pnl_blueprint.route('/pnl/units/ops/runAutoPairing', methods=['POST'])(PnlOps.ru
 pnl_blueprint.route('/pnl/units/ops/manualPair', methods=['POST'])(PnlOps.manual_pair)
 pnl_blueprint.route('/pnl/units/ops/unpair', methods=['POST'])(PnlOps.unpair)
 pnl_blueprint.route('/pnl/units/ops/setExcluded', methods=['POST'])(PnlOps.set_excluded)
+pnl_blueprint.route('/pnl/units/ops/recordInventorySnapshot', methods=['POST'])(PnlInventory.record_snapshot)

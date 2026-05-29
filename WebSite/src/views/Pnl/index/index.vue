@@ -4,7 +4,6 @@
     <div class="pnl-header card">
       <div class="header-row">
         <div class="header-left">
-          <h2 class="pnl-title">盈亏统计</h2>
           <el-select
             v-model="dataUserFilter"
             placeholder="全部账号"
@@ -20,6 +19,9 @@
           </el-radio-group>
         </div>
         <div class="header-right">
+          <el-button :loading="loading" @click="recordInventorySnapshot">
+            记录今日库存盈亏
+          </el-button>
           <el-button type="primary" :loading="loading" @click="runAutoPairing">
             执行自动配对
           </el-button>
@@ -110,6 +112,13 @@
                   :disabled="!canNextMonth"
                   @click="nextMonth"
                 >下一月</el-button>
+                <span class="cal-header-sep"></span>
+                <span class="cal-header-label">库存盈亏口径</span>
+                <el-radio-group v-model="invBasis" size="small">
+                  <el-radio-button label="yyyp">悠悠</el-radio-button>
+                  <el-radio-button label="buff">BUFF</el-radio-button>
+                  <el-radio-button label="steam">Steam</el-radio-button>
+                </el-radio-group>
               </div>
             </template>
             <template #date-cell="{ data }">
@@ -130,6 +139,20 @@
                     剔除 {{ dayInfo(data.day).excluded_count }}
                   </div>
                 </template>
+                <div v-if="dayInventory(data.day)" class="cal-inventory">
+                  <span class="cal-inventory-label">库存</span>
+                  <span :class="profitClass(invProfitOf(dayInventory(data.day)))">
+                    {{ Number(invProfitOf(dayInventory(data.day))).toFixed(2) }}
+                  </span>
+                  <span
+                    v-if="invChangePctOf(dayInventory(data.day)) !== null"
+                    class="cal-inventory-pct"
+                    :class="invChangePctOf(dayInventory(data.day)) >= 0 ? 'profit-positive' : 'profit-negative'"
+                    title="较上一快照日的市值涨跌"
+                  >
+                    {{ invChangePctOf(dayInventory(data.day)) >= 0 ? '▲' : '▼' }}{{ Math.abs(invChangePctOf(dayInventory(data.day))).toFixed(2) }}%
+                  </span>
+                </div>
               </div>
             </template>
           </el-calendar>

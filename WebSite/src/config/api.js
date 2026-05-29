@@ -738,6 +738,8 @@ export const API_CONFIG = {
 
     // 盈亏统计（V2 API）
     PNL_CALENDAR: '/backENDV2/src/use_webside/pnl/units/data/getCalendar',
+    PNL_INVENTORY_CALENDAR: '/backENDV2/src/use_webside/pnl/units/data/getInventoryCalendar',
+    PNL_RECORD_INV_SNAPSHOT: '/backENDV2/src/use_webside/pnl/units/ops/recordInventorySnapshot',
     PNL_OVERALL_STATS: '/backENDV2/src/use_webside/pnl/units/data/getOverallStats',
     PNL_DAILY_DETAIL: '/backENDV2/src/use_webside/pnl/units/data/getDailyDetail',
     PNL_ORPHAN_SELLS: '/backENDV2/src/use_webside/pnl/units/data/getOrphanSells',
@@ -1478,6 +1480,8 @@ export const apiUrls = {
 
   // 盈亏统计 API
   pnlCalendar: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_CALENDAR),
+  pnlInventoryCalendar: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_INVENTORY_CALENDAR),
+  pnlRecordInvSnapshot: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_RECORD_INV_SNAPSHOT),
   pnlOverallStats: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_OVERALL_STATS),
   pnlDailyDetail: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_DAILY_DETAIL),
   pnlOrphanSells: () => getApiUrl(API_CONFIG.ENDPOINTS.PNL_ORPHAN_SELLS),

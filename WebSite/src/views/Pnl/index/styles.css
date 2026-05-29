@@ -5,12 +5,11 @@
 }
 
 .card {
-  background: var(--bg-secondary);
+  background: transparent;
   border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .pnl-header .header-row {
@@ -45,18 +44,16 @@
 }
 
 .stat-card {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-default);
+  background: #2a2a2a;
   border-radius: 6px;
   padding: 10px 12px;
   text-align: center;
 }
 .stat-card-clickable {
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: background 0.15s;
 }
 .stat-card-clickable:hover {
-  border-color: var(--text-accent);
   background: var(--bg-overlay);
 }
 
@@ -98,6 +95,27 @@
 .cal-profit { font-size: 15px; font-weight: 600; }
 .cal-meta { font-size: 11px; color: var(--text-secondary); }
 .cal-excluded { font-size: 11px; color: #f56c6c; }
+.cal-inventory {
+  font-size: 12px;
+  margin-top: auto;
+  padding-top: 2px;
+  border-top: 1px dashed var(--border-default);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.cal-inventory-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  background: var(--bg-overlay);
+  border-radius: 3px;
+  padding: 0 4px;
+}
+.cal-inventory-pct {
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: auto;
+}
 
 .pnl-cell-positive { background: rgba(103, 194, 58, 0.14); }
 .pnl-cell-negative { background: rgba(245, 108, 108, 0.14); }
@@ -108,6 +126,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.cal-header-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border-default);
+  margin: 0 4px;
 }
 .year-select {
   width: 110px;

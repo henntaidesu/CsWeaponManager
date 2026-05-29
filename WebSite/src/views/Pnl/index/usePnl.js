@@ -64,6 +64,9 @@ export function usePnl() {
     return arr
   })
   const calendarMap = reactive({}) // 'YYYY-MM-DD' -> { profit, pair_count, paired_quantity, excluded_count }
+  // 库存(未实现)盈亏:'YYYY-MM-DD' -> { count, cost, yyyp, buff, steam, yyyp_profit, buff_profit, steam_profit }
+  const inventoryMap = reactive({})
+  const invBasis = ref('yyyp') // 库存盈亏市值口径:'yyyp' | 'buff' | 'steam'
   const overallStats = reactive({
     total_profit: 0,
     paired_quantity: 0,
@@ -121,9 +124,10 @@ export function usePnl() {
     try {
       const payload = { start_date: start, end_date: end }
       if (dataUserFilter.value) payload.data_user = dataUserFilter.value
-      const [calRes, statsRes] = await Promise.all([
+      const [calRes, statsRes, invRes] = await Promise.all([
         axios.post(apiUrls.pnlCalendar(), payload),
         axios.post(apiUrls.pnlOverallStats(), payload),
+        axios.post(apiUrls.pnlInventoryCalendar(), payload),
       ])
       Object.keys(calendarMap).forEach((k) => delete calendarMap[k])
       if (calRes.data && calRes.data.success) {
@@ -133,6 +137,12 @@ export function usePnl() {
       }
       if (statsRes.data && statsRes.data.success) {
         Object.assign(overallStats, statsRes.data.data || {})
+      }
+      Object.keys(inventoryMap).forEach((k) => delete inventoryMap[k])
+      if (invRes.data && invRes.data.success) {
+        for (const row of invRes.data.data || []) {
+          inventoryMap[row.date] = row
+        }
       }
     } catch (e) {
       console.error('加载日历数据失败', e)
@@ -467,8 +477,49 @@ export function usePnl() {
     return calendarMap[day] || null
   }
 
+  // 某天的库存(未实现)盈亏快照
+  function dayInventory(day) {
+    return inventoryMap[day] || null
+  }
+  // 按当前口径取库存盈亏值
+  function invProfitOf(info) {
+    if (!info) return null
+    return info[`${invBasis.value}_profit`]
+  }
+  // 按当前口径取"较上一快照日"的市值涨跌百分比(可能为 null:无上一日)
+  function invChangePctOf(info) {
+    if (!info) return null
+    const v = info[`${invBasis.value}_change_pct`]
+    return v === null || v === undefined ? null : v
+  }
+
+  // 记录今日库存盈亏快照(所有账号),完成后刷新当前月份
+  async function recordInventorySnapshot() {
+    loading.value = true
+    try {
+      const r = await axios.post(apiUrls.pnlRecordInvSnapshot(), {})
+      if (r.data && r.data.success) {
+        ElMessage.success(`已记录今日库存盈亏(${r.data.data?.accounts || 0} 个账号)`)
+        applySelectedMonth()
+      } else {
+        ElMessage.error(r.data?.message || '记录库存盈亏失败')
+      }
+    } catch (e) {
+      console.error('记录库存盈亏失败', e)
+      ElMessage.error('记录库存盈亏失败')
+    } finally {
+      loading.value = false
+    }
+  }
+
   onMounted(async () => {
     await loadDataUserList()
+    // 自动记录今日库存盈亏快照(静默,所有账号),保证当天有数据
+    try {
+      await axios.post(apiUrls.pnlRecordInvSnapshot(), {})
+    } catch (e) {
+      console.error('自动记录库存盈亏失败', e)
+    }
     await loadMonthRange()
     applySelectedMonth()
   })
@@ -611,6 +662,8 @@ export function usePnl() {
     onCalendarDateChange, openDayDetail,
     cellColor, dayInfo,
     runAutoPairing,
+    // 库存盈亏
+    inventoryMap, invBasis, dayInventory, invProfitOf, invChangePctOf, recordInventorySnapshot,
     selectedYear, selectedMonthNum, yearOptions, monthOptionsOfYear,
     onYearChange, onMonthNumChange,
     prevMonth, nextMonth, canPrevMonth, canNextMonth,

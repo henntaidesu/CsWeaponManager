@@ -15,6 +15,7 @@ from .auto_search_weapon import AutoSearchWeaponModel
 from ...youpin.model.yyyp_weapon_price_history import YyypWeaponPriceHistoryModel
 from .sys_message import SysMessageModel
 from .pnl_pairing import PnlPairingModel
+from .pnl_inventory_daily import PnlInventoryDailyModel
 
 __all__ = [
     'ConfigModel',
@@ -28,5 +29,6 @@ __all__ = [
     'AutoSearchWeaponModel',
     'YyypWeaponPriceHistoryModel',
     'SysMessageModel',
-    'PnlPairingModel'
+    'PnlPairingModel',
+    'PnlInventoryDailyModel'
 ]

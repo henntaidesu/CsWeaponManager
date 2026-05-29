@@ -32,11 +32,6 @@ export function useLayout() {
       icon: '/icons/sell_off.png'
     },
     {
-      path: '/pnl',
-      title: '盈亏统计',
-      icon: '/icons/_日历.png'
-    },
-    {
       path: '/rental',
       title: '借贷列表',
       icon: '/icons/rental.png'
@@ -45,6 +40,11 @@ export function useLayout() {
       path: '/rent',
       title: '出租列表',
       icon: '/icons/rent.png'
+    },
+    {
+      path: '/pnl',
+      title: '盈亏统计',
+      icon: '/icons/_日历.png'
     },
     {
       path: '/on-sale',
