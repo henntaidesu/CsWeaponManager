@@ -16,10 +16,12 @@
         <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
           <el-icon><Loading /></el-icon> 等待手机APP访问...
         </div>
-        <div style="color: #666; font-size: 12px;">
+        <div style="color: #666; font-size: 12px; line-height: 1.8;">
           1. 在手机WiFi设置中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
-          2. 打开悠悠有品APP并登录<br/>
-          3. 系统将自动获取令牌
+          2. 打开已经登录的悠悠有品APP<br/>
+          3. 在首页等待 5-10 秒，等待页面完全加载<br/>
+          4. 点击「我的」-「出租记录」，等待 5 秒，等待页面完全加载<br/>
+          5. 加载完成后系统页面会有提示
         </div>
       </div>
       <div v-if="yyypTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">

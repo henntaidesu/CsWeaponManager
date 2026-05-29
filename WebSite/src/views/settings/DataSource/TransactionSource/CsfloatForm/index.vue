@@ -17,7 +17,7 @@
         </div>
         <div style="color: #666; font-size: 12px;">
           1. 在浏览器中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
-          2. 访问 https://csfloat.com 并登录<br/>
+          2. 访问已经登录的 https://csfloat.com<br/>
           3. 系统将自动获取令牌
         </div>
       </div>

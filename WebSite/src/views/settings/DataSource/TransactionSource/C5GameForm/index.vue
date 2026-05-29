@@ -17,7 +17,7 @@
         </div>
         <div style="color: #666; font-size: 12px;">
           1. 在手机WiFi设置中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
-          2. 打开C5 GAME APP并登录<br/>
+          2. 打开已经登录的C5 GAME APP<br/>
           3. 系统将自动获取令牌
         </div>
       </div>
