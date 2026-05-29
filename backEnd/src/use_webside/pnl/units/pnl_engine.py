@@ -18,6 +18,10 @@ from src.db_manager.database import DatabaseManager
 
 COMPLETED_STATUS = '已完成'
 
+# 手动录入购入价(无买入记录)时的哨兵值 — buy_id / buy_from 为 NOT NULL
+MANUAL_BUY_ID = 'MANUAL'
+MANUAL_BUY_FROM = 'manual'
+
 
 def _now_iso() -> str:
     from datetime import datetime
@@ -340,8 +344,10 @@ def manual_pair_price(sell_id: str, buy_price: Any,
     if sell_paired > 0:
         return False, '该出售记录已被配对,请先解绑后再手动配对', None
 
+    # buy_id / buy_from 为 NOT NULL,使用哨兵值(不会与真实数字 ID/平台名冲突),
+    # 表示"无买入记录、仅手填购入价";明细 LEFT JOIN 不会命中任何 buy 行
     buy = {
-        'ID': None, 'ID_sub': None, 'from': None,
+        'ID': MANUAL_BUY_ID, 'ID_sub': None, 'from': MANUAL_BUY_FROM,
         'price': bp, 'order_time': None,
         'data_user': sell['data_user'], 'steam_hash_name': sell['steam_hash_name'],
     }
