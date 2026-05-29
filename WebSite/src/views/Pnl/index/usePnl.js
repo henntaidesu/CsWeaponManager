@@ -71,6 +71,7 @@ export function usePnl() {
     win_profit: 0,
     loss_profit: 0,
     excluded_count: 0,
+    unmatched_count: 0,
   })
 
   // ---- 当日明细抽屉 ----
@@ -87,6 +88,7 @@ export function usePnl() {
     search: '',
     start_date: '',
     end_date: '',
+    date_range: null,
   })
 
   // ---- 已剔除（直接从 calendar 累积或单独拉） ----
@@ -98,6 +100,7 @@ export function usePnl() {
   const pairCandidates = ref([])
   const pairRelaxHash = ref(false)
   const pairRelaxUser = ref(false)
+  const manualBuyPrice = ref(null) // 手动输入购入价
 
   async function loadDataUserList() {
     try {
@@ -374,6 +377,7 @@ export function usePnl() {
     pairCandidates.value = []
     pairRelaxHash.value = false
     pairRelaxUser.value = false
+    manualBuyPrice.value = null
     pairDialogVisible.value = true
     await loadCandidates()
   }
@@ -423,6 +427,34 @@ export function usePnl() {
     }
   }
 
+  // 手动输入购入价配对(无买入记录)
+  async function confirmManualPairByPrice() {
+    if (!pairTargetSell.value) return
+    if (manualBuyPrice.value === null || manualBuyPrice.value === '' || Number(manualBuyPrice.value) < 0) {
+      ElMessage.warning('请输入有效的购入价')
+      return
+    }
+    try {
+      const r = await axios.post(apiUrls.pnlManualPair(), {
+        sell_id: pairTargetSell.value.sell_id,
+        sell_id_sub: pairTargetSell.value.sell_id_sub,
+        buy_price: Number(manualBuyPrice.value),
+        quantity: 1,
+      })
+      if (r.data && r.data.success) {
+        ElMessage.success('配对成功')
+        pairDialogVisible.value = false
+        await loadOrphans()
+        const ref = calendarRefDate.value || new Date()
+        await loadCalendar(ref.getFullYear(), ref.getMonth())
+      } else {
+        ElMessage.error(r.data?.message || '配对失败')
+      }
+    } catch (e) {
+      ElMessage.error('配对失败')
+    }
+  }
+
   function cellColor(cell) {
     const info = calendarMap[cell.day] || calendarMap[cell.text]
     if (!info) return ''
@@ -447,6 +479,22 @@ export function usePnl() {
       orphans.page = 1
       loadOrphans()
     }
+  }
+
+  // 点击「未匹配数」:按当前选中月份过滤孤立卖出并切换到该列表
+  function viewMonthUnmatched() {
+    const y = selectedYear.value
+    const m = selectedMonthNum.value
+    if (y && m) {
+      const { start, end } = monthRange(y, m - 1)
+      orphans.date_range = [start, end]
+      orphans.start_date = start
+      orphans.end_date = end
+    }
+    orphans.search = ''
+    orphans.page = 1
+    activeTab.value = 'orphans'
+    loadOrphans()
   }
 
   async function onDataUserChange() {
@@ -570,10 +618,11 @@ export function usePnl() {
     detailDrawerVisible, detailDate, detailRows,
     unpair, setExcluded,
     // 孤立卖出
-    orphans, loadOrphans, openPairDialog,
+    orphans, loadOrphans, openPairDialog, viewMonthUnmatched,
     // 手动配对
     pairDialogVisible, pairTargetSell, pairCandidates,
     pairRelaxHash, pairRelaxUser,
     loadCandidates, confirmManualPair,
+    manualBuyPrice, confirmManualPairByPrice,
   }
 }

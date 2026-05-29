@@ -291,6 +291,66 @@ def manual_pair(buy_id: str, buy_from: str, sell_id: str,
     return False, '配对写入失败', None
 
 
+def manual_pair_price(sell_id: str, buy_price: Any,
+                      sell_id_sub: Optional[str] = None,
+                      quantity: int = 1) -> Tuple[bool, str, Optional[int]]:
+    """
+    手动配对(无买入记录):为某条出售记录直接录入购入价,生成一对配对
+    买入侧字段留空(buy_id/buy_from/buy_order_time 为 NULL),buy_price 取手动输入值
+    返回 (success, message, pairing_id)
+    """
+    db = DatabaseManager()
+    if quantity <= 0:
+        return False, 'quantity 必须大于 0', None
+    try:
+        bp = float(buy_price)
+    except (TypeError, ValueError):
+        return False, '购入价无效', None
+    if bp < 0:
+        return False, '购入价不能为负', None
+
+    sell_rows = db.execute_query(
+        """
+        SELECT ID, ID_sub, [from], steam_hash_name, data_user, price, order_time
+        FROM sell
+        WHERE ID = ?
+          AND (ID_sub IS ? OR (ID_sub IS NULL AND ? IS NULL))
+        LIMIT 1
+        """,
+        (sell_id, sell_id_sub, sell_id_sub)
+    )
+    if not sell_rows:
+        return False, '未找到指定的出售记录', None
+    sr = sell_rows[0]
+    sell = {
+        'ID': sr[0], 'ID_sub': sr[1], 'from': sr[2],
+        'steam_hash_name': sr[3], 'data_user': sr[4],
+        'price': sr[5], 'order_time': sr[6],
+    }
+
+    sell_paired_rows = db.execute_query(
+        """
+        SELECT COUNT(*) FROM pnl_pairing
+        WHERE sell_id = ?
+          AND (sell_id_sub IS ? OR (sell_id_sub IS NULL AND ? IS NULL))
+        """,
+        (sell_id, sell_id_sub, sell_id_sub)
+    )
+    sell_paired = int(sell_paired_rows[0][0] or 0) if sell_paired_rows else 0
+    if sell_paired > 0:
+        return False, '该出售记录已被配对,请先解绑后再手动配对', None
+
+    buy = {
+        'ID': None, 'ID_sub': None, 'from': None,
+        'price': bp, 'order_time': None,
+        'data_user': sell['data_user'], 'steam_hash_name': sell['steam_hash_name'],
+    }
+    pairing_id = _insert_pairing(db, buy, sell, quantity, pair_type='manual')
+    if pairing_id:
+        return True, '配对成功', pairing_id
+    return False, '配对写入失败', None
+
+
 def unpair(pairing_id: int) -> Tuple[bool, str]:
     """解绑一对配对(无论 auto 还是 manual)"""
     db = DatabaseManager()

@@ -113,6 +113,22 @@ class PnlData:
             ex_row = db.execute_query(excluded_sql, tuple(ex_params))
             excluded_count = int(ex_row[0][0] or 0) if ex_row else 0
 
+            # 未匹配数:已完成且没有任何配对的 sell 记录(按出售时间 order_time 落在区间内)
+            um_clauses = [
+                "s.status = ?",
+                "NOT EXISTS (SELECT 1 FROM pnl_pairing p WHERE p.sell_id = s.ID AND (p.sell_id_sub IS s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL)))",
+            ]
+            um_params = [COMPLETED_STATUS]
+            if data_user:
+                um_clauses.append("s.data_user = ?")
+                um_params.append(data_user)
+            if start_date and end_date:
+                um_clauses.append("s.order_time BETWEEN ? AND ?")
+                um_params.extend([f"{start_date} 00:00:00", f"{end_date} 23:59:59"])
+            um_sql = "SELECT COUNT(*) FROM sell s WHERE " + " AND ".join(um_clauses)
+            um_row = db.execute_query(um_sql, tuple(um_params))
+            unmatched_count = int(um_row[0][0] or 0) if um_row else 0
+
             return jsonify({
                 'success': True,
                 'data': {
@@ -122,6 +138,7 @@ class PnlData:
                     'win_profit': round(float(r[3] or 0), 2),
                     'loss_profit': round(float(r[4] or 0), 2),
                     'excluded_count': excluded_count,
+                    'unmatched_count': unmatched_count,
                 }
             }), 200
         except Exception as e:

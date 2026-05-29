@@ -58,6 +58,14 @@
           <div class="stat-label">已剔除</div>
           <div class="stat-value">{{ overallStats.excluded_count || 0 }}</div>
         </div>
+        <div
+          class="stat-card stat-card-clickable"
+          title="查看当月未匹配的孤立卖出"
+          @click="viewMonthUnmatched"
+        >
+          <div class="stat-label">未匹配数</div>
+          <div class="stat-value profit-negative">{{ overallStats.unmatched_count || 0 }}</div>
+        </div>
       </div>
     </div>
 
@@ -424,6 +432,27 @@
           <div><span class="label">账号:</span>{{ pairTargetSell.data_user || '-' }}</div>
           <div><span class="label">时间:</span>{{ pairTargetSell.sell_order_time }}</div>
         </div>
+      </div>
+
+      <!-- 手动输入购入价(无对应买入记录时) -->
+      <div class="manual-price-row">
+        <span class="manual-price-label">手动输入购入价</span>
+        <el-input-number
+          v-model="manualBuyPrice"
+          :min="0"
+          :precision="2"
+          :step="1"
+          controls-position="right"
+          placeholder="购入价"
+          class="manual-price-input"
+        />
+        <span v-if="manualBuyPrice !== null && manualBuyPrice !== ''" class="manual-price-preview">
+          预估盈亏:
+          <span :class="profitClass((pairTargetSell?.sell_price || 0) - Number(manualBuyPrice))">
+            {{ ((pairTargetSell?.sell_price || 0) - Number(manualBuyPrice)).toFixed(2) }}
+          </span>
+        </span>
+        <el-button type="success" @click="confirmManualPairByPrice">按此价配对</el-button>
       </div>
 
       <div class="pair-candidates-header">

@@ -3,7 +3,7 @@
 """
 from flask import jsonify, request
 
-from .pnl_engine import run_auto_pairing, manual_pair, unpair, set_excluded
+from .pnl_engine import run_auto_pairing, manual_pair, manual_pair_price, unpair, set_excluded
 
 
 class PnlOps:
@@ -29,29 +29,43 @@ class PnlOps:
     @staticmethod
     def manual_pair():
         """
-        手动建立一对配对
-        Request JSON:
-            buy_id (必填), buy_from (必填), buy_id_sub (可选)
-            sell_id (必填), sell_id_sub (可选)
-            quantity (默认 1)
+        手动建立一对配对,两种方式二选一:
+        1) 选择买入记录:buy_id (必填), buy_from (必填), buy_id_sub (可选)
+        2) 手动输入购入价:buy_price (必填),不传 buy_id
+        公共:sell_id (必填), sell_id_sub (可选), quantity (默认 1)
         """
         try:
             data = request.get_json() or {}
-            buy_id = data.get('buy_id')
-            buy_from = data.get('buy_from')
             sell_id = data.get('sell_id')
-            if not buy_id or not buy_from or not sell_id:
-                return jsonify({'success': False, 'message': 'buy_id / buy_from / sell_id 必填'}), 400
+            if not sell_id:
+                return jsonify({'success': False, 'message': 'sell_id 必填'}), 400
 
             quantity = int(data.get('quantity', 1) or 1)
-            ok, msg, pairing_id = manual_pair(
-                buy_id=buy_id,
-                buy_from=buy_from,
-                sell_id=sell_id,
-                buy_id_sub=data.get('buy_id_sub'),
-                sell_id_sub=data.get('sell_id_sub'),
-                quantity=quantity,
-            )
+            buy_id = data.get('buy_id')
+            buy_price = data.get('buy_price')
+
+            if buy_id:
+                buy_from = data.get('buy_from')
+                if not buy_from:
+                    return jsonify({'success': False, 'message': 'buy_from 必填'}), 400
+                ok, msg, pairing_id = manual_pair(
+                    buy_id=buy_id,
+                    buy_from=buy_from,
+                    sell_id=sell_id,
+                    buy_id_sub=data.get('buy_id_sub'),
+                    sell_id_sub=data.get('sell_id_sub'),
+                    quantity=quantity,
+                )
+            elif buy_price is not None and buy_price != '':
+                ok, msg, pairing_id = manual_pair_price(
+                    sell_id=sell_id,
+                    buy_price=buy_price,
+                    sell_id_sub=data.get('sell_id_sub'),
+                    quantity=quantity,
+                )
+            else:
+                return jsonify({'success': False, 'message': '请选择买入记录或输入购入价'}), 400
+
             status = 200 if ok else 400
             return jsonify({'success': ok, 'message': msg, 'pairing_id': pairing_id}), status
         except Exception as e:

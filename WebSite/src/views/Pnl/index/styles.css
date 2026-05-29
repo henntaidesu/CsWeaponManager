@@ -39,7 +39,7 @@
 
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 12px;
   margin-top: 12px;
 }
@@ -50,6 +50,14 @@
   border-radius: 6px;
   padding: 10px 12px;
   text-align: center;
+}
+.stat-card-clickable {
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.stat-card-clickable:hover {
+  border-color: var(--text-accent);
+  background: var(--bg-overlay);
 }
 
 .stat-label {
@@ -197,6 +205,28 @@
   color: var(--text-secondary);
   margin-right: 4px;
 }
+.manual-price-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+.manual-price-label {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.manual-price-input {
+  width: 180px;
+}
+.manual-price-preview {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
 .pair-candidates-header {
   display: flex;
   justify-content: space-between;
