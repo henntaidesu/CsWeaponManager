@@ -464,6 +464,9 @@ class TaskScheduler:
             elif automate_type == 'auto_refresh_auth':
                 # 更新Steam认证
                 self._execute_refresh_auth_task(task_info)
+            elif automate_type == 'auto_stock_price':
+                # 独立更新任务：更新库存组件平台价格（对全部账号执行）
+                self._execute_stock_price_task(task_info)
             else:
                 self.log.write_log(f"未知的任务类型: {automate_type}", 'error')
 
@@ -868,6 +871,63 @@ class TaskScheduler:
             self.log.write_log(f"Steam认证更新请求失败: {steam_id}, 错误: {str(e)}", 'error')
         except Exception as e:
             self.log.write_log(f"Steam认证更新异常: {steam_id}, 错误: {str(e)}", 'error')
+
+    def _execute_stock_price_task(self, task_info):
+        """执行独立更新任务：更新库存组件平台价格，对全部已配置 Steam 账号依次执行
+
+        config.source: 'database' (从数据库同步 悠悠+BUFF) 或 'csqaq' (从 CSQAQ 获取)
+        """
+        config = task_info['config']
+        source = (config.get('source') or 'database').lower()
+
+        db = Date_base()
+
+        # 枚举所有已配置的 Steam 账号
+        try:
+            query_sql = """
+            SELECT DISTINCT steamID
+            FROM config
+            WHERE key1 = 'steam' AND key2 = 'config'
+              AND steamID IS NOT NULL AND steamID != ''
+            """
+            success, result = db.select(query_sql)
+        except Exception as e:
+            self.log.write_log(f"更新平台价格：查询Steam账号失败: {str(e)}", 'error')
+            return
+
+        if not success or not result:
+            self.log.write_log("更新平台价格：未找到任何已配置的Steam账号", 'warning')
+            return
+
+        steam_ids = [row[0] for row in result if row[0]]
+        self.log.write_log(f"更新平台价格：共 {len(steam_ids)} 个账号，数据来源={source}", 'info')
+
+        backend_base = "http://127.0.0.1:9001"  # 后端服务（自身）
+        spider_base = "http://127.0.0.1:9002"   # Spider 服务
+
+        for steam_id in steam_ids:
+            try:
+                if source == 'csqaq':
+                    url = f"{spider_base}/spiderApiV2/src/web_site/csqaq/units/QAQ_API/stock_components/updatePricesFromCsqaq"
+                    response = requests.post(url, json={'steam_id': steam_id}, timeout=600)
+                    self.log.write_log(
+                        f"CSQAQ平台价格更新完成: {steam_id}, 状态 {response.status_code}, 响应: {response.text[:150]}",
+                        'info'
+                    )
+                else:
+                    for platform in ['yyyp', 'buff']:
+                        url = f"{backend_base}/backENDV2/src/use_webside/stock_components/units/price/fillReferencePrice/{steam_id}/{platform}"
+                        response = requests.post(url, json={'force_update': True}, timeout=600)
+                        self.log.write_log(
+                            f"数据库平台价格更新({platform})完成: {steam_id}, 状态 {response.status_code}",
+                            'info'
+                        )
+            except requests.exceptions.Timeout:
+                self.log.write_log(f"平台价格更新超时: {steam_id}", 'error')
+            except requests.exceptions.RequestException as e:
+                self.log.write_log(f"平台价格更新请求失败: {steam_id}, 错误: {str(e)}", 'error')
+            except Exception as e:
+                self.log.write_log(f"平台价格更新异常: {steam_id}, 错误: {str(e)}", 'error')
 
     def get_currently_executing_tasks(self):
         """获取正在执行的任务列表"""

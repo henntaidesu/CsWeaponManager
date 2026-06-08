@@ -23,9 +23,7 @@ export function useAutomateManagement() {
   const executing = ref(false)
   const bulkStarting = ref(false)
   const bulkStopping = ref(false)
-  const groupStartingType = ref('')
-  const groupStoppingType = ref('')
-  
+
   // 编辑状态
   const isEditing = ref(false)
   const editingTaskId = ref(null)
@@ -45,47 +43,231 @@ export function useAutomateManagement() {
   // 运行中的任务
   const runningTasks = ref([])
   
-  // 一级按账号(SteamID)分组，二级按自动化类型分组
-  const groupedRunningTasks = computed(() => {
-    if (!runningTasks.value.length) {
-      return []
+  // 全部自动化方法目录（卡片详情据此展示：已创建/未创建/不可用）
+  const AUTOMATION_CATALOG = [
+    { automateType: 'auto_update', taskType: 'update_steam_inventory', typeLabel: '更新steam库存价格', methodLabel: '更新Steam库存', source: 'steam' },
+    { automateType: 'auto_update', taskType: 'fetch_yyyp_price', typeLabel: '更新steam库存价格', methodLabel: '获取悠悠有品价格', source: 'youpin' },
+    { automateType: 'auto_update', taskType: 'fetch_buff_price', typeLabel: '更新steam库存价格', methodLabel: '获取BUFF价格', source: 'buff' },
+    { automateType: 'auto_refresh_auth', taskType: '', typeLabel: '更新steam认证', methodLabel: '更新Steam认证', source: 'steam' },
+    { automateType: 'auto_fetch', taskType: 'collect_buff', typeLabel: '获取平台交易记录', methodLabel: 'BUFF数据采集', source: 'buff' },
+    { automateType: 'auto_fetch', taskType: 'collect_youpin', typeLabel: '获取平台交易记录', methodLabel: '悠悠有品数据采集', source: 'youpin' },
+    { automateType: 'auto_platform_price', taskType: 'platform_youpin_price', typeLabel: '更新饰品平台映射价格', methodLabel: '更新悠悠有品饰品价格', source: 'youpin' },
+    { automateType: 'auto_platform_price', taskType: 'platform_buff_price', typeLabel: '更新饰品平台映射价格', methodLabel: '更新BUFF饰品价格', source: 'buff' },
+    { automateType: 'auto_search_weapon', taskType: 'search_weapon_rename', typeLabel: '自动搜素饰品', methodLabel: '自动搜素饰品改名', source: 'rename' },
+    { automateType: 'auto_search_weapon', taskType: 'search_weapon_pendant', typeLabel: '自动搜素饰品', methodLabel: '自动搜素饰品挂件', source: 'pendant' }
+  ]
+
+  // 从搜索配置中提取爬取账号(SteamID)
+  const crawlAccountId = (searchConfig) => {
+    const v = searchConfig?.config || {}
+    return v.crawl_account_id || v.steam_id || v.steamId || ''
+  }
+
+  // 解析某账号下某自动化方法对应的配置/数据源：是否可用 + 配置ID + 写入字段
+  const resolveCatalogConfig = (entry, steamId) => {
+    const sid = String(steamId)
+    if (entry.source === 'steam') {
+      const c = steamConfigList.value.find(x => String(x.steamID) === sid)
+      return { available: !!c, configId: c?.dataID || '', field: 'selectedSteamConfig' }
+    }
+    if (entry.source === 'youpin') {
+      if (entry.automateType === 'auto_update') {
+        const c = youpinConfigList.value.find(x => String(x.steamID) === sid)
+        return { available: !!c, configId: c?.dataID || '', field: 'selectedSteamConfig' }
+      }
+      const c = dataSources.value.find(x => x.type === 'youpin' && String(x.steamID) === sid)
+      return { available: !!c, configId: c?.dataID || '', field: 'selectedDataSource' }
+    }
+    if (entry.source === 'buff') {
+      if (entry.automateType === 'auto_update') {
+        const c = buffConfigList.value.find(x => String(x.steamID) === sid)
+        return { available: !!c, configId: c?.dataID || '', field: 'selectedSteamConfig' }
+      }
+      const c = dataSources.value.find(x => x.type === 'buff' && String(x.steamID) === sid)
+      return { available: !!c, configId: c?.dataID || '', field: 'selectedDataSource' }
+    }
+    if (entry.source === 'rename') {
+      const c = renameSearchConfigList.value.find(x => String(crawlAccountId(x)) === sid)
+      return { available: !!c, configId: c?.dataID || '', field: 'selectedSearchConfig' }
+    }
+    if (entry.source === 'pendant') {
+      const c = pendantSearchConfigList.value.find(x => String(crawlAccountId(x)) === sid)
+      return { available: !!c, configId: c?.dataID || '', field: 'selectedSearchConfig' }
+    }
+    return { available: false, configId: '', field: '' }
+  }
+
+  // 计算某账号下某自动化方法的状态：running / stopped / uncreated / unavailable
+  const buildAutomationStatus = (entry, steamId) => {
+    const { available, configId, field } = resolveCatalogConfig(entry, steamId)
+    const task = runningTasks.value.find(t =>
+      t.automateType === entry.automateType &&
+      (t.config.selectedTask || '') === entry.taskType &&
+      String(resolveAccount(t.automateType, t.config).steamId) === String(steamId)
+    ) || null
+
+    let status
+    if (task) {
+      status = task.status === '已停止' ? 'stopped' : 'running'
+    } else {
+      status = available ? 'uncreated' : 'unavailable'
     }
 
-    const accountMap = new Map()
+    return {
+      key: `${entry.automateType}:${entry.taskType}`,
+      automateType: entry.automateType,
+      taskType: entry.taskType,
+      typeLabel: entry.typeLabel,
+      methodLabel: entry.methodLabel,
+      available,
+      configId,
+      field,
+      task,
+      status
+    }
+  }
 
-    runningTasks.value.forEach(task => {
-      const { steamId, name } = resolveAccount(task.automateType, task.config)
-      const key = steamId || '未配置账号'
-      if (!accountMap.has(key)) {
-        accountMap.set(key, {
-          label: name ? `${name}（${key}）` : key,
-          typeMap: new Map()
-        })
+  // 卡片：按账号(SteamID)聚合已配置账号，并附带每个账号的全部自动化状态
+  const accountCards = computed(() => {
+    const map = new Map()
+    const addAccount = (steamId, name) => {
+      if (!steamId) return
+      const key = String(steamId)
+      if (!map.has(key)) {
+        map.set(key, { steamId: key, name: name || '' })
+      } else if (name && !map.get(key).name) {
+        map.get(key).name = name
       }
-      const typeLabel = task.type || '未分类'
-      const typeMap = accountMap.get(key).typeMap
-      if (!typeMap.has(typeLabel)) {
-        typeMap.set(typeLabel, [])
-      }
-      typeMap.get(typeLabel).push(task)
-    })
+    }
 
-    return Array.from(accountMap.entries()).map(([key, account]) => {
-      const subGroups = Array.from(account.typeMap.entries()).map(([typeLabel, tasks]) => ({
-        type: typeLabel,
-        tasks
-      }))
+    steamConfigList.value.forEach(c => addAccount(c.steamID, c.dataName))
+    dataSources.value.forEach(c => addAccount(c.steamID, c.dataName))
+    renameSearchConfigList.value.forEach(c => addAccount(crawlAccountId(c), c.dataName))
+    pendantSearchConfigList.value.forEach(c => addAccount(crawlAccountId(c), c.dataName))
+
+    return Array.from(map.values()).map(acc => {
+      const automations = AUTOMATION_CATALOG.map(entry => buildAutomationStatus(entry, acc.steamId))
+      const running = automations.filter(a => a.status === 'running').length
+      const stopped = automations.filter(a => a.status === 'stopped').length
+      const uncreated = automations.filter(a => a.status === 'uncreated').length
       return {
-        type: key,
-        label: account.label,
-        // 扁平任务列表，供"启动全部/停止全部"及计数使用
-        tasks: subGroups.flatMap(sub => sub.tasks),
-        // 二级分组：按自动化类型区分
-        subGroups
+        steamId: acc.steamId,
+        name: acc.name || acc.steamId,
+        automations,
+        running,
+        stopped,
+        uncreated,
+        created: running + stopped
       }
     })
   })
-  
+
+  // 在卡片详情中直接创建某项自动化（默认停止状态）
+  const createAutomation = async (steamId, entry, interval = 30, syncHistory = true) => {
+    const { available, configId, field } = resolveCatalogConfig(entry, steamId)
+    if (!available) {
+      ElMessage.warning('该账号未配置对应数据源，无法创建')
+      return false
+    }
+    try {
+      const config = {
+        selectedTask: entry.taskType,
+        selectedSteamConfig: field === 'selectedSteamConfig' ? configId : '',
+        selectedDataSource: field === 'selectedDataSource' ? configId : '',
+        selectedSearchConfig: field === 'selectedSearchConfig' ? configId : '',
+        interval: Number(interval) || 30,
+        syncHistory
+      }
+      const response = await axios.post(apiUrls.autoManagerCreateTask(), {
+        taskName: entry.methodLabel,
+        automateType: entry.automateType,
+        config,
+        enabled: false
+      })
+      if (response.data.success) {
+        ElMessage.success(`已创建「${entry.methodLabel}」(停止状态)`)
+        await loadSavedTasks()
+        return true
+      }
+      ElMessage.error('创建失败: ' + (response.data.message || '未知错误'))
+      return false
+    } catch (error) {
+      console.error('创建自动化失败:', error)
+      ElMessage.error('创建失败: ' + error.message)
+      return false
+    }
+  }
+
+  // 独立更新任务（不绑定单个账号，对全部账号执行）
+  const STOCK_PRICE_SOURCE_LABELS = {
+    database: '从数据库同步(悠悠+BUFF)',
+    csqaq: '从CSQAQ获取'
+  }
+  const stockPriceSourceLabel = (source) => STOCK_PRICE_SOURCE_LABELS[source] || source || '-'
+
+  // 所有独立更新任务（auto_stock_price）
+  const independentTasks = computed(() =>
+    runningTasks.value.filter(t => t.automateType === 'auto_stock_price')
+  )
+
+  // 是否已在数据源页面配置了 CSQAQ 类型（用于校验能否选择 CSQAQ 同步）
+  const hasCsqaqSource = computed(() =>
+    dataSources.value.some(s => s.type === 'csqaq')
+  )
+
+  // 创建独立更新任务（停止状态）
+  const createIndependentTask = async ({ taskName, source = 'database', interval = 60 }) => {
+    if (source === 'csqaq' && !hasCsqaqSource.value) {
+      ElMessage.warning('请先在「数据源」页面配置 CSQAQ 类型后再选择 CSQAQ 同步')
+      return false
+    }
+    try {
+      const response = await axios.post(apiUrls.autoManagerCreateTask(), {
+        taskName: taskName || '更新库存组件价格',
+        automateType: 'auto_stock_price',
+        config: { source, interval: Number(interval) || 60 },
+        enabled: false
+      })
+      if (response.data.success) {
+        ElMessage.success('已创建独立更新任务(停止状态)')
+        await loadSavedTasks()
+        return true
+      }
+      ElMessage.error('创建失败: ' + (response.data.message || '未知错误'))
+      return false
+    } catch (error) {
+      console.error('创建独立更新任务失败:', error)
+      ElMessage.error('创建失败: ' + error.message)
+      return false
+    }
+  }
+
+  // 更新独立更新任务
+  const updateIndependentTask = async (taskId, { taskName, source = 'database', interval = 60 }) => {
+    if (source === 'csqaq' && !hasCsqaqSource.value) {
+      ElMessage.warning('请先在「数据源」页面配置 CSQAQ 类型后再选择 CSQAQ 同步')
+      return false
+    }
+    try {
+      const response = await axios.put(apiUrls.autoManagerUpdateTask(taskId), {
+        taskName: taskName || '更新库存组件价格',
+        automateType: 'auto_stock_price',
+        config: { source, interval: Number(interval) || 60 }
+      })
+      if (response.data.success) {
+        ElMessage.success('独立更新任务已更新')
+        await loadSavedTasks()
+        return true
+      }
+      ElMessage.error('更新失败: ' + (response.data.message || '未知错误'))
+      return false
+    } catch (error) {
+      console.error('更新独立更新任务失败:', error)
+      ElMessage.error('更新失败: ' + error.message)
+      return false
+    }
+  }
+
   // 搜索配置列表
   const renameSearchConfigList = ref([])
   const pendantSearchConfigList = ref([])
@@ -120,7 +302,8 @@ export function useAutomateManagement() {
     auto_fetch: '获取平台交易记录',
     auto_platform_price: '更新饰品平台映射价格',
     auto_search_weapon: '自动搜素饰品',
-    auto_refresh_auth: '更新steam认证'
+    auto_refresh_auth: '更新steam认证',
+    auto_stock_price: '更新库存组件价格'
   }
   
   const labelToTypeMap = Object.entries(typeLabelMap).reduce((acc, [key, label]) => {
@@ -1038,67 +1221,6 @@ export function useAutomateManagement() {
     }
   }
   
-  const startGroupTasks = async (groupType, tasks = []) => {
-    const stoppedTasks = tasks.filter(task => task.status === '已停止')
-  
-    if (stoppedTasks.length === 0) {
-      ElMessage.info('该分组暂无需要启动的任务')
-      return
-    }
-  
-    groupStartingType.value = groupType
-    let successCount = 0
-  
-    try {
-      for (const task of stoppedTasks) {
-        const success = await startTask(task, { silent: true })
-        if (success) {
-          successCount++
-        }
-      }
-  
-      await loadSavedTasks()
-      ElMessage.success(`该分组已启动 ${successCount}/${stoppedTasks.length} 个任务`)
-    } catch (error) {
-      console.error('分组批量启动任务失败:', error)
-      ElMessage.error('分组批量启动任务失败: ' + error.message)
-    } finally {
-      groupStartingType.value = ''
-    }
-  }
-  
-  const stopGroupTasks = async (groupType, tasks = []) => {
-    const running = tasks.filter(task => task.status === '运行中')
-  
-    if (running.length === 0) {
-      ElMessage.info('该分组暂无运行中的任务')
-      return
-    }
-  
-    groupStoppingType.value = groupType
-    let successCount = 0
-  
-    try {
-      for (const task of running) {
-        const success = await stopTask(task.id, { silent: true })
-        if (success) {
-          successCount++
-        }
-      }
-  
-      await loadSavedTasks()
-      ElMessage.success(`该分组已停止 ${successCount}/${running.length} 个任务`)
-    } catch (error) {
-      console.error('分组批量停止任务失败:', error)
-      ElMessage.error('分组批量停止任务失败: ' + error.message)
-    } finally {
-      groupStoppingType.value = ''
-    }
-  }
-  
-  const isGroupStarting = (groupType) => groupStartingType.value === groupType
-  const isGroupStopping = (groupType) => groupStoppingType.value === groupType
-  
   // 编辑任务
   const editTask = (task) => {
     // 填充表单
@@ -1198,7 +1320,39 @@ export function useAutomateManagement() {
       executing.value = false
     }
   }
-  
+
+  // 仅更新任务执行间隔（下拉修改后立即生效，无需保存按钮）
+  const updateTaskInterval = async (task, interval) => {
+    const newInterval = Number(interval)
+    if (!newInterval || newInterval < 1) return false
+    const newConfig = { ...task.config, interval: newInterval }
+    try {
+      const response = await axios.put(
+        apiUrls.autoManagerUpdateTask(task.id),
+        {
+          taskName: task.taskName,
+          automateType: task.automateType,
+          config: newConfig
+        }
+      )
+      if (response.data.success) {
+        task.interval = newInterval
+        task.config = newConfig
+        if (task.status === '运行中') {
+          task.nextRun = calculateNextRun(newInterval)
+        }
+        ElMessage.success('执行间隔已更新')
+        return true
+      }
+      ElMessage.error('更新失败: ' + (response.data.message || '未知错误'))
+      return false
+    } catch (error) {
+      console.error('更新执行间隔失败:', error)
+      ElMessage.error('更新失败: ' + error.message)
+      return false
+    }
+  }
+
   // 删除任务
   const deleteTask = async (taskId) => {
     // 二次确认
@@ -1695,7 +1849,13 @@ export function useAutomateManagement() {
     buffConfigList,
     dataSources,
     runningTasks,
-    groupedRunningTasks,
+    accountCards,
+    createAutomation,
+    independentTasks,
+    hasCsqaqSource,
+    createIndependentTask,
+    updateIndependentTask,
+    stockPriceSourceLabel,
     renameSearchConfigList,
     pendantSearchConfigList,
     updateTasks,
@@ -1719,11 +1879,8 @@ export function useAutomateManagement() {
     stopTask,
     startAllTasks,
     stopAllTasks,
-    startGroupTasks,
-    stopGroupTasks,
-    isGroupStarting,
-    isGroupStopping,
     editTask,
+    updateTaskInterval,
     deleteTask
   }
 }

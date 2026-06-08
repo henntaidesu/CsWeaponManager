@@ -36,6 +36,10 @@
   transform: translateX(-100%);
 }
 
+.secondary-sidebar.no-transition {
+  transition: none !important;
+}
+
 /* 折叠/展开按钮 */
 .toggle-button {
   position: fixed;
@@ -83,6 +87,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.toggle-button.no-transition {
+  transition: none !important;
 }
 
 /* 侧边栏内容 */

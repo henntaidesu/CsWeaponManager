@@ -1,7 +1,7 @@
 <template>
   <div class="on-sale-container" :class="{ 'main-sidebar-collapsed': isMainSidebarCollapsed }">
     <!-- 二级左侧栏 -->
-    <aside class="secondary-sidebar" :class="{ collapsed: sidebarCollapsed }">
+    <aside class="secondary-sidebar" :class="{ collapsed: sidebarCollapsed, 'no-transition': !isMounted }">
       <div class="sidebar-content">
         <div class="sidebar-header">
           <!-- 保留标题空位，用于间距 -->
@@ -42,7 +42,7 @@
     </aside>
 
     <!-- 折叠/展开按钮 -->
-    <div class="toggle-button" :class="{ collapsed: sidebarCollapsed }" @click="toggleSidebar">
+    <div class="toggle-button" :class="{ collapsed: sidebarCollapsed, 'no-transition': !isMounted }" @click="toggleSidebar">
       <el-icon :size="20">
         <ArrowLeft v-if="!sidebarCollapsed" />
         <ArrowRight v-else />
@@ -64,6 +64,7 @@ import { ShoppingCart, ShoppingBag, Shop, ArrowLeft, ArrowRight } from '@element
 const {
   sidebarCollapsed,
   isMainSidebarCollapsed,
+  isMounted,
   navigateTo,
   toggleSidebar,
   handleContentClick

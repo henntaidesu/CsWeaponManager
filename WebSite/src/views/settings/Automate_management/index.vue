@@ -1,127 +1,206 @@
 <template>
   <div class="automate-management">
     <div class="config-toolbar">
-      <el-button type="primary" @click="openCreateTaskDialog">添加定时任务</el-button>
+      <el-button type="primary" @click="openCreateIndependentDrawer">添加独立更新任务</el-button>
     </div>
-    
-    <el-dialog
-      v-model="taskDialogVisible"
-      :title="isEditing ? '编辑定时任务' : '添加定时任务'"
-      width="600px"
-      class="task-config-dialog"
-      destroy-on-close
-      @close="handleTaskDialogClose"
+
+    <!-- 账号卡片 -->
+    <div class="section-title">账号自动化</div>
+    <div v-if="accountCards.length" class="account-card-grid">
+      <div
+        v-for="acc in accountCards"
+        :key="acc.steamId"
+        class="account-card"
+        @click="openAccountDetail(acc.steamId)"
+      >
+        <div class="account-card-header">
+          <span class="account-card-name">{{ acc.name }}</span>
+          <el-tag size="small" type="success" effect="dark" v-if="acc.running > 0">{{ acc.running }} 运行中</el-tag>
+        </div>
+        <div class="account-card-steamid">{{ acc.steamId }}</div>
+        <div class="account-card-stats">
+          <span class="stat stat-running">运行中 {{ acc.running }}</span>
+          <span class="stat stat-stopped">已停止 {{ acc.stopped }}</span>
+          <span class="stat stat-uncreated">未创建 {{ acc.uncreated }}</span>
+        </div>
+      </div>
+    </div>
+    <div v-else class="empty-placeholder">
+      <el-empty description="暂无已配置的账号" />
+    </div>
+
+    <!-- 独立更新任务卡片 -->
+    <div v-if="independentTasks.length" class="independent-section">
+      <div class="section-title">独立更新任务</div>
+      <div class="account-card-grid">
+        <div
+          v-for="task in independentTasks"
+          :key="task.id"
+          class="account-card"
+          @click="openEditIndependentDrawer(task)"
+        >
+          <div class="account-card-header">
+            <span class="account-card-name">{{ task.taskName }}</span>
+            <el-tag size="small" :type="task.status === '已停止' ? 'info' : 'success'" effect="dark">
+              {{ task.status === '已停止' ? '已停止' : '运行中' }}
+            </el-tag>
+          </div>
+          <div class="account-card-steamid">
+            {{ typeLabel(task) }} · {{ stockPriceSourceLabel(task.config.source) }} · 每 {{ formatInterval(task.interval) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 账号自动化详情 -->
+    <el-drawer
+      v-model="detailVisible"
+      :title="activeAccount ? `${activeAccount.name}（${activeAccount.steamId}）` : '自动化详情'"
+      direction="rtl"
+      size="640px"
+      class="account-detail-drawer"
     >
-      <el-form :model="automateForm" label-width="140px" label-position="left">
-        <!-- 自动化类型选择 -->
-        <el-form-item label="自动化类型">
-          <el-select
-            v-model="automateForm.automateType"
-            placeholder="请选择自动化类型"
-            @change="handleTypeChange"
+      <div v-if="activeAccount" class="detail-body">
+        <div
+          v-for="grp in activeAccountGroups"
+          :key="grp.typeLabel"
+          class="detail-type-group"
+        >
+          <div class="detail-type-title">{{ grp.typeLabel }}</div>
+          <div
+            v-for="item in grp.items"
+            :key="item.key"
+            class="detail-item"
+            :class="`detail-item--${item.status}`"
           >
-            <el-option label="更新steam库存价格" value="auto_update" />
-            <el-option label="获取平台交易记录" value="auto_fetch" />
-            <el-option label="更新饰品平台映射价格" value="auto_platform_price" />
-            <el-option label="自动搜素饰品" value="auto_search_weapon" />
-            <el-option label="更新steam认证" value="auto_refresh_auth" />
-          </el-select>
-        </el-form-item>
+            <div class="detail-item-main">
+              <span class="detail-item-name">{{ item.methodLabel }}</span>
+              <el-tag size="small" :type="statusTagType(item.status)" effect="plain">
+                {{ statusText(item.status) }}
+              </el-tag>
+            </div>
 
-        <!-- 任务名称 -->
+            <!-- 已创建：时间下拉(修改即生效) + 启停 -->
+            <div v-if="item.task" class="detail-item-actions">
+              <el-select
+                :model-value="item.task.interval"
+                size="small"
+                style="width: 110px"
+                @change="(val) => updateTaskInterval(item.task, val)"
+              >
+                <el-option label="5分钟" :value="5" />
+                <el-option label="15分钟" :value="15" />
+                <el-option label="30分钟" :value="30" />
+                <el-option label="1小时" :value="60" />
+                <el-option label="3小时" :value="180" />
+                <el-option label="6小时" :value="360" />
+                <el-option label="12小时" :value="720" />
+                <el-option label="24小时" :value="1440" />
+              </el-select>
+              <el-button
+                v-if="item.status === 'stopped'"
+                size="small"
+                type="success"
+                @click="startTask(item.task)"
+              >
+                启动
+              </el-button>
+              <el-button
+                v-else
+                size="small"
+                type="danger"
+                @click="stopTask(item.task.id)"
+              >
+                停止
+              </el-button>
+            </div>
+
+            <!-- 未创建：可用则可创建，不可用则禁用并提示 -->
+            <div v-else class="detail-item-actions">
+              <el-checkbox
+                v-if="item.taskType === 'platform_youpin_price'"
+                v-model="createSync[item.key]"
+                size="small"
+              >
+                同步历史
+              </el-checkbox>
+              <el-select
+                v-model="createInterval[item.key]"
+                size="small"
+                style="width: 110px"
+                :disabled="!item.available"
+              >
+                <el-option label="5分钟" :value="5" />
+                <el-option label="15分钟" :value="15" />
+                <el-option label="30分钟" :value="30" />
+                <el-option label="1小时" :value="60" />
+                <el-option label="3小时" :value="180" />
+                <el-option label="6小时" :value="360" />
+                <el-option label="12小时" :value="720" />
+                <el-option label="24小时" :value="1440" />
+              </el-select>
+              <el-button
+                size="small"
+                type="success"
+                plain
+                :disabled="!item.available"
+                :loading="creatingKey === item.key"
+                @click="handleCreate(item)"
+              >
+                创建
+              </el-button>
+              <span v-if="!item.available" class="detail-item-hint">未配置对应数据源</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
+
+    <!-- 添加 / 管理 独立更新任务 -->
+    <el-drawer
+      v-model="independentDrawerVisible"
+      :title="editingIndependentId ? '独立更新任务' : '添加独立更新任务'"
+      direction="rtl"
+      size="480px"
+      class="independent-drawer"
+    >
+      <!-- 状态 + 启停（仅编辑模式） -->
+      <div v-if="activeIndependentTask" class="independent-status-row">
+        <el-tag :type="activeIndependentTask.status === '已停止' ? 'info' : 'success'" effect="dark">
+          {{ activeIndependentTask.status === '已停止' ? '已停止' : '运行中' }}
+        </el-tag>
+        <el-button
+          v-if="activeIndependentTask.status === '已停止'"
+          size="small"
+          type="success"
+          @click="startTask(activeIndependentTask)"
+        >
+          启动
+        </el-button>
+        <el-button v-else size="small" type="danger" @click="stopTask(activeIndependentTask.id)">停止</el-button>
+      </div>
+
+      <el-form :model="independentForm" label-width="100px" label-position="left">
         <el-form-item label="任务名称">
-          <el-input 
-            v-model="automateForm.taskName" 
-            placeholder="请输入任务名称"
-          />
+          <el-input v-model="independentForm.taskName" placeholder="请输入任务名称" />
         </el-form-item>
 
-        <!-- 第二个下拉框 - 根据类型动态显示 -->
-        <el-form-item v-if="automateForm.automateType && automateForm.automateType !== 'auto_refresh_auth'" :label="secondSelectLabel">
-          <el-select 
-            v-model="automateForm.selectedTask" 
-            placeholder="请选择任务"
-          >
-            <el-option 
-              v-for="task in availableTasks" 
-              :key="task.value" 
-              :label="task.label" 
-              :value="task.value" 
-            />
+        <el-form-item label="更新内容">
+          <el-select v-model="independentForm.updateType" disabled>
+            <el-option label="更新库存组件价格" value="stock_platform_price" />
           </el-select>
         </el-form-item>
 
-        <!-- Steam账号选择 (仅在自动更新数据或更新Steam认证时显示) -->
-        <el-form-item
-          v-if="(automateForm.automateType === 'auto_update' && automateForm.selectedTask) || automateForm.automateType === 'auto_refresh_auth'"
-          label="Steam账号"
-        >
-          <el-select
-            v-model="automateForm.selectedSteamConfig"
-            placeholder="请选择Steam账号"
-            filterable
-          >
-            <el-option
-              v-for="config in currentSteamConfigList"
-              :key="config.dataID"
-              :label="`${config.dataName} (${config.steamID || '无SteamID'})`"
-              :value="config.dataID"
-            />
-          </el-select>
+        <el-form-item label="数据来源">
+          <el-radio-group v-model="independentForm.source">
+            <el-radio value="database">从数据库同步(悠悠+BUFF)</el-radio>
+            <el-radio value="csqaq" :disabled="!hasCsqaqSource">从CSQAQ获取</el-radio>
+          </el-radio-group>
+          <span v-if="!hasCsqaqSource" class="source-hint">需先在「数据源」页面配置 CSQAQ 类型</span>
         </el-form-item>
 
-        <!-- 数据源选择 (仅在自动获取数据时显示) - 单选 -->
-        <el-form-item v-if="['auto_fetch', 'auto_platform_price'].includes(automateForm.automateType)" label="数据源">
-          <el-select
-            v-model="automateForm.selectedDataSource"
-            placeholder="请选择数据源"
-            filterable
-          >
-            <el-option
-              v-for="source in filteredDataSources"
-              :key="source.dataID"
-              :label="`${source.dataName} (${source.steamID || '无SteamID'})`"
-              :value="source.dataID"
-            />
-          </el-select>
-        </el-form-item>
-
-        <!-- 是否同步历史数据 (仅在更新饰品平台映射价格 - 悠悠有品数据采集时显示) -->
-        <el-form-item
-          v-if="automateForm.automateType === 'auto_platform_price' && automateForm.selectedTask === 'platform_youpin_price'"
-          label="同步历史数据"
-        >
-          <el-checkbox v-model="automateForm.syncHistory">
-            是否将价格数据同步到历史表
-          </el-checkbox>
-        </el-form-item>
-
-        <!-- 搜索配置选择 (仅在自动搜素饰品时显示) -->
-        <el-form-item
-          v-if="automateForm.automateType === 'auto_search_weapon' && automateForm.selectedTask"
-          label="搜索配置"
-        >
-          <el-select
-            v-model="automateForm.selectedSearchConfig"
-            placeholder="请选择搜索配置"
-            filterable
-          >
-            <el-option
-              v-for="config in currentSearchConfigList"
-              :key="config.dataID"
-              :label="`${config.dataName}${config.platformType ? ' - ' + config.platformType : ''}`"
-              :value="config.dataID"
-            />
-          </el-select>
-        </el-form-item>
-
-        <!-- 执行间隔 -->
         <el-form-item label="执行间隔">
-          <el-select 
-            v-model="automateForm.interval" 
-            placeholder="请选择执行间隔"
-          >
-            <el-option label="5分钟" :value="5" />
+          <el-select v-model="independentForm.interval" placeholder="请选择执行间隔">
             <el-option label="15分钟" :value="15" />
             <el-option label="30分钟" :value="30" />
             <el-option label="1小时" :value="60" />
@@ -129,237 +208,166 @@
             <el-option label="6小时" :value="360" />
             <el-option label="12小时" :value="720" />
             <el-option label="24小时" :value="1440" />
-            <template #footer>
-              <div class="custom-interval-footer">
-                <span>手动输入(分钟)</span>
-                <el-input-number 
-                  v-model="customInterval"
-                  :min="1"
-                  :step="5"
-                  controls-position="right"
-                  size="small"
-                  style="width: 160px"
-                />
-                <el-button type="primary" size="small" @click="applyCustomInterval">应用</el-button>
-              </div>
-            </template>
           </el-select>
         </el-form-item>
 
-        <!-- 操作按钮 -->
         <el-form-item>
-          <el-button type="primary" @click="handleExecute" :loading="executing">
-            {{ isEditing ? '更新任务' : '保存定时任务' }}
+          <el-button type="primary" :loading="savingIndependent" @click="saveIndependentTask">
+            {{ editingIndependentId ? '保存修改' : '保存任务' }}
           </el-button>
-          <el-button @click="handleTaskDialogClose">{{ isEditing ? '取消编辑' : '重置' }}</el-button>
-          <el-button v-if="isEditing" type="danger" plain @click="deleteTask(editingTaskId)">删除配置</el-button>
+          <el-button v-if="editingIndependentId" type="danger" plain @click="deleteIndependentFromDrawer">删除</el-button>
+          <el-button @click="independentDrawerVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
-    </el-dialog>
-
-    <!-- 任务列表 -->
-    <div class="task-list-section">
-      <el-collapse v-model="activeTaskGroups" class="task-group-collapse">
-        <el-collapse-item
-          v-for="group in groupedRunningTasks"
-          :key="group.type"
-          :name="group.type"
-          class="task-group"
-        >
-          <template #title>
-            <div class="task-group-title">
-              <el-tag type="primary" effect="plain">{{ group.label }}</el-tag>
-              <span class="task-group-count">共 {{ group.tasks.length }} 个任务</span>
-              <div class="task-group-actions" @click.stop>
-                <el-button 
-                  type="success" 
-                  size="small" 
-                  :disabled="isGroupStarting(group.type) || group.tasks.filter(task => task.status === '已停止').length === 0"
-                  :loading="isGroupStarting(group.type)"
-                  @click="startGroupTasks(group.type, group.tasks)"
-                >
-                  启动全部
-                </el-button>
-                <el-button 
-                  type="danger" 
-                  size="small" 
-                  plain
-                  :disabled="isGroupStopping(group.type) || group.tasks.filter(task => task.status === '运行中').length === 0"
-                  :loading="isGroupStopping(group.type)"
-                  @click="stopGroupTasks(group.type, group.tasks)"
-                >
-                  停止全部
-                </el-button>
-              </div>
-            </div>
-          </template>
-          <div
-            v-for="sub in group.subGroups"
-            :key="sub.type"
-            class="task-subgroup"
-          >
-            <div class="task-subgroup-title">
-              <el-tag type="info" effect="dark" size="small">{{ sub.type }}</el-tag>
-              <span class="task-subgroup-count">{{ sub.tasks.length }} 个任务</span>
-            </div>
-            <el-table :data="sub.tasks" style="width: 100%">
-            <el-table-column prop="taskName" label="任务名称" min-width="150" />
-            <el-table-column prop="targetInfo" label="使用账号" min-width="200" show-overflow-tooltip />
-            <el-table-column prop="interval" label="间隔(分钟)" width="120" align="center">
-              <template #default="{ row }">
-                {{ formatInterval(row.interval) }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="status" label="状态" width="180" align="center">
-              <template #default="{ row }">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px;">
-                  <el-tag
-                    :type="row.status === '执行中' ? 'success' : (row.status === '运行中' ? 'warning' : 'info')"
-                  >
-                    {{ row.status === '运行中' ? '运行中' : row.status }}
-                  </el-tag>
-                  <span v-if="row.isExecuting && row.executingDuration > 0" style="font-size: 12px; color: #909399;">
-                    {{ formatDuration(row.executingDuration) }}
-                  </span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="最后执行" width="120" align="center">
-              <template #default="{ row }">
-                <span style="font-size: 13px;">{{ formatTimeAgo(row.lastRun) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="下次执行" width="120" align="center">
-              <template #default="{ row }">
-                <span v-if="row.status === '已停止' || !row.nextRun || row.nextRun === '-'" style="color: #909399;">-</span>
-                <span v-else-if="row.status === '执行中'" style="color: #67c23a;">执行中</span>
-                <span v-else style="font-size: 13px;">{{ formatCountdown(row.nextRun) }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="220" align="center" fixed="right">
-              <template #default="{ row }">
-                <el-button 
-                  v-if="row.status === '已停止'" 
-                  size="small" 
-                  type="success" 
-                  @click="startTask(row)"
-                >
-                  启动
-                </el-button>
-                <el-button 
-                  v-else 
-                  size="small" 
-                  type="danger" 
-                  @click="stopTask(row.id)"
-                >
-                  停止
-                </el-button>
-                <el-button 
-                  size="small" 
-                  type="primary" 
-                  @click="openEditTaskDialog(row)"
-                  plain
-                >
-                  编辑
-                </el-button>
-              </template>
-            </el-table-column>
-            </el-table>
-          </div>
-        </el-collapse-item>
-      </el-collapse>
-      <div v-if="runningTasks.length === 0" class="empty-placeholder">
-        <el-empty description="暂无运行中的定时任务" />
-      </div>
-    </div>
-
+    </el-drawer>
   </div>
 </template>
 
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useAutomateManagement } from './useAutomateManagement.js'
 
 const {
-  automateForm,
-  customInterval,
-  executing,
-  isEditing,
-  editingTaskId,
-  steamConfigList,
-  youpinConfigList,
-  buffConfigList,
-  dataSources,
-  runningTasks,
-  groupedRunningTasks,
-  renameSearchConfigList,
-  pendantSearchConfigList,
-  updateTasks,
-  fetchTasks,
-  platformPriceTasks,
-  searchWeaponTasks,
-  secondSelectLabel,
-  currentSteamConfigList,
-  currentSearchConfigList,
-  availableTasks,
-  filteredDataSources,
+  accountCards,
+  createAutomation,
+  independentTasks,
+  hasCsqaqSource,
+  createIndependentTask,
+  updateIndependentTask,
+  stockPriceSourceLabel,
   formatInterval,
-  formatDuration,
-  formatCountdown,
-  formatTimeAgo,
-  handleTypeChange,
-  applyCustomInterval,
-  handleExecute,
-  handleReset,
   startTask,
   stopTask,
-  startGroupTasks,
-  stopGroupTasks,
-  isGroupStarting,
-  isGroupStopping,
-  editTask,
+  updateTaskInterval,
   deleteTask
 } = useAutomateManagement()
 
-const activeTaskGroups = ref([])
-const taskDialogVisible = ref(false)
+const detailVisible = ref(false)
+const activeAccountId = ref(null)
+const creatingKey = ref('')
 
-const openCreateTaskDialog = () => {
-  handleReset()
-  taskDialogVisible.value = true
-}
+// 未创建项的本地输入：间隔 / 是否同步历史
+const createInterval = reactive({})
+const createSync = reactive({})
 
-const openEditTaskDialog = (row) => {
-  editTask(row)
-  taskDialogVisible.value = true
-}
-
-const handleTaskDialogClose = () => {
-  taskDialogVisible.value = false
-  handleReset()
-}
-
-watch(
-  groupedRunningTasks,
-  (groups) => {
-    const groupNames = groups.map(group => group.type)
-    if (activeTaskGroups.value.length === 0) {
-      activeTaskGroups.value = groupNames
-      return
-    }
-
-    const activeSet = new Set(activeTaskGroups.value)
-    groupNames.forEach(name => {
-      if (!activeSet.has(name)) {
-        activeSet.add(name)
-      }
-    })
-
-    activeTaskGroups.value = Array.from(activeSet).filter(name => groupNames.includes(name))
-  },
-  { immediate: true }
+// 当前选中账号（从 accountCards 实时派生，保证 5 秒刷新后内容同步）
+const activeAccount = computed(() =>
+  accountCards.value.find(acc => acc.steamId === activeAccountId.value) || null
 )
+
+// 详情中按自动化类型分组
+const activeAccountGroups = computed(() => {
+  if (!activeAccount.value) return []
+  const groups = []
+  const indexMap = new Map()
+  activeAccount.value.automations.forEach(item => {
+    if (!indexMap.has(item.typeLabel)) {
+      indexMap.set(item.typeLabel, groups.length)
+      groups.push({ typeLabel: item.typeLabel, items: [] })
+    }
+    groups[indexMap.get(item.typeLabel)].items.push(item)
+    if (createInterval[item.key] === undefined) createInterval[item.key] = 30
+    if (createSync[item.key] === undefined) createSync[item.key] = true
+  })
+  return groups
+})
+
+const statusText = (status) => ({
+  running: '运行中',
+  stopped: '已停止',
+  uncreated: '未创建',
+  unavailable: '未配置'
+}[status] || status)
+
+const statusTagType = (status) => ({
+  running: 'success',
+  stopped: 'warning',
+  uncreated: 'info',
+  unavailable: 'info'
+}[status] || 'info')
+
+const openAccountDetail = (steamId) => {
+  activeAccountId.value = steamId
+  detailVisible.value = true
+}
+
+const handleCreate = async (item) => {
+  creatingKey.value = item.key
+  try {
+    await createAutomation(
+      activeAccount.value.steamId,
+      item,
+      createInterval[item.key] ?? 30,
+      createSync[item.key] ?? true
+    )
+  } finally {
+    creatingKey.value = ''
+  }
+}
+
+// 独立更新任务
+const typeLabel = (task) => task.type || '更新库存组件价格'
+
+const independentDrawerVisible = ref(false)
+const editingIndependentId = ref(null)
+const savingIndependent = ref(false)
+const independentForm = reactive({
+  taskName: '更新库存组件价格',
+  updateType: 'stock_platform_price',
+  source: 'database',
+  interval: 60
+})
+
+// 当前编辑的独立任务（实时派生，保证状态随刷新同步）
+const activeIndependentTask = computed(() =>
+  independentTasks.value.find(t => t.id === editingIndependentId.value) || null
+)
+
+const resetIndependentForm = () => {
+  independentForm.taskName = '更新库存组件价格'
+  independentForm.updateType = 'stock_platform_price'
+  independentForm.source = 'database'
+  independentForm.interval = 60
+}
+
+const openCreateIndependentDrawer = () => {
+  editingIndependentId.value = null
+  resetIndependentForm()
+  independentDrawerVisible.value = true
+}
+
+const openEditIndependentDrawer = (task) => {
+  editingIndependentId.value = task.id
+  independentForm.taskName = task.taskName || '更新库存组件价格'
+  independentForm.updateType = 'stock_platform_price'
+  independentForm.source = task.config?.source || 'database'
+  independentForm.interval = task.interval || 60
+  independentDrawerVisible.value = true
+}
+
+const saveIndependentTask = async () => {
+  savingIndependent.value = true
+  try {
+    const payload = {
+      taskName: independentForm.taskName,
+      source: independentForm.source,
+      interval: independentForm.interval
+    }
+    const ok = editingIndependentId.value
+      ? await updateIndependentTask(editingIndependentId.value, payload)
+      : await createIndependentTask(payload)
+    if (ok) independentDrawerVisible.value = false
+  } finally {
+    savingIndependent.value = false
+  }
+}
+
+const deleteIndependentFromDrawer = () => {
+  const id = editingIndependentId.value
+  independentDrawerVisible.value = false
+  deleteTask(id)
+}
 </script>
 
 <style scoped src="./styles.css"></style>
