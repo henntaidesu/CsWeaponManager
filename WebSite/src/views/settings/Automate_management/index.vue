@@ -168,7 +168,7 @@
         >
           <template #title>
             <div class="task-group-title">
-              <el-tag type="primary" effect="plain">{{ group.type }}</el-tag>
+              <el-tag type="primary" effect="plain">{{ group.label }}</el-tag>
               <span class="task-group-count">共 {{ group.tasks.length }} 个任务</span>
               <div class="task-group-actions" @click.stop>
                 <el-button 
@@ -193,7 +193,16 @@
               </div>
             </div>
           </template>
-          <el-table :data="group.tasks" style="width: 100%">
+          <div
+            v-for="sub in group.subGroups"
+            :key="sub.type"
+            class="task-subgroup"
+          >
+            <div class="task-subgroup-title">
+              <el-tag type="info" effect="dark" size="small">{{ sub.type }}</el-tag>
+              <span class="task-subgroup-count">{{ sub.tasks.length }} 个任务</span>
+            </div>
+            <el-table :data="sub.tasks" style="width: 100%">
             <el-table-column prop="taskName" label="任务名称" min-width="150" />
             <el-table-column prop="targetInfo" label="使用账号" min-width="200" show-overflow-tooltip />
             <el-table-column prop="interval" label="间隔(分钟)" width="120" align="center">
@@ -255,7 +264,8 @@
                 </el-button>
               </template>
             </el-table-column>
-          </el-table>
+            </el-table>
+          </div>
         </el-collapse-item>
       </el-collapse>
       <div v-if="runningTasks.length === 0" class="empty-placeholder">

@@ -45,26 +45,45 @@ export function useAutomateManagement() {
   // 运行中的任务
   const runningTasks = ref([])
   
-  // 按自动化类型分组后的任务
+  // 一级按账号(SteamID)分组，二级按自动化类型分组
   const groupedRunningTasks = computed(() => {
     if (!runningTasks.value.length) {
       return []
     }
-  
-    const groupMap = new Map()
-  
+
+    const accountMap = new Map()
+
     runningTasks.value.forEach(task => {
-      const typeLabel = task.type || '未分类'
-      if (!groupMap.has(typeLabel)) {
-        groupMap.set(typeLabel, [])
+      const { steamId, name } = resolveAccount(task.automateType, task.config)
+      const key = steamId || '未配置账号'
+      if (!accountMap.has(key)) {
+        accountMap.set(key, {
+          label: name ? `${name}（${key}）` : key,
+          typeMap: new Map()
+        })
       }
-      groupMap.get(typeLabel).push(task)
+      const typeLabel = task.type || '未分类'
+      const typeMap = accountMap.get(key).typeMap
+      if (!typeMap.has(typeLabel)) {
+        typeMap.set(typeLabel, [])
+      }
+      typeMap.get(typeLabel).push(task)
     })
-  
-    return Array.from(groupMap.entries()).map(([type, tasks]) => ({
-      type,
-      tasks
-    }))
+
+    return Array.from(accountMap.entries()).map(([key, account]) => {
+      const subGroups = Array.from(account.typeMap.entries()).map(([typeLabel, tasks]) => ({
+        type: typeLabel,
+        tasks
+      }))
+      return {
+        type: key,
+        label: account.label,
+        // 扁平任务列表，供"启动全部/停止全部"及计数使用
+        tasks: subGroups.flatMap(sub => sub.tasks),
+        // 二级分组：按自动化类型区分
+        subGroups
+      }
+    })
   })
   
   // 搜索配置列表
@@ -180,7 +199,52 @@ export function useAutomateManagement() {
     if (!dataId || !Array.isArray(list)) return null
     return list.find(item => String(item.dataID) === String(dataId)) || null
   }
-  
+
+  // 解析任务对应的账号(SteamID + 名称)，用于按账号分组与唯一性校验
+  const resolveAccount = (automateType, config) => {
+    if (!automateType || !config) return { steamId: '', name: '' }
+    const taskType = config.selectedTask
+
+    if (automateType === 'auto_update') {
+      let configList = []
+      if (taskType === 'update_steam_inventory') configList = steamConfigList.value
+      else if (taskType === 'fetch_yyyp_price') configList = youpinConfigList.value
+      else if (taskType === 'fetch_buff_price') configList = buffConfigList.value
+      const found = findByDataId(configList, config.selectedSteamConfig)
+      return {
+        steamId: found?.steamID || config.selectedSteamId || config.steamId || '',
+        name: found?.dataName || ''
+      }
+    }
+
+    if (automateType === 'auto_refresh_auth') {
+      const found = findByDataId(steamConfigList.value, config.selectedSteamConfig)
+      return {
+        steamId: found?.steamID || config.selectedSteamId || config.steamId || '',
+        name: found?.dataName || ''
+      }
+    }
+
+    if (['auto_fetch', 'auto_platform_price'].includes(automateType)) {
+      const found = findByDataId(dataSources.value, config.selectedDataSource)
+      return {
+        steamId: found?.steamID || config.selectedSteamId || config.steamId || '',
+        name: found?.dataName || ''
+      }
+    }
+
+    if (automateType === 'auto_search_weapon') {
+      const searchConfig = findSearchConfigById(config.selectedTask, config.selectedSearchConfig)
+      const value = searchConfig?.config || {}
+      return {
+        steamId: value.crawl_account_id || value.steam_id || value.steamId || '',
+        name: searchConfig?.dataName || ''
+      }
+    }
+
+    return { steamId: '', name: '' }
+  }
+
   // 可用的任务列表
   const availableTasks = computed(() => {
     if (automateForm.value.automateType === 'auto_update') {
@@ -757,28 +821,18 @@ export function useAutomateManagement() {
   
   // 启动定时任务
   const startScheduledTask = async () => {
-    // 检查是否存在重复任务
+    // 校验：同一账号(SteamID)下，同一自动化类型只能有一个
+    const newAccount = resolveAccount(automateForm.value.automateType, automateForm.value)
     const isDuplicate = runningTasks.value.some(task => {
-      // 比较自动化类型和具体任务
       if (task.config.selectedTask !== automateForm.value.selectedTask) {
         return false
       }
-      
-      // 比较目标账号/数据源/配置
-      if (automateForm.value.automateType === 'auto_update') {
-        // 更新类型：比较Steam配置ID
-        return task.config.selectedSteamConfig === automateForm.value.selectedSteamConfig
-      } else if (['auto_fetch', 'auto_platform_price'].includes(automateForm.value.automateType)) {
-        // 采集类型：比较数据源ID
-        return task.config.selectedDataSource === automateForm.value.selectedDataSource
-      } else if (automateForm.value.automateType === 'auto_search_weapon') {
-        return task.config.selectedSearchConfig === automateForm.value.selectedSearchConfig
-      }
-      return false
+      const existingSteamId = resolveAccount(task.automateType, task.config).steamId
+      return existingSteamId && newAccount.steamId && existingSteamId === newAccount.steamId
     })
-    
+
     if (isDuplicate) {
-      ElMessage.warning('已存在相同的自动化任务（任务类型和目标账号相同），无法创建重复任务')
+      ElMessage.warning('该账号已存在相同类型的自动化任务，每个账号每种自动化类型只能创建一个')
       return
     }
     
@@ -1073,33 +1127,21 @@ export function useAutomateManagement() {
   const updateTask = async () => {
     executing.value = true
     
-    // 检查是否存在重复任务（排除当前正在编辑的任务）
+    // 校验：同一账号(SteamID)下，同一自动化类型只能有一个（排除当前正在编辑的任务）
+    const newAccount = resolveAccount(automateForm.value.automateType, automateForm.value)
     const isDuplicate = runningTasks.value.some(task => {
-      // 跳过当前正在编辑的任务
       if (task.id === editingTaskId.value) {
         return false
       }
-      
-      // 比较自动化类型和具体任务
       if (task.config.selectedTask !== automateForm.value.selectedTask) {
         return false
       }
-      
-      // 比较目标账号/数据源
-      if (automateForm.value.automateType === 'auto_update') {
-        // 更新类型：比较Steam配置ID
-        return task.config.selectedSteamConfig === automateForm.value.selectedSteamConfig
-      } else if (['auto_fetch', 'auto_platform_price'].includes(automateForm.value.automateType)) {
-        // 采集类型：比较数据源ID
-        return task.config.selectedDataSource === automateForm.value.selectedDataSource
-      } else if (automateForm.value.automateType === 'auto_search_weapon') {
-        return task.config.selectedSearchConfig === automateForm.value.selectedSearchConfig
-      }
-      return false
+      const existingSteamId = resolveAccount(task.automateType, task.config).steamId
+      return existingSteamId && newAccount.steamId && existingSteamId === newAccount.steamId
     })
-    
+
     if (isDuplicate) {
-      ElMessage.warning('已存在相同的自动化任务（任务类型和目标账号相同），无法更新为重复任务')
+      ElMessage.warning('该账号已存在相同类型的自动化任务，每个账号每种自动化类型只能创建一个')
       executing.value = false
       return
     }
@@ -1311,6 +1353,7 @@ export function useAutomateManagement() {
 
           const taskInfo = {
             id: savedTask.taskId,
+            automateType: savedTask.automateType,
             type: typeLabelMap[savedTask.automateType] || savedTask.automateType,
             taskName: savedTask.taskName,
             targetInfo: getTaskTargetInfo(savedTask),

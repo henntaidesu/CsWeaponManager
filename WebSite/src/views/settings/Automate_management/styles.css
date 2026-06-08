@@ -110,6 +110,27 @@
   gap: 8px;
 }
 
+.task-subgroup {
+  margin-top: 12px;
+}
+
+.task-subgroup:first-child {
+  margin-top: 8px;
+}
+
+.task-subgroup-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+
+.task-subgroup-count {
+  color: #909399;
+  font-size: 12px;
+}
+
 .empty-placeholder {
   padding: 20px 0;
 }

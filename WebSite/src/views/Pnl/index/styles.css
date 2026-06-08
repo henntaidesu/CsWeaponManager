@@ -162,6 +162,7 @@
 :deep(.el-calendar-table td) {
   border: 1px solid var(--border-default);
   background: var(--bg-secondary);
+  height: 96px;
 }
 :deep(.el-calendar-table td.is-selected) {
   background: var(--bg-tertiary);
@@ -175,7 +176,7 @@
   opacity: 0.45;
 }
 :deep(.el-calendar-table .el-calendar-day) {
-  height: auto;
+  height: 100%;
   min-height: 70px;
   padding: 0;
 }
