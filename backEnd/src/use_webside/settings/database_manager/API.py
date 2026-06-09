@@ -6,6 +6,7 @@ DatabaseManager API 模块
 """
 from flask import Blueprint
 from .units.database_manager_data import DatabaseManagerData
+from .units.db_migration import DatabaseMigration
 
 database_manager_blueprint = Blueprint('database_manager_v2', __name__)
 
@@ -37,3 +38,10 @@ database_manager_blueprint.route('/database_manager/units/data/optimize', method
 database_manager_blueprint.route('/database_manager/units/data/vacuum', methods=['POST'])(DatabaseManagerData.vacuum_database)
 database_manager_blueprint.route('/database_manager/units/data/truncate', methods=['POST'])(DatabaseManagerData.truncate_table)
 database_manager_blueprint.route('/database_manager/units/data/drop', methods=['POST'])(DatabaseManagerData.drop_table)
+
+# 数据库后端配置与迁移（SQLite / MySQL）
+database_manager_blueprint.route('/database_manager/units/data/getDbConfig', methods=['GET'])(DatabaseMigration.get_db_config)
+database_manager_blueprint.route('/database_manager/units/data/saveDbConfig', methods=['POST'])(DatabaseMigration.save_db_config)
+database_manager_blueprint.route('/database_manager/units/data/testMysql', methods=['POST'])(DatabaseMigration.test_mysql_connection)
+database_manager_blueprint.route('/database_manager/units/data/migrateToMysql', methods=['POST'])(DatabaseMigration.migrate_to_mysql)
+database_manager_blueprint.route('/database_manager/units/data/migrateToSqlite', methods=['POST'])(DatabaseMigration.migrate_to_sqlite)

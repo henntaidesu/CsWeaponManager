@@ -351,7 +351,10 @@ class BaseModel(ABC):
                 'type': field_def['type'],
                 'primary_key': field_def.get('primary_key', False),
                 'not_null': field_def.get('not_null', False),
-                'default': field_def.get('default')
+                'default': field_def.get('default'),
+                'autoincrement': field_def.get('autoincrement', False),
+                'mysql_type': field_def.get('mysql_type'),
+                'length': field_def.get('length')
             })
         
         return db.create_table(cls.get_table_name(), columns, cls.get_indexes())
@@ -377,7 +380,9 @@ class BaseModel(ABC):
                     'name': field_name,
                     'type': field_def['type'],
                     'not_null': field_def.get('not_null', False),
-                    'default': field_def.get('default')
+                    'default': field_def.get('default'),
+                    'mysql_type': field_def.get('mysql_type'),
+                    'length': field_def.get('length')
                 }
                 
                 if not db.add_column(table_name, column_def):

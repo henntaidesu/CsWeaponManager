@@ -57,6 +57,88 @@
             <el-card class="info-card" style="margin-top: 20px;">
               <template #header>
                 <div class="card-header">
+                  <span>数据库后端 / 迁移</span>
+                  <el-tag :type="activeBackend === 'mysql' ? 'warning' : 'success'">
+                    当前生效：{{ activeBackend === 'mysql' ? 'MySQL' : 'SQLite' }}
+                  </el-tag>
+                </div>
+              </template>
+              <div class="db-backend" v-loading="dbConfigLoading">
+                <el-form label-width="100px">
+                  <el-form-item label="数据库类型">
+                    <el-radio-group v-model="dbType">
+                      <el-radio-button label="sqlite">SQLite（默认）</el-radio-button>
+                      <el-radio-button label="mysql">MySQL</el-radio-button>
+                    </el-radio-group>
+                  </el-form-item>
+
+                  <template v-if="dbType === 'mysql'">
+                    <el-form-item label="主机地址">
+                      <el-input v-model="mysqlForm.host" placeholder="127.0.0.1" style="max-width: 360px;" />
+                    </el-form-item>
+                    <el-form-item label="端口">
+                      <el-input v-model.number="mysqlForm.port" placeholder="3306" style="max-width: 200px;" />
+                    </el-form-item>
+                    <el-form-item label="用户名">
+                      <el-input v-model="mysqlForm.user" placeholder="root" style="max-width: 360px;" />
+                    </el-form-item>
+                    <el-form-item label="密码">
+                      <el-input
+                        v-model="mysqlForm.password"
+                        type="password"
+                        show-password
+                        :placeholder="mysqlHasPassword ? '已保存密码，留空则不修改' : '请输入密码'"
+                        style="max-width: 360px;"
+                      />
+                    </el-form-item>
+                    <el-form-item label="数据库名">
+                      <el-input v-model="mysqlForm.database" placeholder="csweaponmanager" style="max-width: 360px;" />
+                    </el-form-item>
+                  </template>
+                </el-form>
+
+                <div class="db-backend-actions">
+                  <el-button
+                    v-if="dbType === 'mysql'"
+                    @click="testMysqlConnection"
+                    :loading="testingMysql"
+                  >
+                    <el-icon><Tools /></el-icon>
+                    测试连接
+                  </el-button>
+                  <el-button type="primary" @click="saveDbConfig" :loading="savingDbConfig">
+                    保存并切换
+                  </el-button>
+                  <el-button
+                    type="warning"
+                    @click="migrateToMysql"
+                    :loading="migratingToMysql"
+                    :disabled="activeBackend === 'mysql'"
+                  >
+                    迁移到 MySQL
+                  </el-button>
+                  <el-button
+                    type="success"
+                    @click="migrateToSqlite"
+                    :loading="migratingToSqlite"
+                    :disabled="activeBackend !== 'mysql'"
+                  >
+                    迁移到 SQLite
+                  </el-button>
+                </div>
+                <el-alert
+                  type="info"
+                  :closable="false"
+                  show-icon
+                  style="margin-top: 12px;"
+                  title="说明：连接参数保存在基础 SQLite 的 config 表中。「保存并切换」仅切换后端不迁移数据；「迁移」会复制全部数据到目标库并设为默认。"
+                />
+              </div>
+            </el-card>
+
+            <el-card class="info-card" style="margin-top: 20px;">
+              <template #header>
+                <div class="card-header">
                   <span>数据库操作</span>
                 </div>
               </template>
@@ -622,6 +704,9 @@ const {
   savedQueries, selectedSavedQuery, saveQueryDialogVisible, saveQueryForm,
   // SQL 执行
   sqlStatement, sqlResult, sqlResultColumns, sqlError, sqlExecutionTime, sqlExecuting, sqlMessage, sqlExecutionDetails, sqlTotalStatements, sqlFileExecuting,
+  // 数据库后端配置 / 迁移
+  dbType, activeBackend, mysqlForm, mysqlHasPassword, dbConfigLoading, testingMysql, savingDbConfig, migratingToMysql, migratingToSqlite,
+  loadDbConfig, testMysqlConnection, saveDbConfig, migrateToMysql, migrateToSqlite,
   // 计算属性
   filteredTables, filteredTableData, paginatedData,
   // 方法

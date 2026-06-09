@@ -99,6 +99,17 @@ export function useDatabaseManager() {
   const sqlTotalStatements = ref(0);
   const sqlFileExecuting = ref(false);
 
+  // 数据库后端配置 / 迁移
+  const dbType = ref('sqlite');          // 当前选择的后端
+  const activeBackend = ref('sqlite');   // 后端实际生效的后端
+  const mysqlForm = ref({ host: '', port: 3306, user: '', password: '', database: 'csweaponmanager' });
+  const mysqlHasPassword = ref(false);
+  const dbConfigLoading = ref(false);
+  const testingMysql = ref(false);
+  const savingDbConfig = ref(false);
+  const migratingToMysql = ref(false);
+  const migratingToSqlite = ref(false);
+
   // 计算属性
   const filteredTables = computed(() => {
     if (!tableSearchQuery.value) return tables.value;
@@ -918,11 +929,139 @@ export function useDatabaseManager() {
     sqlStatement.value = formatted.trim();
   };
 
+  // ===== 数据库后端配置 / 迁移 =====
+  const loadDbConfig = async () => {
+    dbConfigLoading.value = true;
+    try {
+      const response = await axios.get(apiUrls.dbManagerGetDbConfig());
+      const data = response.data || {};
+      dbType.value = data.db_type || 'sqlite';
+      activeBackend.value = data.active || 'sqlite';
+      const m = data.mysql || {};
+      mysqlForm.value = {
+        host: m.host || '',
+        port: m.port || 3306,
+        user: m.user || '',
+        password: '',
+        database: m.database || 'csweaponmanager',
+      };
+      mysqlHasPassword.value = !!m.has_password;
+    } catch (error) {
+      ElMessage.error('获取数据库配置失败：' + (error.response?.data?.error || error.message));
+    } finally {
+      dbConfigLoading.value = false;
+    }
+  };
+
+  const testMysqlConnection = async () => {
+    if (!mysqlForm.value.host || !mysqlForm.value.user) {
+      ElMessage.warning('请填写 MySQL 主机和用户名');
+      return;
+    }
+    testingMysql.value = true;
+    try {
+      const response = await axios.post(apiUrls.dbManagerTestMysql(), { ...mysqlForm.value });
+      if (response.data.success) {
+        ElMessage.success(response.data.message || '连接成功');
+      } else {
+        ElMessage.error(response.data.error || '连接失败');
+      }
+    } catch (error) {
+      ElMessage.error('连接失败：' + (error.response?.data?.error || error.message));
+    } finally {
+      testingMysql.value = false;
+    }
+  };
+
+  const saveDbConfig = async () => {
+    savingDbConfig.value = true;
+    try {
+      const response = await axios.post(apiUrls.dbManagerSaveDbConfig(), {
+        db_type: dbType.value,
+        mysql: { ...mysqlForm.value },
+      });
+      if (response.data.success) {
+        activeBackend.value = response.data.active;
+        ElMessage.success(response.data.message || '已切换数据库后端');
+        await loadDbConfig();
+        await refreshTables();
+        await refreshDatabaseInfo();
+      } else {
+        ElMessage.error(response.data.error || '保存失败');
+      }
+    } catch (error) {
+      ElMessage.error('保存失败：' + (error.response?.data?.error || error.message));
+    } finally {
+      savingDbConfig.value = false;
+    }
+  };
+
+  const migrateToMysql = async () => {
+    if (!mysqlForm.value.host || !mysqlForm.value.user || !mysqlForm.value.database) {
+      ElMessage.warning('请填写完整的 MySQL 连接参数（主机/用户/数据库）');
+      return;
+    }
+    try {
+      await ElMessageBox.confirm(
+        `将把当前 SQLite 中的所有数据迁移到 MySQL（${mysqlForm.value.host}/${mysqlForm.value.database}）。\n目标库中的同名表数据会被覆盖，迁移完成后默认使用 MySQL。是否继续？`,
+        '迁移到 MySQL',
+        { confirmButtonText: '开始迁移', cancelButtonText: '取消', type: 'warning' }
+      );
+    } catch (e) {
+      return;
+    }
+    migratingToMysql.value = true;
+    try {
+      const response = await axios.post(apiUrls.dbManagerMigrateToMysql(), { ...mysqlForm.value });
+      if (response.data.success) {
+        ElMessage.success(response.data.message || '迁移完成');
+        await loadDbConfig();
+        await refreshTables();
+        await refreshDatabaseInfo();
+      } else {
+        ElMessage.error(response.data.message || response.data.error || '迁移失败');
+      }
+    } catch (error) {
+      ElMessage.error('迁移失败：' + (error.response?.data?.message || error.response?.data?.error || error.message));
+    } finally {
+      migratingToMysql.value = false;
+    }
+  };
+
+  const migrateToSqlite = async () => {
+    try {
+      await ElMessageBox.confirm(
+        '将把当前 MySQL 中的所有数据迁移回基础 SQLite。\n基础 SQLite 中的同名表数据会被覆盖，迁移完成后默认使用 SQLite。是否继续？',
+        '迁移到 SQLite',
+        { confirmButtonText: '开始迁移', cancelButtonText: '取消', type: 'warning' }
+      );
+    } catch (e) {
+      return;
+    }
+    migratingToSqlite.value = true;
+    try {
+      const response = await axios.post(apiUrls.dbManagerMigrateToSqlite());
+      if (response.data.success) {
+        ElMessage.success(response.data.message || '迁移完成');
+        await loadDbConfig();
+        await refreshTables();
+        await refreshDatabaseInfo();
+      } else {
+        ElMessage.error(response.data.message || response.data.error || '迁移失败');
+      }
+    } catch (error) {
+      ElMessage.error('迁移失败：' + (error.response?.data?.message || error.response?.data?.error || error.message));
+    } finally {
+      migratingToSqlite.value = false;
+    }
+  };
+
   // 初始化
   onMounted(() => {
     refreshTables();
     loadSavedQueries();
     refreshDatabaseInfo();
+    loadDbConfig();
   });
 
   return {
@@ -950,6 +1089,9 @@ export function useDatabaseManager() {
     savedQueries, selectedSavedQuery, saveQueryDialogVisible, saveQueryForm,
     // SQL 执行
     sqlStatement, sqlResult, sqlResultColumns, sqlError, sqlExecutionTime, sqlExecuting, sqlMessage, sqlExecutionDetails, sqlTotalStatements, sqlFileExecuting,
+    // 数据库后端配置 / 迁移
+    dbType, activeBackend, mysqlForm, mysqlHasPassword, dbConfigLoading, testingMysql, savingDbConfig, migratingToMysql, migratingToSqlite,
+    loadDbConfig, testMysqlConnection, saveDbConfig, migrateToMysql, migrateToSqlite,
     // 计算属性
     filteredTables, filteredTableData, paginatedData,
     // 方法

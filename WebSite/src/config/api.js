@@ -673,6 +673,12 @@ export const API_CONFIG = {
     DB_MANAGER_VACUUM: '/backENDV2/src/use_webside/settings/database_manager/units/data/vacuum',
     DB_MANAGER_TRUNCATE: '/backENDV2/src/use_webside/settings/database_manager/units/data/truncate',
     DB_MANAGER_DROP: '/backENDV2/src/use_webside/settings/database_manager/units/data/drop',
+    // 数据库后端配置与迁移
+    DB_MANAGER_GET_DB_CONFIG: '/backENDV2/src/use_webside/settings/database_manager/units/data/getDbConfig',
+    DB_MANAGER_SAVE_DB_CONFIG: '/backENDV2/src/use_webside/settings/database_manager/units/data/saveDbConfig',
+    DB_MANAGER_TEST_MYSQL: '/backENDV2/src/use_webside/settings/database_manager/units/data/testMysql',
+    DB_MANAGER_MIGRATE_TO_MYSQL: '/backENDV2/src/use_webside/settings/database_manager/units/data/migrateToMysql',
+    DB_MANAGER_MIGRATE_TO_SQLITE: '/backENDV2/src/use_webside/settings/database_manager/units/data/migrateToSqlite',
 
     // 版本更新相关
 
@@ -1255,6 +1261,11 @@ export const apiUrls = {
   dbManagerVacuum: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_VACUUM),
   dbManagerTruncate: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_TRUNCATE),
   dbManagerDrop: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_DROP),
+  dbManagerGetDbConfig: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_GET_DB_CONFIG),
+  dbManagerSaveDbConfig: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_SAVE_DB_CONFIG),
+  dbManagerTestMysql: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_TEST_MYSQL),
+  dbManagerMigrateToMysql: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_MIGRATE_TO_MYSQL),
+  dbManagerMigrateToSqlite: () => getApiUrl(API_CONFIG.ENDPOINTS.DB_MANAGER_MIGRATE_TO_SQLITE),
 
   
 
