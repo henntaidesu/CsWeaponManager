@@ -48,14 +48,51 @@ if exist "backEnd\dist" rmdir /s /q "backEnd\dist"
 if exist "backEnd\build" rmdir /s /q "backEnd\build"
 if exist "Spider\dist" rmdir /s /q "Spider\dist"
 if exist "Spider\build" rmdir /s /q "Spider\build"
-if exist "WebServer\dist" rmdir /s /q "WebServer\dist"
-if exist "WebServer\build" rmdir /s /q "WebServer\build"
+
+:: Build WebSite first (its dist is bundled into backEnd.exe below)
+if exist "WebSite" (
+    echo.
+    echo Building WebSite production bundle...
+    cd WebSite
+
+    :: Install dependencies if node_modules doesn't exist
+    if not exist "node_modules" (
+        echo Installing WebSite dependencies...
+        call npm install
+        if %errorlevel% neq 0 (
+            echo Error: Failed to install WebSite dependencies
+            cd ..
+            pause
+            exit /b 1
+        )
+    )
+
+    call npm run build
+    if %errorlevel% neq 0 (
+        echo Error: Failed to build WebSite
+        cd ..
+        pause
+        exit /b 1
+    )
+    cd ..
+
+    if not exist "WebSite\dist" (
+        echo Error: WebSite dist folder not found after build
+        pause
+        exit /b 1
+    )
+) else (
+    echo Error: WebSite folder not found - cannot bundle web resources into backEnd.exe
+    pause
+    exit /b 1
+)
 
 :: Package backEnd.py
+:: --add-data 将前端构建产物 (WebSite/dist) 一并打包进 exe，运行时解压到 sys._MEIPASS
 echo.
-echo [1/3] Packaging backEnd.exe...
+echo [1/2] Packaging backEnd.exe (含 Web 页面资源)...
 cd backEnd
-pyinstaller --onefile --clean --noconfirm backEnd.py --distpath "..\Releases\%VERSION%"
+pyinstaller --onefile --clean --noconfirm --add-data "..\WebSite\dist;WebSite/dist" backEnd.py --distpath "..\Releases\%VERSION%"
 if %errorlevel% neq 0 (
     echo Error: Failed to package backEnd.py
     cd ..
@@ -66,7 +103,7 @@ cd ..
 
 :: Package Spider.py (with Playwright browser bundling)
 echo.
-echo [2/3] Packaging Spider.exe with Playwright support...
+echo [2/2] Packaging Spider.exe with Playwright support...
 
 :: Check if Playwright browsers are installed
 echo Checking Playwright browser installation...
@@ -122,18 +159,7 @@ if %errorlevel% neq 0 (
 )
 cd ..
 
-:: Package WebServer.py
-echo.
-echo [3/3] Packaging WebServer.exe...
-cd WebServer
-pyinstaller --onefile --clean --noconfirm WebServer.py --distpath "..\Releases\%VERSION%"
-if %errorlevel% neq 0 (
-    echo Error: Failed to package WebServer.py
-    cd ..
-    pause
-    exit /b 1
-)
-cd ..
+:: WebServer 已合并进 backEnd.exe（backEnd 内部用独立线程提供 9003 Web 页面），不再单独打包
 
 :: Copy additional files to version folder
 echo.
@@ -176,49 +202,7 @@ if exist "Documents" (
     echo Warning: Documents folder not found
 )
 
-:: Build and copy WebSite
-if exist "WebSite" (
-    echo Building WebSite...
-    cd WebSite
-    
-    :: Install dependencies if node_modules doesn't exist
-    if not exist "node_modules" (
-        echo Installing WebSite dependencies...
-        call npm install
-        if %errorlevel% neq 0 (
-            echo Error: Failed to install WebSite dependencies
-            cd ..
-            pause
-            exit /b 1
-        )
-    )
-    
-    :: Build WebSite
-    echo Building WebSite production bundle...
-    call npm run build
-    if %errorlevel% neq 0 (
-        echo Error: Failed to build WebSite
-        cd ..
-        pause
-        exit /b 1
-    )
-    
-    cd ..
-    
-    :: Copy built dist folder
-    if exist "WebSite\dist" (
-        echo Copying WebSite dist folder...
-        if not exist "Releases\%VERSION%\WebSite" mkdir "Releases\%VERSION%\WebSite"
-        xcopy "WebSite\dist" "Releases\%VERSION%\WebSite\dist\" /E /I /H /Y /Q
-        echo - WebSite dist folder copied successfully
-    ) else (
-        echo Error: WebSite dist folder not found after build
-        pause
-        exit /b 1
-    )
-) else (
-    echo Warning: WebSite folder not found
-)
+:: WebSite/dist 已在打包阶段嵌入 backEnd.exe（--add-data），无需再复制到发布目录
 
 :: Create log directory (required by both backEnd.exe and Spider.exe)
 if not exist "Releases\%VERSION%\log" mkdir "Releases\%VERSION%\log"
@@ -239,8 +223,6 @@ if exist "backEnd\build" rmdir /s /q "backEnd\build"
 if exist "backEnd\*.spec" del /q "backEnd\*.spec"
 if exist "Spider\build" rmdir /s /q "Spider\build"
 echo Note: Spider\Spider.spec is kept in version control for Playwright bundling
-if exist "WebServer\build" rmdir /s /q "WebServer\build"
-if exist "WebServer\*.spec" del /q "WebServer\*.spec"
 
 :: Display results
 echo.

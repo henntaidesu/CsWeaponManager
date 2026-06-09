@@ -43,12 +43,6 @@ if %errorlevel%==0 (
     taskkill /F /IM Spider.exe >nul 2>&1
 )
 
-tasklist /FI "IMAGENAME eq WebServer.exe" 2>nul | find /I "WebServer.exe" >nul
-if %errorlevel%==0 (
-    echo   - 正在停止 WebServer.exe...
-    taskkill /F /IM WebServer.exe >nul 2>&1
-)
-
 timeout /t 2 /nobreak >nul
 echo   - 服务已停止
 echo.
