@@ -71,15 +71,6 @@ class TaskScheduler:
         
         return True, ''
     
-    def _disable_task_in_db(self, task_id):
-        """禁用任务（status=0）"""
-        try:
-            db = Date_base()
-            update_sql = f"UPDATE config SET status = '0' WHERE dataID = {task_id} AND key2 = 'auto_manager'"
-            db.update(update_sql)
-        except Exception as e:
-            self.log.write_log(f"自动禁用任务失败 (taskId={task_id}): {str(e)}", 'error')
-        
     def start(self):
         """启动调度器"""
         if self.running:
@@ -156,15 +147,6 @@ class TaskScheduler:
                 
                 try:
                     config = json.loads(row[3]) if row[3] else {}
-                    is_valid, reason = self._validate_task_source_enabled(automate_type, config)
-                    if not is_valid:
-                        self.log.write_log(
-                            f"任务依赖数据源未启用，自动关闭任务: {task_name} (ID: {task_id})，原因: {reason}",
-                            'warning'
-                        )
-                        self._disable_task_in_db(task_id)
-                        self.stop_task(task_id)
-                        continue
                     db_task_ids.add(task_id)
                     
                     # 如果任务不在运行中,启动它
@@ -216,23 +198,23 @@ class TaskScheduler:
                 
                 try:
                     config = json.loads(row[3]) if row[3] else {}
-                    is_valid, reason = self._validate_task_source_enabled(automate_type, config)
-                    if not is_valid:
-                        self.log.write_log(
-                            f"任务依赖数据源未启用，自动关闭任务: {task_name} (ID: {task_id})，原因: {reason}",
-                            'warning'
-                        )
-                        self._disable_task_in_db(task_id)
-                        self.stop_task(task_id)
-                        continue
                     next_run_str = config.get('nextRun')
-                    
+
                     # 检查是否到期
                     if next_run_str:
                         next_run_time = datetime.strptime(next_run_str, '%Y-%m-%d %H:%M:%S')
-                        
+
                         # 如果当前时间已经超过或等于 nextRun 时间，则需要执行
                         if now >= next_run_time:
+                            # 数据源未启用时跳过本次执行，推迟到下个周期再检查
+                            is_valid, reason = self._validate_task_source_enabled(automate_type, config)
+                            if not is_valid:
+                                self.log.write_log(
+                                    f"任务依赖数据源未启用，跳过本次执行: {task_name} (ID: {task_id})，原因: {reason}",
+                                    'warning'
+                                )
+                                self._update_task_execution_time(task_id, executed=False)
+                                continue
                             due_tasks.append({
                                 'task_id': task_id,
                                 'task_name': task_name,
@@ -397,8 +379,11 @@ class TaskScheduler:
         except Exception as e:
             self.log.write_log(f"重新加载任务失败 (taskId={task_id}): {str(e)}", 'error')
     
-    def _update_task_execution_time(self, task_id):
-        """更新任务执行时间到数据库(存储在value JSON中)"""
+    def _update_task_execution_time(self, task_id, executed=True):
+        """更新任务执行时间到数据库(存储在value JSON中)
+
+        executed=False 时仅推迟 nextRun，不更新 lastRun(用于数据源未启用时跳过执行)
+        """
         try:
             from datetime import datetime, timedelta
             
@@ -417,11 +402,11 @@ class TaskScheduler:
                 
                 # 计算时间
                 now = datetime.now()
-                last_run = now.strftime('%Y-%m-%d %H:%M:%S')
                 next_run = (now + timedelta(minutes=interval)).strftime('%Y-%m-%d %H:%M:%S')
-                
+
                 # 更新执行时间
-                current_config['lastRun'] = last_run
+                if executed:
+                    current_config['lastRun'] = now.strftime('%Y-%m-%d %H:%M:%S')
                 current_config['nextRun'] = next_run
                 
                 # 保存回数据库
@@ -434,7 +419,7 @@ class TaskScheduler:
                 
                 db.update(update_sql)
                 
-                self.log.write_log(f"任务执行时间已更新 (ID: {task_id}): lastRun={last_run}, nextRun={next_run}", 'info')
+                self.log.write_log(f"任务执行时间已更新 (ID: {task_id}): lastRun={current_config.get('lastRun')}, nextRun={next_run}", 'info')
             
         except Exception as e:
             self.log.write_log(f"更新任务执行时间失败 (taskId={task_id}): {str(e)}", 'error')

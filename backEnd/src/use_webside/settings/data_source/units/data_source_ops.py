@@ -135,6 +135,56 @@ class DataSourceOps:
             }), 500
 
     @staticmethod
+    def pause_data_source():
+        """按平台类型 + steamID 暂停数据源（供 Spider 在账号需要重新登录时回调）。"""
+        try:
+            data = request.get_json() or {}
+            source_type = str(data.get("type") or "").strip()
+            steam_id = str(data.get("steamID") or "").strip()
+            reason = str(data.get("reason") or "").strip()
+            if not source_type or not steam_id:
+                return jsonify({
+                    'success': False,
+                    'message': 'type 和 steamID 不能为空'
+                }), 400
+
+            db = DatabaseManager()
+            rows = db.execute_query(
+                "SELECT dataID, dataName FROM config WHERE key1 = ? AND key2 = 'config' AND steamID = ? ORDER BY dataID DESC LIMIT 1",
+                (source_type, steam_id),
+            )
+            if not rows:
+                return jsonify({
+                    'success': False,
+                    'message': f'未找到 type={source_type}, steamID={steam_id} 的数据源'
+                }), 404
+
+            data_id, data_name = rows[0]
+            update_sql = f"UPDATE config SET status = '0' WHERE dataID = {int(data_id)}"
+            ok = Date_base().update(update_sql)
+            if ok is not True:
+                return jsonify({
+                    'success': False,
+                    'message': '暂停数据源失败'
+                }), 500
+
+            Log().write_log(
+                f"数据源已自动暂停: {data_name} (ID: {data_id}, type: {source_type}, steamID: {steam_id})，原因: {reason or '未提供'}",
+                'warning'
+            )
+            return jsonify({
+                'success': True,
+                'message': f'数据源 {data_name} 已暂停',
+                'data': {'dataID': data_id, 'steamID': steam_id}
+            }), 200
+        except Exception as e:
+            Log().write_log(f"暂停数据源失败: {str(e)}", 'error')
+            return jsonify({
+                'success': False,
+                'message': f'服务器错误: {str(e)}'
+            }), 500
+
+    @staticmethod
     def update_c5_access_token():
         """按 steamID 更新 C5 数据源 config 中的 x_access_token。"""
         try:

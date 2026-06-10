@@ -17,9 +17,10 @@ class SearchConfig:
         获取单条配置值
         路径参数: key1, key2
         返回: [[value]] 格式（兼容 Spider 端 ConfigAPI.get_value 解析）
+        已暂停的数据源（status='0'）不返回，避免调度继续使用失效账号
         """
         try:
-            sql = f"SELECT value FROM config WHERE key1 = '{key1}' and key2 = '{key2}'"
+            sql = f"SELECT value FROM config WHERE key1 = '{key1}' and key2 = '{key2}' and (status IS NULL or status != '0')"
             flag, data = Date_base().select(sql)
             return jsonify(data), 200
         except Exception as e:
