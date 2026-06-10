@@ -90,9 +90,9 @@
               </div>
               <div class="grid grid-datasource">
                 <!-- 独立数据源卡片 - 只显示编辑按钮 -->
-                <div 
-                  v-for="source in independentDataSources" 
-                  :key="source.dataID" 
+                <div
+                  v-for="source in independentDataSources"
+                  :key="source.dataID"
                   class="source-card"
                 >
                   <div class="source-header">
@@ -101,7 +101,7 @@
                       <el-tag :type="getSourceTypeColor(source.enabled)">{{ getSourceTypeLabel(source.type) }}</el-tag>
                     </div>
                   </div>
-                  
+
                   <div class="source-actions">
                     <el-button type="primary" size="small" @click="editSource(source)">
                       编辑
@@ -260,7 +260,7 @@
           </el-form-item>
         </template>
 
-        <el-form-item v-if="['youpin', 'buff', 'steam', 'csfloat', 'c5game'].includes(editForm.type)" label="数据源状态">
+        <el-form-item v-if="['youpin', 'buff', 'steam', 'csfloat', 'c5game', 'csqaq', 'steamdt', 'igxe', 'ecosteam'].includes(editForm.type)" label="数据源状态">
           <el-switch v-model="editForm.enabled" @change="toggleEditSourceStatus" />
         </el-form-item>
 
