@@ -304,7 +304,7 @@
               <div class="onsale-commodity-name">{{ onSaleDetail.commodity.commodityName }}</div>
               <el-descriptions :column="1" border size="small" style="margin-top: 8px;">
                 <el-descriptions-item label="价格">
-                  <span style="color: #f56c6c; font-size: 16px; font-weight: bold;">
+                  <span style="color: var(--accent-red-light); font-size: 16px; font-weight: bold;">
                     ¥{{ onSaleDetail.commodity.sellPrice }}
                   </span>
                 </el-descriptions-item>
@@ -324,18 +324,18 @@
             <template v-else-if="onSaleOrderNo">
               <el-descriptions :column="1" border size="small">
                 <el-descriptions-item label="订单号">
-                  <span style="color: #909399; font-size: 12px;">{{ onSaleOrderNo }}</span>
+                  <span style="color: var(--text-secondary); font-size: 12px;">{{ onSaleOrderNo }}</span>
                 </el-descriptions-item>
                 <el-descriptions-item label="有品余额">
-                  <span :style="{ color: onSaleBalanceInsufficient ? '#f56c6c' : '#67c23a', fontWeight: 'bold' }">
+                  <span :style="{ color: onSaleBalanceInsufficient ? 'var(--accent-red-light)' : 'var(--accent-green)', fontWeight: 'bold' }">
                     ¥{{ onSaleBalance !== null ? onSaleBalance.toFixed(2) : '获取失败' }}
                   </span>
                 </el-descriptions-item>
                 <el-descriptions-item label="支付金额">
-                  <span style="color: #f56c6c; font-weight: bold;">¥{{ onSalePrice.toFixed(2) }}</span>
+                  <span style="color: var(--accent-red-light); font-weight: bold;">¥{{ onSalePrice.toFixed(2) }}</span>
                 </el-descriptions-item>
                 <el-descriptions-item label="支付后余额">
-                  <span :style="{ color: onSaleBalanceInsufficient ? '#f56c6c' : '#909399' }">
+                  <span :style="{ color: onSaleBalanceInsufficient ? 'var(--accent-red-light)' : 'var(--text-secondary)' }">
                     {{ onSaleBalanceAfter !== null ? '¥' + onSaleBalanceAfter.toFixed(2) : '-' }}
                   </span>
                 </el-descriptions-item>
@@ -970,7 +970,7 @@ export default {
 
 .favorite-item:hover {
   border-color: var(--el-color-primary);
-  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .favorite-item.item-sold {
@@ -1020,17 +1020,17 @@ export default {
 
 .badge-on-sale {
   background: rgba(76, 175, 80, 0.85);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .badge-sold {
   background: rgba(144, 144, 144, 0.85);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .badge-off {
   background: rgba(245, 108, 108, 0.85);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 信息区 */
@@ -1076,11 +1076,11 @@ export default {
 }
 
 .sale-color {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .highlight-color {
-  color: #409EFF;
+  color: var(--accent-blue);
 }
 
 .seller-name {
@@ -1114,7 +1114,7 @@ export default {
 }
 
 .float-segment { flex: 1; height: 100%; }
-.float-segment.fn { background: #4CAF50; flex: 0.07; }
+.float-segment.fn { background: var(--accent-green); flex: 0.07; }
 .float-segment.mw { background: #8BC34A; flex: 0.08; }
 .float-segment.ft { background: #FFC107; flex: 0.23; }
 .float-segment.ww { background: #FF9800; flex: 0.07; }
@@ -1151,8 +1151,8 @@ export default {
   justify-content: flex-end;
 }
 
-.trend-up { color: #F56C6C; }
-.trend-down { color: #4CAF50; }
+.trend-up { color: var(--accent-red-light); }
+.trend-down { color: var(--accent-green); }
 .trend-flat { color: var(--text-secondary); }
 
 .trend-icon {
@@ -1247,7 +1247,7 @@ export default {
 .onsale-order-loading {
   text-align: center;
   padding: 8px 0;
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -1261,7 +1261,7 @@ export default {
   background: rgba(245, 108, 108, 0.1);
   border: 1px solid rgba(245, 108, 108, 0.3);
   border-radius: 4px;
-  color: #f56c6c;
+  color: var(--accent-red-light);
   font-size: 13px;
 }
 
@@ -1271,7 +1271,7 @@ export default {
   background: rgba(245, 108, 108, 0.1);
   border: 1px solid rgba(245, 108, 108, 0.3);
   border-radius: 4px;
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 

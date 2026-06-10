@@ -17,25 +17,25 @@
           :style="{
             textAlign: 'center', 
             padding: '20px', 
-            background: '#f5f5f5', 
+            background: 'var(--bg-tertiary)', 
             borderRadius: '8px',
             cursor: steamQRStatus === 'success' ? 'default' : 'pointer',
             transition: 'all 0.3s'
           }"
-          @mouseenter="$event.currentTarget.style.background = steamQRStatus === 'success' ? '#f5f5f5' : '#e8e8e8'"
-          @mouseleave="$event.currentTarget.style.background = '#f5f5f5'"
+          @mouseenter="$event.currentTarget.style.background = steamQRStatus === 'success' ? 'var(--bg-tertiary)' : 'var(--bg-overlay)'"
+          @mouseleave="$event.currentTarget.style.background = 'var(--bg-tertiary)'"
         >
           <div v-if="!steamQRCode && !steamQRLoading">
-            <el-icon :size="80" color="#409EFF"><Grid /></el-icon>
-            <p style="color: #409EFF; margin-top: 10px; font-weight: 500;">点击获取Steam登录二维码</p>
+            <el-icon :size="80" color="var(--accent-blue)"><Grid /></el-icon>
+            <p style="color: var(--accent-blue); margin-top: 10px; font-weight: 500;">点击获取Steam登录二维码</p>
           </div>
           <div v-else-if="steamQRLoading">
-            <el-icon :size="80" class="is-loading" color="#409EFF"><Loading /></el-icon>
-            <p style="color: #409EFF; margin-top: 10px;">正在获取二维码...</p>
+            <el-icon :size="80" class="is-loading" color="var(--accent-blue)"><Loading /></el-icon>
+            <p style="color: var(--accent-blue); margin-top: 10px;">正在获取二维码...</p>
           </div>
           <div v-else>
             <img :src="steamQRCode" alt="Steam登录二维码" style="width: 200px; height: 200px;" />
-            <p style="color: #666; margin-top: 10px; font-size: 14px;">
+            <p style="color: var(--text-secondary); margin-top: 10px; font-size: 14px;">
               请使用Steam手机APP扫描二维码
             </p>
             <el-tag :type="steamQRStatus === 'waiting' ? 'info' : steamQRStatus === 'success' ? 'success' : 'warning'" style="margin-top: 10px;">
@@ -73,7 +73,7 @@
           placeholder="请输入5位Steam Guard验证码（如需要）"
           maxlength="5"
         />
-        <div style="color: #999; font-size: 12px; margin-top: 5px;">
+        <div style="color: var(--text-secondary); font-size: 12px; margin-top: 5px;">
           如果您的账号启用了Steam Guard手机令牌，请在此输入验证码
         </div>
       </el-form-item>
@@ -124,7 +124,7 @@
             :rows="3"
             :placeholder="isEditMode ? '扫码登录成功后自动填入，可手动粘贴基础Cookie' : '扫码登录成功后将自动填入，可手动粘贴基础Cookie'"
           />
-          <div style="color: #999; font-size: 12px; margin-top: 4px;">
+          <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
             {{ isEditMode ? '基础Cookies为扫码后立即返回的Cookie，建议与库存Cookies一同保存。' : '基础Cookies为扫码后立即返回的原始Cookie，建议同时保存以备验证。' }}
           </div>
         </el-form-item>
@@ -135,7 +135,7 @@
             :rows="3"
             placeholder="访问库存页后的完整Cookie，采集库存时将使用该值"
           />
-          <div style="color: #999; font-size: 12px; margin-top: 4px;">
+          <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
             {{ isEditMode ? '若手动维护，请保证此Cookie可访问 <code>inventory/730/16</code>。' : '若使用手动方式，请先填写基础Cookies，再填写库存Cookies。' }}
           </div>
         </el-form-item>

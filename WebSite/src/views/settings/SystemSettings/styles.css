@@ -9,7 +9,7 @@
 
 .settings-section h3 {
   margin-bottom: clamp(1rem, 3vw, 1.25rem);
-  color: #fff;
+  color: var(--text-primary);
   font-size: clamp(1.125rem, 2vw, 1.25rem);
 }
 
@@ -17,25 +17,25 @@
   margin-top: clamp(1.5rem, 4vw, 1.875rem);
   text-align: center;
   padding-top: clamp(1rem, 3vw, 1.25rem);
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-default);
 }
 
 :deep(.el-form-item__label) {
-  color: #ccc;
+  color: var(--text-secondary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
 :deep(.el-input__inner) {
-  background-color: #2a2a2a;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
 :deep(.el-select .el-input__inner) {
-  background-color: #2a2a2a;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 :deep(.el-button) {
@@ -50,17 +50,17 @@
 .form-tip {
   margin-top: 0.5rem;
   font-size: clamp(0.625rem, 1vw, 0.75rem);
-  color: #999;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
 :deep(.el-switch__label) {
-  color: #ccc;
+  color: var(--text-secondary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
 :deep(.el-switch__label.is-active) {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 @media (max-width: 768px) {

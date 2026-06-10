@@ -225,16 +225,14 @@ export function useSteamDT() {
   }
 
   /**
-   * 直接调用 SteamDT API 获取市场指数数据
+   * 通过 Spider 服务转发获取 SteamDT 市场指数数据（浏览器直连有 CORS 限制）
    */
   const fetchMarketIndexData = async () => {
     dataLoading.value = true
     // console.log('[SteamDT] 开始调用 SteamDT API 获取市场指数...')
 
     try {
-      // 直接调用 SteamDT API
-      const timestamp = Date.now()
-      const apiUrl = `https://api.steamdt.com/index/statistics/v1/summary?timestamp=${timestamp}`
+      const apiUrl = apiUrls.steamdtMarketIndex()
       const response = await fetch(apiUrl)
       const result = await response.json()
 

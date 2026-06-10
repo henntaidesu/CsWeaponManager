@@ -10,7 +10,7 @@
 .steamdt-compact-card .chart-header h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #e5e7eb;
+  color: var(--text-primary);
 }
 
 /* 大盘项 - 左右布局 */
@@ -46,14 +46,14 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
   padding: 8px 0;
 }
 
 .compact-loading .el-icon {
   font-size: 16px;
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 /* 内容容器 */
@@ -79,7 +79,7 @@
 }
 
 .compact-scrollable::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-radius: 3px;
 }
 
@@ -105,14 +105,14 @@
 }
 
 .list-item:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
 }
 
 /* 第一列:标签 */
 .list-label {
   flex-shrink: 0;
   font-size: 13px;
-  color: #909399;
+  color: var(--text-secondary);
   font-weight: 500;
   min-width: 60px;
 }
@@ -135,7 +135,7 @@
 .main-value {
   font-size: 24px;
   font-weight: 600;
-  color: #e5e7eb;
+  color: var(--text-primary);
   line-height: 1;
 }
 
@@ -146,11 +146,11 @@
 }
 
 .change-value.positive {
-  color: #f56c6c; /* 上涨红色 */
+  color: var(--accent-red-light); /* 上涨红色 */
 }
 
 .change-value.negative {
-  color: #67c23a; /* 下跌绿色 */
+  color: var(--accent-green); /* 下跌绿色 */
 }
 
 .list-update {
@@ -188,7 +188,7 @@
 
 .column-title {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .column-ratio {
@@ -197,11 +197,11 @@
 }
 
 .column-ratio.positive {
-  color: #f56c6c;
+  color: var(--accent-red-light);
 }
 
 .column-ratio.negative {
-  color: #67c23a;
+  color: var(--accent-green);
 }
 
 /* 主要数据 */
@@ -224,7 +224,7 @@
 
 /* 成交量 - 蓝色 */
 .main-number.blue {
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 /* 新增额 - 紫色 */
@@ -234,12 +234,12 @@
 
 /* 新增量 - 绿色 */
 .main-number.green {
-  color: #67c23a;
+  color: var(--accent-green);
 }
 
 .main-unit {
   font-size: 14px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 /* 底部昨日数据 */

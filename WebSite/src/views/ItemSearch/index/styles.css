@@ -44,9 +44,9 @@
   text-align: center;
   font-size: 3rem;
   font-weight: 700;
-  color: #4CAF50;
+  color: var(--accent-green);
   margin: 0 0 2rem 0;
-  background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+  background: linear-gradient(135deg, var(--accent-green) 0%, #8BC34A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -137,20 +137,20 @@
 
 /* el-autocomplete 样式适配 */
 .search-input :deep(.el-input__wrapper) {
-  background-color: #2a2a2a;
-  box-shadow: 0 0 0 1px #444 inset;
+  background-color: var(--bg-tertiary);
+  box-shadow: 0 0 0 1px var(--border-default) inset;
 }
 
 .search-input :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #4CAF50 inset;
+  box-shadow: 0 0 0 1px var(--accent-green) inset;
 }
 
 .search-input :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #4CAF50 inset !important;
+  box-shadow: 0 0 0 1px var(--accent-green) inset !important;
 }
 
 .search-input :deep(.el-input__inner) {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .search-wrapper.centered .steam-id-select.large :deep(.el-input__wrapper) {
@@ -255,18 +255,18 @@
   justify-content: space-between;
   align-items: center;
   padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.375rem;
 }
 
 .stat-label {
-  color: #ccc;
+  color: var(--text-secondary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
 .stat-value {
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   font-size: clamp(0.875rem, 1.4vw, 1rem);
 }
 
@@ -287,16 +287,16 @@
 }
 
 .price-text {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
 .no-data {
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .id-text {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-family: monospace;
   font-weight: 500;
 }
@@ -318,13 +318,13 @@
 }
 
 .clickable-item-name {
-  color: #ffffff;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .clickable-item-name:hover {
-  color: #4CAF50;
+  color: var(--accent-green);
   transform: translateX(2px);
 }
 
@@ -361,24 +361,24 @@
 
 /* Element Plus 组件深色主题适配 */
 :deep(.el-input__wrapper) {
-  background-color: #2a2a2a;
-  box-shadow: 0 0 0 1px #444 inset;
+  background-color: var(--bg-tertiary);
+  box-shadow: 0 0 0 1px var(--border-default) inset;
 }
 
 :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #4CAF50 inset;
+  box-shadow: 0 0 0 1px var(--accent-green) inset;
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #4CAF50 inset !important;
+  box-shadow: 0 0 0 1px var(--accent-green) inset !important;
 }
 
 :deep(.el-input__inner) {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-select .el-input__wrapper) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
 }
 
 :deep(.el-button) {
@@ -388,50 +388,50 @@
 
 :deep(.el-table) {
   background-color: transparent;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-table th.el-table__cell) {
-  background-color: #2a2a2a;
-  color: #fff;
-  border-bottom: 1px solid #444;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
 }
 
 :deep(.el-table tr) {
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
 }
 
 :deep(.el-table td.el-table__cell) {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-default);
 }
 
 :deep(.el-table__body tr:hover > td) {
-  background-color: #2a2a2a !important;
+  background-color: var(--bg-tertiary) !important;
 }
 
 :deep(.el-pagination) {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination button) {
-  background-color: #2a2a2a;
-  color: #fff;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination .el-pager li) {
-  background-color: #2a2a2a;
-  color: #fff;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination .el-pager li.is-active) {
-  background-color: #4CAF50;
-  color: #fff;
+  background-color: var(--accent-green);
+  color: var(--text-primary);
 }
 
 /* 自动完成下拉框样式 */
 .autocomplete-item {
   padding: 0;
-  color: #fff;
+  color: var(--text-primary);
   white-space: normal !important;
   word-wrap: break-word !important;
   word-break: break-word !important;
@@ -441,15 +441,15 @@
 }
 
 :deep(.weapon-autocomplete-popper) {
-  background-color: #2a2a2a !important;
-  border: 1px solid #444 !important;
+  background-color: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-default) !important;
   max-width: 800px !important;
   min-width: 400px !important;
   width: auto !important;
 }
 
 :deep(.weapon-autocomplete-popper .el-autocomplete-suggestion__wrap) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   max-height: 500px !important;
   overflow-y: auto;
 }
@@ -459,8 +459,8 @@
 }
 
 :deep(.weapon-autocomplete-popper li) {
-  color: #fff !important;
-  background-color: #2a2a2a !important;
+  color: var(--text-primary) !important;
+  background-color: var(--bg-tertiary) !important;
   white-space: normal !important;
   word-wrap: break-word !important;
   word-break: break-word !important;
@@ -470,28 +470,28 @@
   height: auto !important;
   overflow: visible !important;
   text-overflow: clip !important;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-default);
 }
 
 :deep(.weapon-autocomplete-popper li:hover) {
-  background-color: #3a3a3a !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 :deep(.weapon-autocomplete-popper li.highlighted) {
-  background-color: #3a3a3a !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 :deep(.el-autocomplete-suggestion) {
-  background-color: #2a2a2a !important;
+  background-color: var(--bg-tertiary) !important;
 }
 
 :deep(.el-autocomplete-suggestion__wrap) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
 }
 
 :deep(.el-autocomplete-suggestion li) {
-  color: #fff;
-  background-color: #2a2a2a;
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
   white-space: normal !important;
   word-wrap: break-word !important;
   line-height: 1.5 !important;
@@ -500,11 +500,11 @@
 }
 
 :deep(.el-autocomplete-suggestion li:hover) {
-  background-color: #3a3a3a !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 :deep(.el-autocomplete-suggestion li.highlighted) {
-  background-color: #3a3a3a !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 @media (max-width: 768px) {
@@ -594,7 +594,7 @@
   margin-left: 0.75rem;
   padding-left: 0.75rem;
   border-left: 1px solid var(--el-border-color);
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
@@ -809,12 +809,12 @@
   height: 60px;
   object-fit: contain;
   border-radius: 4px;
-  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #2d2d2d 100%);
   padding: 5px;
 }
 
 .price-text {
-  color: #f56c6c;
+  color: var(--accent-red-light);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -922,14 +922,14 @@
 }
 
 .selector-buttons .buff-button {
-  background-color: #1a1a1a;
-  border-color: #1a1a1a;
-  color: white;
+  background-color: var(--bg-secondary);
+  border-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .selector-buttons .buff-button:hover {
-  background-color: #2a2a2a;
-  border-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
+  border-color: var(--bg-tertiary);
 }
 
 .selector-buttons .buff-button:active {
@@ -938,14 +938,14 @@
 }
 
 .selector-buttons .csfloat-button {
-  background-color: #67c23a;
-  border-color: #67c23a;
+  background-color: var(--accent-green);
+  border-color: var(--accent-green);
   color: white;
 }
 
 .selector-buttons .csfloat-button:hover {
-  background-color: #85ce61;
-  border-color: #85ce61;
+  background-color: var(--accent-green);
+  border-color: var(--accent-green);
 }
 
 .selector-buttons .csfloat-button:active {
@@ -1003,7 +1003,7 @@
 }
 
 .no-image {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -1020,7 +1020,7 @@
 
 .search-result-card {
   background: var(--bg-secondary);
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1039,7 +1039,7 @@
 .search-result-card .card-image {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1085,7 +1085,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -1135,11 +1135,11 @@
 }
 
 .search-result-card .info-row span {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .search-result-card .info-label {
-  color: #888 !important;
+  color: var(--text-secondary) !important;
   min-width: 40px;
 }
 
@@ -1317,7 +1317,7 @@
 /* CS2 标准磨损等级颜色 */
 .float-segment.fn {
   flex: 7;  /* 0.00 - 0.07 */
-  background: linear-gradient(to right, #4CAF50, #66BB6A);
+  background: linear-gradient(to right, var(--accent-green), var(--accent-green));
 }
 
 .float-segment.mw {
@@ -1358,7 +1358,7 @@
 .float-value {
   text-align: center;
   font-size: 0.7rem;
-  color: #ccc;
+  color: var(--text-secondary);
   margin-top: 0.2rem;
 }
 
@@ -1424,7 +1424,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1rem;
   font-weight: bold;
 }
@@ -1506,7 +1506,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   border-right: 1px solid var(--border-color);
   flex-shrink: 0;
   position: relative;
@@ -1533,7 +1533,7 @@
 .commodity-card-title {
   font-size: 0.8rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -1545,7 +1545,7 @@
 
 .commodity-card-subtitle {
   font-size: 0.7rem;
-  color: #999;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1568,14 +1568,14 @@
 }
 
 .commodity-card-info .info-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .commodity-card-info .info-value {
-  color: #ccc;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   flex: 1;
   overflow: hidden;
@@ -1584,7 +1584,7 @@
 }
 
 .commodity-card-info .price-highlight {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 0.9rem;
 }
@@ -1600,7 +1600,7 @@
 }
 
 .commodity-card-info .nametag-text {
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-weight: 600;
   font-size: 0.75rem;
 }
@@ -1624,7 +1624,7 @@
 .commodity-card-info .nametag-parse {
   cursor: pointer;
   user-select: none;
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-weight: 600;
   font-size: 0.75rem;
 }
@@ -1651,19 +1651,19 @@
 }
 
 .sticker-value-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
 .sticker-value-amount {
-  color: #67c23a;
+  color: var(--accent-green);
   font-weight: 600;
   font-size: 0.75rem;
 }
 
 .sticker-value-loading {
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-size: 0.7rem;
   font-style: italic;
 }
@@ -1688,7 +1688,7 @@
   display: block;
   text-align: left;
   font-size: 0.75rem;
-  color: #ccc;
+  color: var(--text-secondary);
   margin-top: 0.3rem;
   font-weight: 500;
 }
@@ -1706,7 +1706,7 @@
 }
 
 .commodity-preview-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -1735,7 +1735,7 @@
 .preview-image-section {
   width: 100%;
   height: 280px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1760,13 +1760,13 @@
 .preview-float-value {
   font-size: 1rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .preview-float-range {
   font-size: 0.9rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .preview-prices {
@@ -1796,28 +1796,28 @@
 }
 
 .preview-price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .preview-price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.95rem;
   font-weight: 600;
 }
 
 .preview-price-value.price-highlight {
-  color: #f56c6c;
+  color: var(--accent-red-light);
   font-size: 1.2rem;
   font-weight: bold;
 }
 
 .preview-price-value.nametag-text {
-  color: #e6a23c;
+  color: var(--accent-orange);
 }
 
 .preview-price-value.nametag-parse {
-  color: #e6a23c;
+  color: var(--accent-orange);
   cursor: pointer;
 }
 
@@ -1889,13 +1889,13 @@
 }
 
 .preview-sticker-list-placeholder {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1.2rem;
 }
 
 .preview-sticker-list-name {
   flex: 1;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1917,22 +1917,22 @@
 }
 
 .preview-sticker-list-price .price-yyyp {
-  color: #67c23a;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
 .preview-sticker-list-price .price-buff {
-  color: #409eff;
+  color: var(--accent-blue);
   font-weight: 600;
 }
 
 .preview-sticker-list-price .price-none {
-  color: #999;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .preview-sticker-list-price.loading {
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-style: italic;
 }
 
@@ -1941,7 +1941,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -1969,7 +1969,7 @@
 
 .commodity-card.selected {
   border-color: var(--el-color-success) !important;
-  box-shadow: 0 0 0 2px rgba(103, 194, 58, 0.3);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
 }
 
 .selected-check {
@@ -1983,7 +1983,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--text-primary);
   z-index: 15;
   font-size: 14px;
 }
@@ -1996,7 +1996,7 @@
   transform: translateX(-50%);
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 16px 24px;
   display: flex;
   align-items: center;
@@ -2006,7 +2006,7 @@
 }
 
 .multi-select-actions .selected-count {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
   display: flex;
@@ -2015,7 +2015,7 @@
 }
 
 .multi-select-actions .total-price {
-  color: #f56c6c;
+  color: var(--accent-red-light);
   font-weight: bold;
 }
 
@@ -2043,7 +2043,7 @@
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -2068,12 +2068,12 @@
 }
 
 .no-more-data {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
 .scroll-hint {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
@@ -2085,7 +2085,7 @@
 }
 
 .sticker-preview-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -2105,8 +2105,8 @@
 .sticker-preview-image-wrapper {
   width: 100%;
   height: 300px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  border-radius: 12px;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2129,15 +2129,15 @@
 .sticker-preview-name {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .sticker-preview-type {
   font-size: 0.9rem;
-  color: #999;
+  color: var(--text-secondary);
   padding: 0.25rem 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-radius: 12px;
   display: inline-block;
 }
@@ -2150,7 +2150,7 @@
 
 .preview-sticker-list-img-wrapper:hover {
   transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
 }
 
 .preview-sticker-list-img.clickable {
@@ -2230,7 +2230,7 @@
 }
 
 .supply-order-info .price-highlight {
-  color: #67c23a;
+  color: var(--accent-green);
   font-size: 16px;
 }
 
@@ -2265,7 +2265,7 @@
 }
 
 .selected-info.max-reached {
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-weight: 600;
 }
 
@@ -2308,7 +2308,7 @@
 }
 
 .inventory-table tbody tr.selected {
-  background: rgba(103, 194, 58, 0.15);
+  background: rgba(76, 175, 80, 0.15);
 }
 
 .inventory-table td {
@@ -2384,7 +2384,7 @@
 
 .float-segment.fn {
   flex: 7;
-  background: linear-gradient(to right, #4CAF50, #66BB6A);
+  background: linear-gradient(to right, var(--accent-green), var(--accent-green));
 }
 
 .float-segment.mw {
@@ -2462,7 +2462,7 @@
 }
 
 .accessory-price .yyyp-price {
-  color: #409eff;
+  color: var(--accent-blue);
   font-weight: 500;
 }
 

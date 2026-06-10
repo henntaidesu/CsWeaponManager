@@ -44,7 +44,7 @@
 }
 
 .stat-card {
-  background: #2a2a2a;
+  background: var(--bg-tertiary);
   border-radius: 6px;
   padding: 10px 12px;
   text-align: center;
@@ -69,8 +69,8 @@
   color: var(--text-primary);
 }
 
-.profit-positive { color: #67c23a; }
-.profit-negative { color: #f56c6c; }
+.profit-positive { color: var(--accent-green); }
+.profit-negative { color: var(--accent-red-light); }
 .profit-zero     { color: var(--text-secondary); }
 
 .pnl-main {
@@ -94,7 +94,7 @@
 .cal-day { font-size: 12px; color: var(--text-secondary); }
 .cal-profit { font-size: 15px; font-weight: 600; }
 .cal-meta { font-size: 11px; color: var(--text-secondary); }
-.cal-excluded { font-size: 11px; color: #f56c6c; }
+.cal-excluded { font-size: 11px; color: var(--accent-red-light); }
 .cal-inventory {
   font-size: 12px;
   margin-top: auto;
@@ -117,7 +117,7 @@
   margin-left: auto;
 }
 
-.pnl-cell-positive { background: rgba(103, 194, 58, 0.14); }
+.pnl-cell-positive { background: rgba(76, 175, 80, 0.14); }
 .pnl-cell-negative { background: rgba(245, 108, 108, 0.14); }
 .pnl-cell-zero     { background: rgba(125, 133, 144, 0.10); }
 
@@ -313,7 +313,7 @@
   position: relative;
   width: 32px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
   border-radius: 3px;
   overflow: hidden;
   cursor: pointer;
@@ -330,7 +330,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 .sticker-placeholder {
@@ -339,10 +339,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1rem;
   font-weight: bold;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
 }
 
 .pendant-list { display: flex; gap: 4px; }
@@ -351,7 +351,7 @@
   height: 32px;
   object-fit: contain;
   border-radius: 2px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 .rename-text {
@@ -359,9 +359,9 @@
   align-items: center;
   gap: 4px;
   font-size: 0.75rem;
-  color: #999;
+  color: var(--text-secondary);
 }
-.rename-value { color: #4CAF50; font-weight: 500; }
+.rename-value { color: var(--accent-green); font-weight: 500; }
 
 .float-bar {
   position: relative;

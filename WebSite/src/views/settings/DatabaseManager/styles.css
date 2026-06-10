@@ -1,7 +1,7 @@
 .database-manager-wrapper {
   width: 100%;
   height: 100%;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
   overflow: hidden;
 }
 
@@ -24,8 +24,8 @@
 /* 左侧表列表 */
 .left-sidebar {
   width: 280px;
-  background: #2a2a2a;
-  border-right: 1px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border-right: 1px solid var(--border-default);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -33,17 +33,17 @@
 
 .sidebar-header {
   padding: 15px 20px;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid var(--border-default);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #252525;
+  background: var(--bg-secondary);
 }
 
 .sidebar-header h3 {
   margin: 0;
   font-size: 16px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -54,16 +54,16 @@
 }
 
 .database-info-header:hover {
-  background: #2d2d2d;
+  background: var(--bg-overlay);
 }
 
 .database-info-header.active {
   background: #1e5fa8;
-  border-left-color: #409eff;
+  border-left-color: var(--accent-blue);
 }
 
 .database-info-header.active h3 {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .tables-list {
@@ -82,18 +82,18 @@
 }
 
 .table-item:hover {
-  background: #333;
+  background: var(--bg-overlay);
 }
 
 .table-item.active {
   background: #1e5fa8;
-  border-left-color: #409eff;
+  border-left-color: var(--accent-blue);
 }
 
 .table-name {
   flex: 1;
   font-size: 14px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -102,12 +102,12 @@
 }
 
 .table-item.active .table-name {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .table-count {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
   margin-left: 8px;
   flex-shrink: 0;
   padding: 2px 8px;
@@ -124,7 +124,7 @@
 .right-content {
   flex: 1;
   overflow: auto;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
   display: flex;
   flex-direction: column;
 }
@@ -144,8 +144,8 @@
 
 .toolbar {
   padding: 15px 20px;
-  border-bottom: 1px solid #3a3a3a;
-  background: #2a2a2a;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-tertiary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -160,7 +160,7 @@
 .toolbar-left h3 {
   margin: 0;
   font-size: 18px;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 .toolbar-right {
@@ -178,8 +178,8 @@
 
 .data-toolbar {
   padding: 15px 20px;
-  border-bottom: 1px solid #3a3a3a;
-  background: #2a2a2a;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-tertiary);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -197,7 +197,7 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
 }
 
 .structure-info,
@@ -208,7 +208,7 @@
 .structure-info h4,
 .structure-sql h4 {
   font-size: 16px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   margin: 0 0 15px 0;
 }
 
@@ -216,26 +216,26 @@
 .database-home {
   flex: 1;
   overflow: auto;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
 }
 
 .home-header {
   padding: 30px 20px 20px;
-  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-  border-bottom: 1px solid #3a3a3a;
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .home-header h2 {
   margin: 0 0 8px 0;
   font-size: 28px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .home-header p {
   margin: 0;
   font-size: 14px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 /* 信息视图 */
@@ -243,12 +243,12 @@
   flex: 1;
   overflow: auto;
   padding: 20px;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
 }
 
 .info-card {
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
 }
 
 .info-card .card-header {
@@ -257,7 +257,7 @@
   align-items: center;
   font-size: 16px;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 .sql-file-actions {
@@ -291,7 +291,7 @@
 
 .row-count-info {
   font-size: 14px;
-  color: #909399;
+  color: var(--text-secondary);
   padding: 0 10px;
 }
 
@@ -303,7 +303,7 @@
   overflow: hidden;
   padding: 20px;
   gap: 20px;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
 }
 
 .query-editor {
@@ -321,10 +321,10 @@
 .query-result {
   flex: 1;
   overflow: auto;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
   border-radius: 4px;
   padding: 15px;
-  background: #2a2a2a;
+  background: var(--bg-tertiary);
 }
 
 .result-header {
@@ -337,7 +337,7 @@
 .result-header h4 {
   margin: 0;
   font-size: 16px;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 /* SQL 执行器样式 */
@@ -359,16 +359,16 @@
 
 .sql-input :deep(.el-textarea__inner) {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-  background: #1a1a1a;
-  color: #e0e0e0;
-  border: 1px solid #3a3a3a;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 .sql-result {
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
   border-radius: 4px;
   padding: 15px;
-  background: #2a2a2a;
+  background: var(--bg-tertiary);
 }
 
 .sql-result .result-header {
@@ -381,7 +381,7 @@
 .sql-result .result-header h4 {
   margin: 0;
   font-size: 16px;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 .sql-message {
@@ -395,7 +395,7 @@
 .execution-details h5 {
   margin: 0 0 10px 0;
   font-size: 14px;
-  color: #e0e0e0;
+  color: var(--text-primary);
   font-weight: 600;
 }
 

@@ -3,10 +3,10 @@
 }
 
 .el-loading-spinner {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 .el-loading-text {
-  color: #fff !important;
+  color: var(--text-primary) !important;
 }
 

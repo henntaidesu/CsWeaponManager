@@ -10,21 +10,21 @@
 }
 
 h1 {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 2rem;
   margin-bottom: 0.5rem;
   text-align: center;
 }
 
 .description {
-  color: #999;
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: 2rem;
 }
 
 .form-preview {
-  background: #1a1a1a;
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   height: 700px;
@@ -33,18 +33,18 @@ h1 {
 .submit-result {
   margin-top: 2rem;
   padding: 1.5rem;
-  background: #1a1a1a;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 2px solid #409EFF;
+  border: 2px solid var(--accent-blue);
 }
 
 .submit-result h3 {
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .submit-result pre {
-  color: #67C23A;
+  color: var(--accent-green);
   background: #0a0a0a;
   padding: 1rem;
   border-radius: 4px;

@@ -75,7 +75,7 @@
 
 .offer-list-item:hover {
   border-color: var(--el-color-primary);
-  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .offer-item-left {
@@ -129,14 +129,14 @@
 
 /* 出租标签 - 浅橙色 */
 .order-type-tag.tag-rent {
-  background: rgba(255, 165, 0, 0.2) !important;
-  color: #ffa500 !important;
+  background: rgba(230, 162, 60, 0.2) !important;
+  color: var(--accent-orange) !important;
 }
 
 /* 出售标签 - 浅蓝色 */
 .order-type-tag.tag-sell {
   background: rgba(64, 158, 255, 0.2) !important;
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 .offer-item-details {
@@ -171,7 +171,7 @@
 
 /* 倒计时颜色 - 正常（>= 6小时）白色 */
 .countdown-value.countdown-normal {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 /* 倒计时颜色 - 警告（1-6小时）黄色 */
@@ -186,7 +186,7 @@
 
 /* 倒计时颜色 - 已过期 */
 .countdown-value.countdown-expired {
-  color: #888888;
+  color: var(--text-secondary);
 }
 
 .countdown-desc {
@@ -227,9 +227,9 @@
 
 /* 出租 - 浅橙色 */
 .token-info-card.token-card-rent {
-  background: linear-gradient(135deg, rgba(255, 165, 0, 0.12) 0%, rgba(255, 165, 0, 0.04) 100%);
-  border: 1px solid rgba(255, 165, 0, 0.3);
-  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.15);
+  background: linear-gradient(135deg, rgba(230, 162, 60, 0.12) 0%, rgba(230, 162, 60, 0.04) 100%);
+  border: 1px solid rgba(230, 162, 60, 0.3);
+  box-shadow: 0 2px 8px rgba(230, 162, 60, 0.15);
 }
 
 /* 出售 - 浅蓝色 */
@@ -290,7 +290,7 @@
 .token-badge-circle span {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 方形徽章 - 深色背景 */
@@ -342,9 +342,9 @@
 
 /* 成功 - 绿色 */
 .batch-process-card.batch-card-success {
-  background: linear-gradient(135deg, rgba(82, 196, 26, 0.15) 0%, rgba(82, 196, 26, 0.05) 100%);
-  border: 1px solid rgba(82, 196, 26, 0.4);
-  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.2);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.05) 100%);
+  border: 1px solid rgba(76, 175, 80, 0.4);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 /* 失败 - 红色 */
@@ -356,9 +356,9 @@
 
 /* 跳过 - 橙色 */
 .batch-process-card.batch-card-skipped {
-  background: linear-gradient(135deg, rgba(250, 173, 20, 0.15) 0%, rgba(250, 173, 20, 0.05) 100%);
-  border: 1px solid rgba(250, 173, 20, 0.4);
-  box-shadow: 0 2px 8px rgba(250, 173, 20, 0.2);
+  background: linear-gradient(135deg, rgba(230, 162, 60, 0.15) 0%, rgba(230, 162, 60, 0.05) 100%);
+  border: 1px solid rgba(230, 162, 60, 0.4);
+  box-shadow: 0 2px 8px rgba(230, 162, 60, 0.2);
 }
 
 .batch-process-body {

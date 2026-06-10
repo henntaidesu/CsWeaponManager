@@ -82,7 +82,7 @@
   top: 8px;
   left: 8px;
   background: rgba(0, 0, 0, 0.7);
-  color: #fff;
+  color: var(--text-primary);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -139,7 +139,7 @@
 }
 
 .float-segment.fn {
-  background: #4CAF50;
+  background: var(--accent-green);
   flex: 0.07;
 }
 
@@ -177,7 +177,7 @@
 .float-value {
   text-align: left;
   font-size: 0.75rem;
-  color: #ccc;
+  color: var(--text-secondary);
   font-family: monospace;
   margin-top: 0.2rem;
   margin-bottom: 0;
@@ -210,31 +210,31 @@
 }
 
 .price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
 .price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 0.75rem;
 }
 
 .price-profit {
-  color: #f56c6c;
+  color: var(--accent-red-light);
 }
 
 .price-loss {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .price-equal {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .sale-price {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 /* 卡片底部 */

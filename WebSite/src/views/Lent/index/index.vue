@@ -291,7 +291,7 @@
                   ></div>
                 </div>
               </div>
-              <span v-else style="color: #888;">N/A</span>
+              <span v-else style="color: var(--text-secondary);">N/A</span>
             </template>
           </el-table-column>
 

@@ -1,18 +1,18 @@
 .sync-section {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid #444;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
   margin-bottom: 1.5rem;
 }
 
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #444;
+  border-bottom: 2px solid var(--border-default);
 }
 
 .sync-controls {
@@ -40,18 +40,18 @@
 .cert-status-info {
   margin-top: 1.5rem;
   padding: 1rem;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
-  border: 1px solid #444;
+  border: 1px solid var(--border-default);
 }
 
 .info-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .info-grid {
@@ -65,32 +65,32 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.25rem;
 }
 
 .info-label {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 .info-value {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.875rem;
   font-weight: 600;
 }
 
 .info-value.success-text {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .info-value.error-text {
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 .info-value.warning-text {
-  color: #E6A23C;
+  color: var(--accent-orange);
 }
 
 .sync-info {
@@ -122,6 +122,6 @@
 }
 
 .sync-time {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-size: 0.875rem;
 }

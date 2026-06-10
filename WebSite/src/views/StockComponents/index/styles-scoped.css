@@ -136,7 +136,7 @@
 }
 
 .selected-indicator .checkmark {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: bold;
 }
@@ -146,7 +146,7 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  color: #fff;
+  color: var(--text-primary);
   padding: 2px 4px;
   font-size: 14px;
   font-weight: bold;
@@ -170,7 +170,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 /* 贴纸覆盖层 - 左下角 */
@@ -252,7 +252,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1rem;
   font-weight: bold;
 }
@@ -268,8 +268,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  color: #999;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -284,7 +284,7 @@
 .card-title {
   font-size: 0.8rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -306,7 +306,7 @@
 }
 
 .float-value {
-  color: #fff;
+  color: var(--text-primary);
   font-family: monospace;
   font-size: 0.75rem;
   text-align: left;
@@ -336,19 +336,19 @@
 }
 
 .price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
 .price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 0.75rem;
 }
 
 .buy-price {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .card-footer {
@@ -377,7 +377,7 @@
 .table-footer {
   padding: 1rem;
   text-align: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -472,7 +472,7 @@
 .stat-number {
   font-size: clamp(1.25rem, 3vw, 1.5rem);
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   margin-top: clamp(0.5rem, 1vw, 0.625rem);
 }
 
@@ -519,7 +519,7 @@
 }
 
 .item-title {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -556,7 +556,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 
@@ -580,7 +580,7 @@
   height: 32px;
   object-fit: contain;
   border-radius: 2px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -589,11 +589,11 @@
   align-items: center;
   gap: 4px;
   font-size: 0.75rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .rename-value {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-weight: 500;
 }
 
@@ -739,52 +739,52 @@
 
 :deep(.el-pagination .el-pager li) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-pager li:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-pager li.is-active) {
-  background-color: #4CAF50;
-  color: #fff;
+  background-color: var(--accent-green);
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination .btn-prev),
 :deep(.el-pagination .btn-next) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .btn-prev:hover),
 :deep(.el-pagination .btn-next:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-select .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-table) {
   background-color: transparent;
-  color: #fff;
+  color: var(--text-primary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
 :deep(.el-table th) {
   background-color: var(--bg-tertiary) !important;
-  color: #fff;
+  color: var(--text-primary);
   border-bottom: 1px solid var(--border-default);
   padding: clamp(0.5rem, 1.5vw, 0.75rem);
 }
@@ -792,7 +792,7 @@
 :deep(.el-table td) {
   background-color: transparent !important;
   border-bottom: 1px solid var(--border-default);
-  color: #fff;
+  color: var(--text-primary);
   padding: clamp(0.5rem, 1.5vw, 0.75rem);
 }
 
@@ -801,15 +801,15 @@
 }
 
 :deep(.el-input__inner) {
-  background-color: #1a1a1a;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 :deep(.el-select .el-input__inner) {
-  background-color: #1a1a1a;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 .action-buttons {
@@ -865,7 +865,7 @@
 }
 
 .expand-item-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.75rem;
@@ -874,7 +874,7 @@
 }
 
 .expand-item-card:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-color: rgba(76, 175, 80, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -988,7 +988,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: bold;
 }
@@ -1031,7 +1031,7 @@
 }
 
 .expand-value-small {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.75rem;
   font-family: monospace;
@@ -1051,12 +1051,12 @@
 }
 
 .expand-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.8rem;
 }
 
 .expand-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.85rem;
 }
@@ -1119,7 +1119,7 @@
   transform: translateX(-50%);
   background: var(--bg-tertiary);
   border: 2px solid var(--el-color-primary);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
@@ -1141,7 +1141,7 @@
 }
 
 .multi-select-actions .selected-count {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
 }
@@ -1187,12 +1187,12 @@
 }
 
 .popover-title {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
 .popover-component-name {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
   padding: 0.5rem;

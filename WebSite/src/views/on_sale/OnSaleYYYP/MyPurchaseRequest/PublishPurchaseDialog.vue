@@ -316,8 +316,8 @@ const handleConfirm = async () => {
   font-weight: 700;
 }
 
-.market-value.orange { color: #E6A23C; }
-.market-value.yellow { color: #FAAD14; }
+.market-value.orange { color: var(--accent-orange); }
+.market-value.yellow { color: var(--accent-orange); }
 
 /* 表单 */
 .form-row {
@@ -345,7 +345,7 @@ const handleConfirm = async () => {
 
 .form-label.required::before {
   content: '* ';
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 /* 增值服务 */
@@ -379,7 +379,7 @@ const handleConfirm = async () => {
 .rules-title {
   font-size: 13px;
   font-weight: 600;
-  color: #E6A23C;
+  color: var(--accent-orange);
   margin-bottom: 8px;
 }
 
@@ -421,7 +421,7 @@ const handleConfirm = async () => {
 .total-price {
   font-size: 22px;
   font-weight: 700;
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 .footer-actions {

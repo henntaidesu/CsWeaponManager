@@ -50,10 +50,10 @@
 
             <!-- 发现新版本 -->
             <div v-if="updateInfo" class="update-alert">
-              <div style="font-size: 13px; font-weight: 600; color: #67c23a;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--accent-green);">
                 发现新版本 v{{ updateInfo.latest_version }}
               </div>
-              <div style="font-size: 12px; margin-top: 8px; color: #ccc;">
+              <div style="font-size: 12px; margin-top: 8px; color: var(--text-secondary);">
                 <div>发布日期: {{ updateInfo.release_date }}</div>
                 <div style="margin-top: 4px;">大小: {{ updateInfo.file_size }}</div>
                 <!-- 已下载：显示立即更新 -->
@@ -79,7 +79,7 @@
                 </el-button>
                 <div v-if="updating" style="margin-top: 10px;">
                   <el-progress :percentage="updateProgress" :status="updateStatus" />
-                  <div v-if="downloadSpeed" style="font-size: 11px; color: #999; margin-top: 4px; text-align: center;">
+                  <div v-if="downloadSpeed" style="font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-align: center;">
                     {{ updateStatusText }} · {{ downloadSpeed }}
                   </div>
                 </div>
@@ -88,7 +88,7 @@
 
             <!-- 无更新提示 -->
             <div v-else-if="!checkingUpdate && checkedOnce" class="no-update">
-              <span style="font-size: 12px; color: #67c23a;">已是最新版本</span>
+              <span style="font-size: 12px; color: var(--accent-green);">已是最新版本</span>
             </div>
           </div>
 
@@ -165,7 +165,7 @@
 
             <!-- 空状态 -->
             <div v-else-if="!selectedFilePath" class="empty-state">
-              <el-icon :size="80" color="#909399">
+              <el-icon :size="80" color="var(--text-secondary)">
                 <Document />
               </el-icon>
               <p>请从左侧选择一个文档查看</p>

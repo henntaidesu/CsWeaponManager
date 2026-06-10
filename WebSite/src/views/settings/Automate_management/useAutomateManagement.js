@@ -1193,7 +1193,8 @@ export function useAutomateManagement() {
   }
   
   const stopAllTasks = async () => {
-    const running = runningTasks.value.filter(task => task.status === '运行中')
+    // 包含"运行中"和"执行中"（已启用但正在执行）的任务
+    const running = runningTasks.value.filter(task => task.status !== '已停止')
     
     if (running.length === 0) {
       ElMessage.info('暂无运行中的任务')

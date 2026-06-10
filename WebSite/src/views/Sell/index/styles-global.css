@@ -3,37 +3,37 @@
 .el-date-picker,
 .el-date-range-picker,
 .el-popper {
-  background-color: #1a1a1a !important;
-  border-color: #333 !important;
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-default) !important;
 }
 
 .el-picker-panel .el-picker-panel__content,
 .el-picker-panel .el-picker-panel__body,
 .el-date-picker .el-picker-panel__content {
-  background-color: #1a1a1a !important;
+  background-color: var(--bg-secondary) !important;
 }
 
 .el-date-picker__header,
 .el-date-picker__time-header {
-  background-color: #1a1a1a !important;
-  border-bottom-color: #333 !important;
+  background-color: var(--bg-secondary) !important;
+  border-bottom-color: var(--border-default) !important;
 }
 
 .el-date-table th,
 .el-date-table td,
 .el-month-table td,
 .el-year-table td {
-  background-color: #1a1a1a !important;
-  color: #fff !important;
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
 }
 
 .el-date-table th {
-  color: #ccc !important;
+  color: var(--text-secondary) !important;
 }
 
 .el-picker-panel__footer {
-  background-color: #1a1a1a !important;
-  border-top-color: #333 !important;
+  background-color: var(--bg-secondary) !important;
+  border-top-color: var(--border-default) !important;
 }
 
 /* 修复加载遮罩白色背景问题 */
@@ -42,13 +42,13 @@
 }
 
 .el-loading-spinner {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 .el-loading-text {
-  color: #fff !important;
+  color: var(--text-primary) !important;
 }
 
 .el-loading-spinner .circular {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }

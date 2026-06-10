@@ -161,7 +161,7 @@ export default {
 .to-balance-amount {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #E6A23C;
+  color: var(--accent-orange);
 }
 
 .to-quick-row {
@@ -179,7 +179,7 @@ export default {
 
 .to-error {
   font-size: 0.82rem;
-  color: #F56C6C;
+  color: var(--accent-red-light);
   margin-top: -0.5rem;
 }
 </style>

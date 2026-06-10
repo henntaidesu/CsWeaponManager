@@ -34,8 +34,8 @@
       <div v-if="selectedItems.length > 0" class="multi-select-actions">
         <div class="selected-count">
           已选择 <b>{{ selectedItems.length }}</b> 件
-          <span style="color: #4CAF50; margin-left: 0.5rem;">¥{{ selectedAmount }}</span>
-          <span v-if="selectedItems.length >= 10" style="color: #F56C6C; margin-left: 0.5rem;">（已达上限）</span>
+          <span style="color: var(--accent-green); margin-left: 0.5rem;">¥{{ selectedAmount }}</span>
+          <span v-if="selectedItems.length >= 10" style="color: var(--accent-red-light); margin-left: 0.5rem;">（已达上限）</span>
         </div>
         <div class="action-buttons">
           <el-button @click="handleSelectAll(true)" :disabled="selectableItems.length <= selectedItems.length || selectedItems.length >= 10">
@@ -141,7 +141,7 @@
               </div>
               <div class="price-group" v-if="item.unfreeze_amount">
                 <span class="price-label">解冻:</span>
-                <span class="price-value" style="color: #FFA500;">¥{{ item.unfreeze_amount }}</span>
+                <span class="price-value" style="color: var(--accent-orange);">¥{{ item.unfreeze_amount }}</span>
               </div>
             </div>
           </div>
@@ -177,10 +177,10 @@
     <div class="table-footer">
       <span>已显示 {{ instantPaymentItems.length }} / {{ totalCount }} 条</span>
       <span v-if="statistics.totalAmount > 0" style="margin-left: 2rem;">
-        总可提取金额: <span style="color: #4CAF50; font-weight: bold;">¥{{ statistics.totalAmount }}</span>
+        总可提取金额: <span style="color: var(--accent-green); font-weight: bold;">¥{{ statistics.totalAmount }}</span>
       </span>
       <span v-if="statistics.tradableBalance > 0" style="margin-left: 2rem;">
-        总可交易余额: <span style="color: #409EFF; font-weight: bold;">¥{{ statistics.tradableBalance }}</span>
+        总可交易余额: <span style="color: var(--accent-blue); font-weight: bold;">¥{{ statistics.tradableBalance }}</span>
       </span>
     </div>
   </div>
@@ -494,7 +494,7 @@ export default {
   transform: translateX(-50%);
   background: var(--bg-tertiary);
   border: 2px solid var(--el-color-primary);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
@@ -521,7 +521,7 @@ export default {
 }
 
 .selected-count {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
   white-space: nowrap;
@@ -565,7 +565,7 @@ export default {
 
 .inventory-card.selected {
   border-color: var(--el-color-primary);
-  background: rgba(64, 158, 255, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   box-shadow: 0 0 0 2px var(--el-color-primary);
 }
 
@@ -600,7 +600,7 @@ export default {
 
 .check-mark.is-checked {
   background: var(--el-color-primary);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .card-image {
@@ -652,7 +652,7 @@ export default {
 }
 
 .sticker-placeholder-overlay {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -663,7 +663,7 @@ export default {
   left: 8px;
   padding: 4px 8px;
   background: rgba(76, 175, 80, 0.9);
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.7rem;
   font-weight: 600;
   border-radius: 4px;
@@ -674,7 +674,7 @@ export default {
 }
 
 .status-overlay.status-guarding {
-  background: rgba(255, 165, 0, 0.9);
+  background: rgba(230, 162, 60, 0.9);
 }
 
 /* 卡片内容 */
@@ -689,7 +689,7 @@ export default {
 .card-title {
   font-size: 0.8rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -725,7 +725,7 @@ export default {
   height: 100%;
 }
 
-.float-segment.fn { background: #4CAF50; flex: 0.07; }
+.float-segment.fn { background: var(--accent-green); flex: 0.07; }
 .float-segment.mw { background: #8BC34A; flex: 0.08; }
 .float-segment.ft { background: #FFC107; flex: 0.23; }
 .float-segment.ww { background: #FF9800; flex: 0.07; }
@@ -745,7 +745,7 @@ export default {
 .float-value {
   text-align: left;
   font-size: 0.75rem;
-  color: #ccc;
+  color: var(--text-secondary);
   font-family: monospace;
   margin-top: 0.2rem;
   margin-bottom: 0;
@@ -775,19 +775,19 @@ export default {
 }
 
 .price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
 .price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 0.75rem;
 }
 
 .sale-price {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .card-footer {

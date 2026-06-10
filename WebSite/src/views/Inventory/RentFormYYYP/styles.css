@@ -3,15 +3,15 @@
   flex-direction: column;
   height: 100%;
   min-height: 70vh;
-  background: #1a1a1a;
-  color: #fff;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* 表单头部 */
 .form-header {
   padding: 1rem 1.5rem;
-  background: #2a2a2a;
-  border-bottom: 1px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .form-title {
@@ -23,7 +23,7 @@
 .item-count {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 表单内容 */
@@ -49,14 +49,14 @@
   display: flex;
   gap: 0.75rem;
   padding: 0.5rem;
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
   transition: all 0.2s ease;
 }
 
 .item-card:hover {
-  background: #333;
+  background: var(--bg-overlay);
   border-color: #4a4a4a;
 }
 
@@ -111,7 +111,7 @@
 .item-name {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -119,7 +119,7 @@
 
 .item-float-text {
   font-size: 0.85rem;
-  color: #999;
+  color: var(--text-secondary);
   font-family: monospace;
 }
 
@@ -212,7 +212,7 @@
 
 .item-buy-price {
   font-size: 0.85rem;
-  color: #4CAF50;
+  color: var(--accent-green);
   font-weight: 500;
   font-family: monospace;
 }
@@ -225,7 +225,7 @@
 
 .field-label {
   font-size: 0.8rem;
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 /* 表单区块 */
@@ -235,7 +235,7 @@
 
 .section-label {
   font-size: 0.95rem;
-  color: #ccc;
+  color: var(--text-secondary);
   margin-bottom: 0.75rem;
   font-weight: 500;
 }
@@ -263,8 +263,8 @@
 /* 顶部三块统一卡片样式 */
 .trade-card {
   padding: 1rem;
-  background: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -275,8 +275,8 @@
 /* 全局押金赔付卡片样式 */
 .global-compensation-card {
   padding: 1rem;
-  background: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   border-radius: 8px;
   display: flex;
   flex-direction: row;
@@ -287,8 +287,8 @@
 .trade-mode-btn {
   flex: 1;
   padding: 1rem;
-  background: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
@@ -296,19 +296,19 @@
 }
 
 .trade-mode-btn:hover {
-  background: #333;
+  background: var(--bg-overlay);
   border-color: #4a4a4a;
 }
 
 .trade-mode-btn.active {
   background: rgba(64, 158, 255, 0.1);
-  border-color: #409EFF;
+  border-color: var(--accent-blue);
 }
 
 .mode-label {
   font-size: 1rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 出租天数按钮 */
@@ -320,8 +320,8 @@
 
 .rent-day-btn {
   padding: 0.75rem;
-  background: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
@@ -329,19 +329,19 @@
 }
 
 .rent-day-btn:hover {
-  background: #333;
+  background: var(--bg-overlay);
   border-color: #4a4a4a;
 }
 
 .rent-day-btn.active {
   background: rgba(64, 158, 255, 0.1);
-  border-color: #409EFF;
+  border-color: var(--accent-blue);
 }
 
 .day-label {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 自定义天数输入框 */
@@ -355,8 +355,8 @@
 }
 
 .custom-days-inline-input :deep(.el-input__wrapper) {
-  background-color: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background-color: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   box-shadow: none;
   border-radius: 8px;
   padding: 0.75rem;
@@ -364,17 +364,17 @@
 }
 
 .custom-days-inline-input :deep(.el-input__wrapper:hover) {
-  background: #333;
+  background: var(--bg-overlay);
   border-color: #4a4a4a;
 }
 
 .custom-days-inline-input :deep(.el-input__wrapper.is-focus) {
   background: rgba(64, 158, 255, 0.1);
-  border-color: #409EFF;
+  border-color: var(--accent-blue);
 }
 
 .custom-days-inline-input :deep(.el-input__inner) {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.95rem;
   font-weight: 500;
   text-align: center;
@@ -392,7 +392,7 @@
 }
 
 .custom-days-inline-input :deep(.el-input__inner::placeholder) {
-  color: #999;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -402,7 +402,7 @@
 }
 
 .input-suffix {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-right: 0.5rem;
 }
@@ -420,7 +420,7 @@
 
 .input-tip {
   font-size: 0.85rem;
-  color: #999;
+  color: var(--text-secondary);
   padding-left: 0.25rem;
 }
 
@@ -438,7 +438,7 @@
 .icon-badge {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .compensation-content {
@@ -470,16 +470,16 @@
 .fee-value {
   font-size: 1rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .fee-value.highlight {
-  color: #f56c6c;
+  color: var(--accent-red-light);
 }
 
 .fee-original {
   font-size: 0.85rem;
-  color: #999;
+  color: var(--text-secondary);
   text-decoration: line-through;
 }
 
@@ -512,13 +512,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .service-switch-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
 }
 
 /* 禁用状态样式 */
@@ -544,7 +544,7 @@
 
 .services-title {
   font-size: 0.9rem;
-  color: #ccc;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -553,15 +553,15 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  background: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .service-item:hover {
-  background: #333;
+  background: var(--bg-overlay);
   border-color: #4a4a4a;
 }
 
@@ -581,7 +581,7 @@
   border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .service-badge.zero-cd {
@@ -590,16 +590,16 @@
 
 /* 0CD按钮激活时显示绿色 */
 .zero-cd-btn.active .service-badge.zero-cd {
-  background: linear-gradient(135deg, #67C23A, #85CE61);  /* 绿色（开启状态） */
+  background: linear-gradient(135deg, var(--accent-green), #66BB6A);  /* 绿色（开启状态） */
 }
 
 .service-badge.rent-activity {
-  background: linear-gradient(135deg, #67C23A, #85CE61);
+  background: linear-gradient(135deg, var(--accent-green), #66BB6A);
 }
 
 .service-label {
   font-size: 0.9rem;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 底部操作栏 */
@@ -607,8 +607,8 @@
   display: flex;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: #2a2a2a;
-  border-top: 1px solid #3a3a3a;
+  background: var(--bg-tertiary);
+  border-top: 1px solid var(--border-default);
 }
 
 .footer-btn {
@@ -619,19 +619,19 @@
 }
 
 .auto-price-btn {
-  background: linear-gradient(135deg, #67C23A, #85CE61);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent-green), #66BB6A);
+  color: var(--text-primary);
   border: none;
 }
 
 .auto-price-btn:hover {
-  background: linear-gradient(135deg, #85CE61, #67C23A);
+  background: linear-gradient(135deg, #66BB6A, var(--accent-green));
   opacity: 0.9;
 }
 
 .set-071-btn {
   background: linear-gradient(135deg, #E6A23C, #F0B85C);
-  color: #fff;
+  color: var(--text-primary);
   border: none;
 }
 
@@ -641,8 +641,8 @@
 }
 
 .cancel-btn {
-  background: #3a3a3a;
-  color: #fff;
+  background: var(--bg-overlay);
+  color: var(--text-primary);
   border: none;
 }
 
@@ -667,12 +667,12 @@
 
 .form-content::-webkit-scrollbar-track,
 .items-list::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--bg-secondary);
 }
 
 .form-content::-webkit-scrollbar-thumb,
 .items-list::-webkit-scrollbar-thumb {
-  background: #3a3a3a;
+  background: var(--bg-overlay);
   border-radius: 3px;
 }
 
@@ -683,8 +683,8 @@
 
 /* Element Plus 样式覆盖 */
 :deep(.el-input__wrapper) {
-  background-color: #2a2a2a;
-  border: 2px solid #3a3a3a;
+  background-color: var(--bg-tertiary);
+  border: 2px solid var(--border-default);
   box-shadow: none;
   border-radius: 8px;
   padding: 0.75rem;
@@ -695,30 +695,30 @@
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  border-color: #409EFF;
+  border-color: var(--accent-blue);
 }
 
 :deep(.el-input__inner) {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 :deep(.el-input-group__prepend),
 :deep(.el-input-group__append) {
-  background-color: #1a1a1a;
-  color: #fff;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   border: none;
   padding: 0 1rem;
 }
 
 :deep(.el-checkbox__inner) {
-  background-color: #2a2a2a;
-  border-color: #3a3a3a;
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  background-color: #409EFF;
-  border-color: #409EFF;
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
 }
 
 /* 响应式设计 */

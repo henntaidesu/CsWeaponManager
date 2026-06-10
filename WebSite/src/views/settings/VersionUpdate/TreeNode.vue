@@ -87,7 +87,7 @@ const handleClick = () => {
 
 .node-label.is-selected {
   background-color: rgba(64, 158, 255, 0.2);
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 .node-label.is-directory {

@@ -34,7 +34,7 @@
             >
               <el-option label="全部外观" value="" />
               <el-option label="崭新出厂" value="崭新出厂">
-                <span :style="{ color: '#4caf50' }">崭新出厂</span>
+                <span :style="{ color: 'var(--accent-green)' }">崭新出厂</span>
               </el-option>
               <el-option label="略有磨损" value="略有磨损">
                 <span :style="{ color: '#8bc34a' }">略有磨损</span>

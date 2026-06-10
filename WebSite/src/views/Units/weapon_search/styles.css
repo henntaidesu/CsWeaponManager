@@ -5,18 +5,18 @@
 .search-section {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: #252525;
-  border-radius: 0.75rem;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
 }
 
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px solid var(--border-default);
 }
 
 .search-container {
@@ -54,21 +54,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.5rem 0.5rem 0 0;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   border-bottom: none;
   cursor: pointer;
 }
 
 .results-header:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--bg-tertiary);
 }
 
 .results-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .results-actions {
@@ -83,13 +83,13 @@
 }
 
 .price-text {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .count-text {
-  color: #409EFF;
+  color: var(--accent-blue);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -101,12 +101,12 @@
 }
 
 .weapon-name {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .no-data {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 

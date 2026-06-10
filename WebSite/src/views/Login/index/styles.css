@@ -3,13 +3,13 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 .login-box {
   width: 400px;
   padding: 40px;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
@@ -17,7 +17,7 @@
 .login-title {
   text-align: center;
   margin-bottom: 30px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 24px;
   font-weight: 600;
 }
@@ -31,34 +31,34 @@
 }
 
 :deep(.el-input__inner) {
-  background-color: #1e1e1e;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 :deep(.el-input__inner::placeholder) {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 :deep(.el-input__wrapper) {
-  background-color: #1e1e1e;
-  box-shadow: 0 0 0 1px #333 inset;
+  background-color: var(--bg-secondary);
+  box-shadow: 0 0 0 1px var(--border-default) inset;
 }
 
 :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #4CAF50 inset;
+  box-shadow: 0 0 0 1px var(--accent-green) inset;
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #4CAF50 inset;
+  box-shadow: 0 0 0 1px var(--accent-green) inset;
 }
 
 :deep(.el-input__prefix) {
-  color: #999;
+  color: var(--text-secondary);
 }
 
 :deep(.el-form-item__error) {
-  color: #f56c6c;
+  color: var(--accent-red-light);
 }
 
 /* iPad 横屏和大屏平板 (769px - 1199px) */

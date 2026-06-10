@@ -1,8 +1,8 @@
 .sync-section {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid #444;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
   margin-bottom: 1.5rem;
 }
 
@@ -13,13 +13,13 @@
   gap: 1rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #444;
+  border-bottom: 2px solid var(--border-default);
 }
 
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -38,16 +38,16 @@
 }
 
 .status-label {
-  color: #888;
+  color: var(--text-secondary);
   min-width: 60px;
   font-weight: 500;
 }
 
 .status-value {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .status-value.success-text {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
 }

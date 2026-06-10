@@ -40,7 +40,7 @@
                   <span style="flex: 0 0 auto; max-width: 35%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ item.item_name }}</span>
                   <span style="flex: 0 0 auto; color: var(--el-text-color-secondary); font-size: 13px; margin-left: 8px; font-family: monospace;">
                     <template v-if="hasCountMismatch(item)">
-                      <span style="color: #f56c6c; font-weight: bold; margin-right: 4px;" title="数量不一致">⚠</span>
+                      <span style="color: var(--accent-red-light); font-weight: bold; margin-right: 4px;" title="数量不一致">⚠</span>
                     </template>
                     显示: <span style="display: inline-block; text-align: right; min-width: 2em;">{{ item.weapon_float || 0 }}</span>
                     <template v-if="item.actual_count !== null && item.actual_count !== undefined">
@@ -146,7 +146,7 @@
               <h3>悠悠有品最低价</h3>
               <div class="stat-price-container">
                 <p class="stat-number">¥{{ totalStats.totalYYYPPrice }}</p>
-                <p class="stat-diff-right" :style="{ color: totalStats.yyypDiff >= 0 ? '#f56c6c' : '#4CAF50' }">
+                <p class="stat-diff-right" :style="{ color: totalStats.yyypDiff >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
                   {{ totalStats.yyypDiff >= 0 ? '+' : '' }}¥{{ totalStats.yyypDiff }}
                 </p>
               </div>
@@ -155,7 +155,7 @@
               <h3>BUFF最低价</h3>
               <div class="stat-price-container">
                 <p class="stat-number">¥{{ totalStats.totalBuffPrice }}</p>
-                <p class="stat-diff-right" :style="{ color: totalStats.buffDiff >= 0 ? '#f56c6c' : '#4CAF50' }">
+                <p class="stat-diff-right" :style="{ color: totalStats.buffDiff >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
                   {{ totalStats.buffDiff >= 0 ? '+' : '' }}¥{{ totalStats.buffDiff }}
                 </p>
               </div>
@@ -164,7 +164,7 @@
               <h3>Steam参考价</h3>
               <div class="stat-price-container">
                 <p class="stat-number">¥{{ totalStats.totalSteamPrice }}</p>
-                <p class="stat-diff-right" :style="{ color: totalStats.steamDiff >= 0 ? '#f56c6c' : '#4CAF50' }">
+                <p class="stat-diff-right" :style="{ color: totalStats.steamDiff >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
                   {{ totalStats.steamDiff >= 0 ? '+' : '' }}¥{{ totalStats.steamDiff }}
                 </p>
               </div>
@@ -300,7 +300,7 @@
                             <span class="expand-label">Steam:</span>
                             <span 
                               class="expand-value"
-                              :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                              :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                             >
                               ¥{{ showPriceDiff && item.buy_price && item.buy_price !== '0' ? Math.abs(parseFloat(item.steam_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.steam_price).toFixed(2) }}
                             </span>
@@ -310,7 +310,7 @@
                             <span class="expand-label">悠悠:</span>
                             <span 
                               class="expand-value"
-                              :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                              :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                             >
                               ¥{{ showPriceDiff && item.buy_price && item.buy_price !== '0' ? Math.abs(parseFloat(item.yyyp_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.yyyp_price).toFixed(2) }}
                             </span>
@@ -319,7 +319,7 @@
                             <span class="expand-label">BUFF:</span>
                             <span 
                               class="expand-value"
-                              :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                              :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                             >
                               ¥{{ showPriceDiff && item.buy_price && item.buy_price !== '0' ? Math.abs(parseFloat(item.buff_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.buff_price).toFixed(2) }}
                             </span>
@@ -331,7 +331,7 @@
                 </div>
               </div>
               <div v-else class="expand-content-empty">
-                <span style="color: #999;">仅有1件物品，无需展开</span>
+                <span style="color: var(--text-secondary);">仅有1件物品，无需展开</span>
               </div>
             </template>
           </el-table-column>
@@ -430,7 +430,7 @@
           <el-table-column prop="weapon_float" label="磨损值" width="200" align="left">
             <template #default="scope">
               <!-- 组合模式下，数量大于1时不显示磨损值 -->
-              <div v-if="groupMode && scope.row.item_count > 1" style="color: #888;">
+              <div v-if="groupMode && scope.row.item_count > 1" style="color: var(--text-secondary);">
                 多个磨损值
               </div>
               <div v-else-if="scope.row.weapon_float && formatWeaponFloat(scope.row.weapon_float)">
@@ -450,7 +450,7 @@
                   ></div>
                 </div>
               </div>
-              <span v-else style="color: #888;">N/A</span>
+              <span v-else style="color: var(--text-secondary);">N/A</span>
             </template>
           </el-table-column>
           <el-table-column prop="float_range" label="磨损范围" min-width="120" />
@@ -465,12 +465,12 @@
                    @click="startEdit(scope.row)"
                    style="cursor: pointer; padding: 5px;">
                 <div v-if="scope.row.buy_price" style="display: flex; align-items: center; gap: 5px;">
-                  <span style="color: #fff; font-weight: bold;">
+                  <span style="color: var(--text-primary); font-weight: bold;">
                     ¥{{ formatPrice(scope.row.buy_price) }}
-                    <span v-if="groupMode && scope.row.item_count > 0" style="color: #fff;"> / ¥{{ calcAvg(scope.row.buy_price, scope.row.item_count) }}</span>
+                    <span v-if="groupMode && scope.row.item_count > 0" style="color: var(--text-primary);"> / ¥{{ calcAvg(scope.row.buy_price, scope.row.item_count) }}</span>
                   </span>
                 </div>
-                <span v-else style="color: #888;">点击输入</span>
+                <span v-else style="color: var(--text-secondary);">点击输入</span>
               </div>
               <el-input
                 v-else
@@ -495,7 +495,7 @@
               <span 
                 v-if="scope.row.yyyp_price && scope.row.buy_price"
                 :style="{
-                  color: parseFloat(scope.row.yyyp_price) === parseFloat(scope.row.buy_price) ? '#fff' : (parseFloat(scope.row.yyyp_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c'),
+                  color: parseFloat(scope.row.yyyp_price) === parseFloat(scope.row.buy_price) ? 'var(--text-primary)' : (parseFloat(scope.row.yyyp_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)'),
                   fontWeight: 'bold'
                 }"
               >
@@ -503,15 +503,15 @@
                 <span 
                   v-if="groupMode && scope.row.item_count > 0" 
                   :style="{ 
-                    color: parseFloat(calcAvg(scope.row.yyyp_price, scope.row.item_count)) === parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? '#fff' : (parseFloat(calcAvg(scope.row.yyyp_price, scope.row.item_count)) < parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? '#4CAF50' : '#f56c6c')
+                    color: parseFloat(calcAvg(scope.row.yyyp_price, scope.row.item_count)) === parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? 'var(--text-primary)' : (parseFloat(calcAvg(scope.row.yyyp_price, scope.row.item_count)) < parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? 'var(--accent-green)' : 'var(--accent-red-light)')
                   }"
                 > / ¥{{ calcAvg(scope.row.yyyp_price, scope.row.item_count) }}</span>
               </span>
-              <span v-else-if="scope.row.yyyp_price" style="color: #fff; font-weight: bold;">
+              <span v-else-if="scope.row.yyyp_price" style="color: var(--text-primary); font-weight: bold;">
                 ¥{{ formatPrice(scope.row.yyyp_price) }}
-                <span v-if="groupMode && scope.row.item_count > 0" style="color: #67C23A;"> / ¥{{ calcAvg(scope.row.yyyp_price, scope.row.item_count) }}</span>
+                <span v-if="groupMode && scope.row.item_count > 0" style="color: var(--accent-green);"> / ¥{{ calcAvg(scope.row.yyyp_price, scope.row.item_count) }}</span>
               </span>
-              <span v-else style="color: #888;">-</span>
+              <span v-else style="color: var(--text-secondary);">-</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -525,7 +525,7 @@
               <span 
                 v-if="scope.row.buff_price && scope.row.buy_price"
                 :style="{
-                  color: parseFloat(scope.row.buff_price) === parseFloat(scope.row.buy_price) ? '#fff' : (parseFloat(scope.row.buff_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c'),
+                  color: parseFloat(scope.row.buff_price) === parseFloat(scope.row.buy_price) ? 'var(--text-primary)' : (parseFloat(scope.row.buff_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)'),
                   fontWeight: 'bold'
                 }"
               >
@@ -533,15 +533,15 @@
                 <span 
                   v-if="groupMode && scope.row.item_count > 0" 
                   :style="{ 
-                    color: parseFloat(calcAvg(scope.row.buff_price, scope.row.item_count)) === parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? '#fff' : (parseFloat(calcAvg(scope.row.buff_price, scope.row.item_count)) < parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? '#4CAF50' : '#f56c6c')
+                    color: parseFloat(calcAvg(scope.row.buff_price, scope.row.item_count)) === parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? 'var(--text-primary)' : (parseFloat(calcAvg(scope.row.buff_price, scope.row.item_count)) < parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? 'var(--accent-green)' : 'var(--accent-red-light)')
                   }"
                 > / ¥{{ calcAvg(scope.row.buff_price, scope.row.item_count) }}</span>
               </span>
-              <span v-else-if="scope.row.buff_price" style="color: #fff; font-weight: bold;">
+              <span v-else-if="scope.row.buff_price" style="color: var(--text-primary); font-weight: bold;">
                 ¥{{ formatPrice(scope.row.buff_price) }}
-                <span v-if="groupMode && scope.row.item_count > 0" style="color: #67C23A;"> / ¥{{ calcAvg(scope.row.buff_price, scope.row.item_count) }}</span>
+                <span v-if="groupMode && scope.row.item_count > 0" style="color: var(--accent-green);"> / ¥{{ calcAvg(scope.row.buff_price, scope.row.item_count) }}</span>
               </span>
-              <span v-else style="color: #888;">-</span>
+              <span v-else style="color: var(--text-secondary);">-</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -555,7 +555,7 @@
               <span 
                 v-if="scope.row.steam_price && scope.row.buy_price"
                 :style="{
-                  color: parseFloat(scope.row.steam_price) === parseFloat(scope.row.buy_price) ? '#fff' : (parseFloat(scope.row.steam_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c'),
+                  color: parseFloat(scope.row.steam_price) === parseFloat(scope.row.buy_price) ? 'var(--text-primary)' : (parseFloat(scope.row.steam_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)'),
                   fontWeight: 'bold'
                 }"
               >
@@ -563,15 +563,15 @@
                 <span 
                   v-if="groupMode && scope.row.item_count > 0" 
                   :style="{ 
-                    color: parseFloat(calcAvg(scope.row.steam_price, scope.row.item_count)) === parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? '#fff' : (parseFloat(calcAvg(scope.row.steam_price, scope.row.item_count)) < parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? '#4CAF50' : '#f56c6c')
+                    color: parseFloat(calcAvg(scope.row.steam_price, scope.row.item_count)) === parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? 'var(--text-primary)' : (parseFloat(calcAvg(scope.row.steam_price, scope.row.item_count)) < parseFloat(calcAvg(scope.row.buy_price, scope.row.item_count)) ? 'var(--accent-green)' : 'var(--accent-red-light)')
                   }"
                 > / ¥{{ calcAvg(scope.row.steam_price, scope.row.item_count) }}</span>
               </span>
-              <span v-else-if="scope.row.steam_price" style="color: #fff; font-weight: bold;">
+              <span v-else-if="scope.row.steam_price" style="color: var(--text-primary); font-weight: bold;">
                 ¥{{ formatPrice(scope.row.steam_price) }}
-                <span v-if="groupMode && scope.row.item_count > 0" style="color: #67C23A;"> / ¥{{ calcAvg(scope.row.steam_price, scope.row.item_count) }}</span>
+                <span v-if="groupMode && scope.row.item_count > 0" style="color: var(--accent-green);"> / ¥{{ calcAvg(scope.row.steam_price, scope.row.item_count) }}</span>
               </span>
-              <span v-else style="color: #888;">-</span>
+              <span v-else style="color: var(--text-secondary);">-</span>
             </template>
           </el-table-column>
         </el-table>
@@ -688,7 +688,7 @@
                     <span class="price-label">Steam:</span>
                     <span 
                       class="price-value"
-                      :style="item.buy_price ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                      :style="item.buy_price ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                     >
                       ¥{{ showPriceDiff && item.buy_price ? Math.abs(parseFloat(item.steam_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.steam_price).toFixed(2) }}
                     </span>
@@ -700,7 +700,7 @@
                     <span class="price-label">悠悠:</span>
                     <span
                       class="price-value"
-                      :style="item.buy_price ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                      :style="item.buy_price ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                     >
                       ¥{{ showPriceDiff && item.buy_price ? Math.abs(parseFloat(item.yyyp_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.yyyp_price).toFixed(2) }}
                     </span>
@@ -709,7 +709,7 @@
                     <span class="price-label">BUFF:</span>
                     <span
                       class="price-value"
-                      :style="item.buy_price ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                      :style="item.buy_price ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                     >
                       ¥{{ showPriceDiff && item.buy_price ? Math.abs(parseFloat(item.buff_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.buff_price).toFixed(2) }}
                     </span>
@@ -728,9 +728,9 @@
         </div>
         <div class="table-footer">
           <span>共 {{ groupMode ? groupedData.length : componentData.length }} 条数据</span>
-          <span v-if="hasMore && !loadingMore" style="margin-left: 1rem; color: #999;">滚动加载更多...</span>
-          <span v-if="loadingMore" style="margin-left: 1rem; color: #4CAF50;">正在加载更多...</span>
-          <span v-if="!hasMore && (groupMode ? groupedData.length : componentData.length) > 0" style="margin-left: 1rem; color: #999;">已加载全部数据</span>
+          <span v-if="hasMore && !loadingMore" style="margin-left: 1rem; color: var(--text-secondary);">滚动加载更多...</span>
+          <span v-if="loadingMore" style="margin-left: 1rem; color: var(--accent-green);">正在加载更多...</span>
+          <span v-if="!hasMore && (groupMode ? groupedData.length : componentData.length) > 0" style="margin-left: 1rem; color: var(--text-secondary);">已加载全部数据</span>
         </div>
         <!-- 滚动触发元素 -->
         <div id="load-more-trigger-card" style="height: 1px;"></div>
@@ -776,7 +776,7 @@
       <div style="padding: 20px;">
         <div style="margin-bottom: 20px;">
           <div style="font-size: 14px; color: #606266; margin-bottom: 10px;">
-            当前组合共有 <span style="font-weight: bold; color: #409EFF;">{{ maxRemoveQuantity }}</span> 件物品
+            当前组合共有 <span style="font-weight: bold; color: var(--accent-blue);">{{ maxRemoveQuantity }}</span> 件物品
           </div>
           <el-input-number
             v-model="removeQuantity"

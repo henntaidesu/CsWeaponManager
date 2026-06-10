@@ -11,18 +11,18 @@
         <el-icon style="margin-right: 5px;"><Grid /></el-icon>
         {{ csfloatTokenLoading ? '正在获取令牌...' : csfloatTokenStatus === 'success' ? '✓ 令牌已获取' : (isEditMode ? '重新获取CsFloat令牌' : '一键获取CsFloat令牌') }}
       </el-button>
-      <div v-if="csfloatTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: #fff7e6; border-radius: 4px; border-left: 3px solid #faad14;">
-        <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
+      <div v-if="csfloatTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-orange);">
+        <div style="color: var(--accent-orange); font-weight: 500; margin-bottom: 5px;">
           <el-icon><Loading /></el-icon> 等待浏览器访问...
         </div>
-        <div style="color: #666; font-size: 12px;">
+        <div style="color: var(--text-secondary); font-size: 12px;">
           1. 在浏览器中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
           2. 访问已经登录的 https://csfloat.com<br/>
           3. 系统将自动获取令牌
         </div>
       </div>
-      <div v-if="csfloatTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-        <div style="color: #52c41a; font-weight: 500;">
+      <div v-if="csfloatTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+        <div style="color: var(--accent-green); font-weight: 500;">
           <el-icon><CircleCheck /></el-icon> 令牌获取成功!
         </div>
       </div>

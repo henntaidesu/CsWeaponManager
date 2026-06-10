@@ -69,12 +69,12 @@
 .yyyp-filter-buttons .filter-btn.disabled {
   cursor: not-allowed;
   opacity: 0.4;
-  color: #666;
+  color: var(--text-secondary);
   pointer-events: none;
 }
 
 .yyyp-filter-buttons .filter-btn.disabled:hover {
-  color: #666;
+  color: var(--text-secondary);
   background: transparent;
 }
 
@@ -327,29 +327,29 @@
 
 /* ========== 预售购买对话框样式 ========== */
 .yyyp-presale-buy-dialog {
-  --el-dialog-bg-color: #2a2a2a;
+  --el-dialog-bg-color: var(--bg-tertiary);
 }
 
 .yyyp-presale-buy-dialog :deep(.el-dialog__header) {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
 .yyyp-presale-buy-dialog :deep(.el-dialog__title) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
 
 .yyyp-presale-buy-dialog :deep(.el-dialog__body) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 20px;
 }
 
 .yyyp-presale-buy-dialog :deep(.el-dialog__footer) {
-  background-color: #1e1e1e;
-  border-top: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
@@ -368,9 +368,9 @@
   display: flex;
   gap: 20px;
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .commodity-image-large {
@@ -380,10 +380,10 @@
   justify-content: center;
   width: 200px;
   height: 150px;
-  background: #252525;
+  background: var(--bg-secondary);
   border-radius: 8px;
   padding: 10px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .commodity-info-details {
@@ -392,7 +392,7 @@
 
 .commodity-info-details h3 {
   margin: 0 0 15px 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 600;
 }
@@ -403,41 +403,41 @@
 }
 
 .commodity-info-details :deep(.el-descriptions__label) {
-  background-color: #252525;
-  color: #909399;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .commodity-info-details :deep(.el-descriptions__content) {
-  background-color: #1e1e1e;
-  color: #ffffff;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .commodity-info-details :deep(.el-descriptions__cell) {
-  border-color: #3a3a3a;
+  border-color: var(--border-default);
 }
 
 /* 预售信息区域 */
 .presale-info-section {
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .presale-info-section :deep(.el-alert) {
-  background-color: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
 }
 
 .presale-info-section :deep(.el-alert__title) {
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-weight: 600;
 }
 
 .presale-info-section :deep(.el-alert__description) {
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .presale-info-section :deep(.el-descriptions) {
@@ -445,25 +445,25 @@
 }
 
 .presale-info-section :deep(.el-descriptions__label) {
-  background-color: #252525;
-  color: #909399;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
 }
 
 .presale-info-section :deep(.el-descriptions__content) {
-  background-color: #1e1e1e;
-  color: #ffffff;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .presale-info-section :deep(.el-descriptions__cell) {
-  border-color: #3a3a3a;
+  border-color: var(--border-default);
 }
 
 /* 支付方式区域 */
 .payment-section {
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .payment-section .payment-info {
@@ -480,23 +480,23 @@
   display: flex;
   gap: 30px;
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .buy-options-section :deep(.el-checkbox) {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .buy-options-section :deep(.el-checkbox__label) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .buy-options-section :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  background-color: #409eff;
-  border-color: #409eff;
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
 }
 
 /* 空状态 */
@@ -508,38 +508,38 @@
 }
 
 .no-detail-section :deep(.el-empty) {
-  --el-empty-fill-color-0: #252525;
+  --el-empty-fill-color-0: var(--bg-secondary);
 }
 
 .no-detail-section :deep(.el-empty__description) {
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 /* ========== 在售购买对话框样式 ========== */
 .yyyp-onsale-buy-dialog {
-  --el-dialog-bg-color: #2a2a2a;
+  --el-dialog-bg-color: var(--bg-tertiary);
 }
 
 .yyyp-onsale-buy-dialog :deep(.el-dialog__header) {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
 .yyyp-onsale-buy-dialog :deep(.el-dialog__title) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
 
 .yyyp-onsale-buy-dialog :deep(.el-dialog__body) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 20px;
 }
 
 .yyyp-onsale-buy-dialog :deep(.el-dialog__footer) {
-  background-color: #1e1e1e;
-  border-top: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
@@ -570,7 +570,7 @@
 
 /* ========== 发布求购对话框样式 ========== */
 .yyyp-wanted-dialog {
-  --el-dialog-bg-color: #2a2a2a;
+  --el-dialog-bg-color: var(--bg-tertiary);
 }
 
 .yyyp-wanted-dialog :deep(.el-dialog__header) {
@@ -580,7 +580,7 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-dialog__title) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
@@ -591,13 +591,13 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-dialog__body) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 20px;
 }
 
 .yyyp-wanted-dialog :deep(.el-dialog__footer) {
-  background-color: #1e1e1e;
-  border-top: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
@@ -626,7 +626,7 @@
 
 .wanted-item-icon {
   font-size: 18px;
-  color: #66bb6a;
+  color: var(--accent-green);
   flex-shrink: 0;
 }
 
@@ -636,19 +636,19 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-form-item__label) {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
 }
 
 .yyyp-wanted-dialog :deep(.el-input__wrapper) {
-  background-color: #1e1e1e;
-  border-color: #3a3a3a;
-  box-shadow: 0 0 0 1px #3a3a3a inset;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  box-shadow: 0 0 0 1px var(--border-default) inset;
 }
 
 .yyyp-wanted-dialog :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #66bb6a inset;
+  box-shadow: 0 0 0 1px var(--accent-green) inset;
 }
 
 .yyyp-wanted-dialog :deep(.el-input__wrapper.is-focus) {
@@ -656,7 +656,7 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-input__inner) {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .yyyp-wanted-dialog :deep(.el-input-number) {
@@ -664,21 +664,21 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-input-number .el-input__wrapper) {
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
 }
 
 .yyyp-wanted-dialog :deep(.el-select .el-input__wrapper) {
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
 }
 
 .yyyp-wanted-dialog :deep(.el-textarea__inner) {
-  background-color: #1e1e1e;
-  border-color: #3a3a3a;
-  color: #ffffff;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 .yyyp-wanted-dialog :deep(.el-textarea__inner:hover) {
-  border-color: #66bb6a;
+  border-color: var(--accent-green);
 }
 
 .yyyp-wanted-dialog :deep(.el-textarea__inner:focus) {
@@ -686,8 +686,8 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-input-group__prepend) {
-  background-color: #252525;
-  border-color: #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
   color: #81c784;
   font-weight: 600;
 }
@@ -698,28 +698,28 @@
 }
 
 .yyyp-wanted-dialog :deep(.el-divider__text) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 0 10px;
 }
 
 .wanted-divider-text {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
   font-weight: 400;
 }
 
 .range-separator {
   flex: 1;
   text-align: center;
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
   padding: 0 4px;
 }
 
 /* 费用预览 */
 .wanted-fee-preview {
-  background: #1e1e1e;
-  border: 1px solid #3a3a3a;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 14px 16px;
   display: flex;
@@ -735,22 +735,22 @@
 }
 
 .wanted-fee-label {
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .wanted-fee-value {
-  color: #e0e0e0;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .wanted-fee-total {
-  border-top: 1px solid #3a3a3a;
+  border-top: 1px solid var(--border-default);
   padding-top: 8px;
   margin-top: 2px;
 }
 
 .wanted-fee-total .wanted-fee-label {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 

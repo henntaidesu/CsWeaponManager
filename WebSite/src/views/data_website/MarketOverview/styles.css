@@ -14,15 +14,15 @@
   display: flex;
   align-items: center;
   padding: 1rem;
-  background: #1e1e1e;
-  border: 1px solid #333;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 4px;
   margin-bottom: 1.5rem;
 }
 
 .chart-card {
-  background: #1e1e1e;
-  border: 1px solid #333;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
 }
 
 .card-header {
@@ -63,7 +63,7 @@
 
 .chart-title {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
@@ -75,7 +75,7 @@
   gap: 1.5rem;
   margin-left: 2rem;
   padding-left: 2rem;
-  border-left: 1px solid #3a3a3a;
+  border-left: 1px solid var(--border-default);
 }
 
 .stat-inline-item {
@@ -86,13 +86,13 @@
 
 .stat-inline-label {
   font-size: 0.75rem;
-  color: #909399;
+  color: var(--text-secondary);
   font-weight: normal;
 }
 
 .stat-inline-value {
   font-size: 1rem;
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -115,7 +115,7 @@
   align-items: center;
   justify-content: center;
   height: 400px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .no-data-tip p {
@@ -131,12 +131,12 @@
 }
 
 :deep(.el-form-item__label) {
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 :deep(.el-input__wrapper) {
-  background-color: #2a2a2a;
-  box-shadow: 0 0 0 1px #3a3a3a inset;
+  background-color: var(--bg-tertiary);
+  box-shadow: 0 0 0 1px var(--border-default) inset;
 }
 
 :deep(.el-input__wrapper:hover) {
@@ -144,16 +144,16 @@
 }
 
 :deep(.el-input__inner) {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 :deep(.el-select .el-input__wrapper) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
 }
 
 :deep(.el-card__header) {
-  background-color: #252525;
-  border-bottom: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-default);
   padding: 1rem 1.5rem;
 }
 
@@ -162,7 +162,7 @@
 }
 
 :deep(.el-input-number .el-input__wrapper) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
 }
 
 @media (max-width: 768px) {

@@ -121,7 +121,7 @@
           <h3>悠悠有品最低价</h3>
           <div class="stat-price-container">
             <p class="stat-number">¥{{ yyypPriceStats.total_price }}</p>
-            <p class="stat-diff-right" :style="{ color: yyypPriceStats.diff >= 0 ? '#f56c6c' : '#4CAF50' }">
+            <p class="stat-diff-right" :style="{ color: yyypPriceStats.diff >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
               {{ yyypPriceStats.diff >= 0 ? '+' : '' }}¥{{ yyypPriceStats.diff }}
             </p>
           </div>
@@ -130,7 +130,7 @@
           <h3>BUFF最低价</h3>
           <div class="stat-price-container">
             <p class="stat-number">¥{{ buffPriceStats.total_price }}</p>
-            <p class="stat-diff-right" :style="{ color: buffPriceStats.diff >= 0 ? '#f56c6c' : '#4CAF50' }">
+            <p class="stat-diff-right" :style="{ color: buffPriceStats.diff >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
               {{ buffPriceStats.diff >= 0 ? '+' : '' }}¥{{ buffPriceStats.diff }}
             </p>
           </div>
@@ -139,7 +139,7 @@
           <h3>Steam参考价</h3>
           <div class="stat-price-container">
             <p class="stat-number">¥{{ steamPriceStats.total_price }}</p>
-            <p class="stat-diff-right" :style="{ color: steamPriceStats.diff >= 0 ? '#f56c6c' : '#4CAF50' }">
+            <p class="stat-diff-right" :style="{ color: steamPriceStats.diff >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
               {{ steamPriceStats.diff >= 0 ? '+' : '' }}¥{{ steamPriceStats.diff }}
             </p>
           </div>
@@ -267,7 +267,7 @@
                           <span class="expand-label">Steam:</span>
                           <span 
                             class="expand-value"
-                            :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                            :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                           >
                             ¥{{ showPriceDiff && item.buy_price && item.buy_price !== '0' ? Math.abs(parseFloat(item.steam_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.steam_price).toFixed(2) }}
                           </span>
@@ -277,7 +277,7 @@
                           <span class="expand-label">悠悠:</span>
                           <span 
                             class="expand-value"
-                            :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                            :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                           >
                             ¥{{ showPriceDiff && item.buy_price && item.buy_price !== '0' ? Math.abs(parseFloat(item.yyyp_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.yyyp_price).toFixed(2) }}
                           </span>
@@ -286,7 +286,7 @@
                           <span class="expand-label">BUFF:</span>
                           <span 
                             class="expand-value"
-                            :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                            :style="item.buy_price && item.buy_price !== '0' ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                           >
                             ¥{{ showPriceDiff && item.buy_price && item.buy_price !== '0' ? Math.abs(parseFloat(item.buff_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.buff_price).toFixed(2) }}
                           </span>
@@ -295,7 +295,7 @@
                       <div class="expand-item-meta">
                         <div v-if="item.order_time" class="expand-meta-item">
                           <span class="expand-label">入库:</span>
-                          <span class="expand-value" style="color: #9E9E9E;">{{ item.order_time }}</span>
+                          <span class="expand-value" style="color: var(--text-secondary);">{{ item.order_time }}</span>
                         </div>
                       </div>
                     </div>
@@ -305,7 +305,7 @@
 
             </div>
             <div v-else class="expand-content-empty">
-              <span style="color: #999;">仅有1件物品，无需展开</span>
+              <span style="color: var(--text-secondary);">仅有1件物品，无需展开</span>
             </div>
           </template>
         </el-table-column>
@@ -390,7 +390,7 @@
         >
           <template #default="scope">
             <!-- 组合模式下，数量大于1时不显示磨损值 -->
-            <div v-if="groupMode && scope.row.item_count > 1" style="color: #888;">
+            <div v-if="groupMode && scope.row.item_count > 1" style="color: var(--text-secondary);">
               多个磨损值
             </div>
             <div v-else-if="scope.row.weapon_float">
@@ -410,7 +410,7 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">N/A</span>
+            <span v-else style="color: var(--text-secondary);">N/A</span>
           </template>
         </el-table-column>
         <el-table-column 
@@ -424,9 +424,9 @@
                  @click="startEdit(scope.row)" 
                  style="cursor: pointer; padding: 5px;">
               <div v-if="scope.row.buy_price" style="display: flex; align-items: center; gap: 5px;">
-                <span style="color: #fff; font-weight: bold;">¥{{ parseFloat(scope.row.buy_price).toFixed(2) }}</span>
+                <span style="color: var(--text-primary); font-weight: bold;">¥{{ parseFloat(scope.row.buy_price).toFixed(2) }}</span>
               </div>
-              <span v-else style="color: #888;">点击输入</span>
+              <span v-else style="color: var(--text-secondary);">点击输入</span>
             </div>
             <el-input 
               v-else
@@ -448,12 +448,12 @@
         >
           <template #default="scope">
             <div v-if="scope.row.yyyp_price && scope.row.buy_price" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
-              <span style="color: #fff; font-weight: bold;">
+              <span style="color: var(--text-primary); font-weight: bold;">
                 ¥{{ parseFloat(scope.row.yyyp_price).toFixed(2) }}
               </span>
               <span 
                 :style="{
-                  color: parseFloat(scope.row.yyyp_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c',
+                  color: parseFloat(scope.row.yyyp_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)',
                   fontSize: '12px',
                   fontWeight: 'bold'
                 }"
@@ -462,10 +462,10 @@
                 ¥{{ Math.abs(parseFloat(scope.row.yyyp_price) - parseFloat(scope.row.buy_price)).toFixed(2) }}
               </span>
             </div>
-            <span v-else-if="scope.row.yyyp_price" style="color: #fff; font-weight: bold;">
+            <span v-else-if="scope.row.yyyp_price" style="color: var(--text-primary); font-weight: bold;">
               ¥{{ parseFloat(scope.row.yyyp_price).toFixed(2) }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column 
@@ -476,12 +476,12 @@
         >
           <template #default="scope">
             <div v-if="scope.row.buff_price && scope.row.buy_price" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
-              <span style="color: #fff; font-weight: bold;">
+              <span style="color: var(--text-primary); font-weight: bold;">
                 ¥{{ parseFloat(scope.row.buff_price).toFixed(2) }}
               </span>
               <span 
                 :style="{
-                  color: parseFloat(scope.row.buff_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c',
+                  color: parseFloat(scope.row.buff_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)',
                   fontSize: '12px',
                   fontWeight: 'bold'
                 }"
@@ -490,10 +490,10 @@
                 ¥{{ Math.abs(parseFloat(scope.row.buff_price) - parseFloat(scope.row.buy_price)).toFixed(2) }}
               </span>
             </div>
-            <span v-else-if="scope.row.buff_price" style="color: #fff; font-weight: bold;">
+            <span v-else-if="scope.row.buff_price" style="color: var(--text-primary); font-weight: bold;">
               ¥{{ parseFloat(scope.row.buff_price).toFixed(2) }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column 
@@ -503,10 +503,10 @@
           sortable="custom"
         >
           <template #default="scope">
-            <span v-if="scope.row.steam_price" style="color: #fff; font-weight: bold;">
+            <span v-if="scope.row.steam_price" style="color: var(--text-primary); font-weight: bold;">
               ¥{{ parseFloat(scope.row.steam_price).toFixed(2) }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -530,7 +530,7 @@
                 </el-tag>
               </el-tooltip>
             </div>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column 
@@ -542,18 +542,18 @@
           fixed="right"
         >
           <template #default="scope">
-            <span v-if="scope.row.order_time" style="color: #9E9E9E;">
+            <span v-if="scope.row.order_time" style="color: var(--text-secondary);">
               {{ scope.row.order_time }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
       </el-table>
       <div class="table-footer">
         <span>共 {{ currentDisplayData.length }} 条数据</span>
-        <span v-if="hasMore && !loadingMore" style="margin-left: 1rem; color: #999;">滚动加载更多...</span>
-        <span v-if="loadingMore" style="margin-left: 1rem; color: #4CAF50;">正在加载更多...</span>
-        <span v-if="!hasMore && currentDisplayData.length > 0" style="margin-left: 1rem; color: #999;">已加载全部数据</span>
+        <span v-if="hasMore && !loadingMore" style="margin-left: 1rem; color: var(--text-secondary);">滚动加载更多...</span>
+        <span v-if="loadingMore" style="margin-left: 1rem; color: var(--accent-green);">正在加载更多...</span>
+        <span v-if="!hasMore && currentDisplayData.length > 0" style="margin-left: 1rem; color: var(--text-secondary);">已加载全部数据</span>
       </div>
       <!-- 滚动触发元素 -->
       <div id="load-more-trigger" style="height: 1px;"></div>
@@ -708,7 +708,7 @@
                   <span class="price-label">Steam:</span>
                   <span 
                     class="price-value"
-                    :style="item.buy_price ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                    :style="item.buy_price ? { color: parseFloat(item.steam_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                   >
                     ¥{{ showPriceDiff && item.buy_price ? Math.abs(parseFloat(item.steam_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.steam_price).toFixed(2) }}
                   </span>
@@ -720,7 +720,7 @@
                   <span class="price-label">悠悠:</span>
                   <span
                     class="price-value"
-                    :style="item.buy_price ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                    :style="item.buy_price ? { color: parseFloat(item.yyyp_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                   >
                     ¥{{ showPriceDiff && item.buy_price ? Math.abs(parseFloat(item.yyyp_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.yyyp_price).toFixed(2) }}
                   </span>
@@ -729,7 +729,7 @@
                   <span class="price-label">BUFF:</span>
                   <span
                     class="price-value"
-                    :style="item.buy_price ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? '#f56c6c' : '#4CAF50' } : {}"
+                    :style="item.buy_price ? { color: parseFloat(item.buff_price) >= parseFloat(item.buy_price) ? 'var(--accent-red-light)' : 'var(--accent-green)' } : {}"
                   >
                     ¥{{ showPriceDiff && item.buy_price ? Math.abs(parseFloat(item.buff_price) - parseFloat(item.buy_price)).toFixed(2) : parseFloat(item.buff_price).toFixed(2) }}
                   </span>
@@ -756,9 +756,9 @@
       </div>
       <div class="table-footer">
         <span>共 {{ currentDisplayData.length }} 条数据</span>
-        <span v-if="hasMore && !loadingMore" style="margin-left: 1rem; color: #999;">滚动加载更多...</span>
-        <span v-if="loadingMore" style="margin-left: 1rem; color: #4CAF50;">正在加载更多...</span>
-        <span v-if="!hasMore && inventoryData.length > 0" style="margin-left: 1rem; color: #999;">已加载全部数据</span>
+        <span v-if="hasMore && !loadingMore" style="margin-left: 1rem; color: var(--text-secondary);">滚动加载更多...</span>
+        <span v-if="loadingMore" style="margin-left: 1rem; color: var(--accent-green);">正在加载更多...</span>
+        <span v-if="!hasMore && inventoryData.length > 0" style="margin-left: 1rem; color: var(--text-secondary);">已加载全部数据</span>
       </div>
       <!-- 滚动触发元素 -->
       <div id="load-more-trigger-card" style="height: 1px;"></div>
@@ -1207,7 +1207,7 @@
                   <div class="preview-price-item">
                     <span class="preview-price-label">购入:</span>
                     <span class="preview-price-value buy-price" v-if="previewItem.buy_price">¥{{ parseFloat(previewItem.buy_price).toFixed(2) }}</span>
-                    <span class="preview-price-value" v-else style="color: #888;">-</span>
+                    <span class="preview-price-value" v-else style="color: var(--text-secondary);">-</span>
                   </div>
                   <div class="preview-price-item" v-if="previewItem.steam_price">
                     <span class="preview-price-label">Steam:</span>
@@ -1291,7 +1291,7 @@
                     </div>
                     <!-- 印花价格信息（悠悠蓝色 + BUFF绿色，一行显示） -->
                     <div v-if="stickersPriceInfo.find(s => s.name === sticker.name)" class="preview-sticker-price-info" style="font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap;">
-                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_price || stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_on_sale_count" style="color: #409eff;">
+                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_price || stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_on_sale_count" style="color: var(--accent-blue);">
                         <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_price">
                           悠悠: ¥{{ stickersPriceInfo.find(s => s.name === sticker.name).yyyp_price }}
                         </span>
@@ -1299,7 +1299,7 @@
                           ({{ stickersPriceInfo.find(s => s.name === sticker.name).yyyp_on_sale_count }})
                         </span>
                       </span>
-                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.buff_price || stickersPriceInfo.find(s => s.name === sticker.name)?.buff_on_sale_count" style="color: #67c23a;">
+                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.buff_price || stickersPriceInfo.find(s => s.name === sticker.name)?.buff_on_sale_count" style="color: var(--accent-green);">
                         <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.buff_price">
                           BUFF: ¥{{ stickersPriceInfo.find(s => s.name === sticker.name).buff_price }}
                         </span>
@@ -1335,7 +1335,7 @@
                     </div>
                     <!-- 挂件价格信息（悠悠蓝色 + BUFF绿色，一行显示） -->
                     <div v-if="pendantPriceInfo" class="preview-pendant-price-info" style="font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap;">
-                      <span v-if="pendantPriceInfo.yyyp_price || pendantPriceInfo.yyyp_on_sale_count" style="color: #409eff;">
+                      <span v-if="pendantPriceInfo.yyyp_price || pendantPriceInfo.yyyp_on_sale_count" style="color: var(--accent-blue);">
                         <span v-if="pendantPriceInfo.yyyp_price">
                           悠悠: ¥{{ pendantPriceInfo.yyyp_price }}
                         </span>
@@ -1343,7 +1343,7 @@
                           ({{ pendantPriceInfo.yyyp_on_sale_count }})
                         </span>
                       </span>
-                      <span v-if="pendantPriceInfo.buff_price || pendantPriceInfo.buff_on_sale_count" style="color: #67c23a;">
+                      <span v-if="pendantPriceInfo.buff_price || pendantPriceInfo.buff_on_sale_count" style="color: var(--accent-green);">
                         <span v-if="pendantPriceInfo.buff_price">
                           BUFF: ¥{{ pendantPriceInfo.buff_price }}
                         </span>

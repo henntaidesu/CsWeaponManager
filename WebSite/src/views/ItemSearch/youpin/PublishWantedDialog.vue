@@ -388,7 +388,7 @@ const handleConfirm = async () => {
 .market-divider {
   width: 1px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
 }
 
 .market-label {
@@ -401,8 +401,8 @@ const handleConfirm = async () => {
   font-weight: 700;
 }
 
-.market-value.orange { color: #E6A23C; }
-.market-value.yellow { color: #FAAD14; }
+.market-value.orange { color: var(--accent-orange); }
+.market-value.yellow { color: var(--accent-orange); }
 
 /* 表单 */
 .form-row {
@@ -453,7 +453,7 @@ const handleConfirm = async () => {
 
 .form-label.required::before {
   content: '* ';
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 /* 增值服务 */
@@ -487,7 +487,7 @@ const handleConfirm = async () => {
 .rules-title {
   font-size: 13px;
   font-weight: 600;
-  color: #E6A23C;
+  color: var(--accent-orange);
   margin-bottom: 8px;
 }
 
@@ -504,7 +504,7 @@ const handleConfirm = async () => {
 
 .section-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-tertiary);
   margin: 0 -20px;
 }
 
@@ -522,8 +522,8 @@ const handleConfirm = async () => {
   align-items: center;
   gap: 0.4rem;
   padding: 6px 12px;
-  background: rgba(103, 194, 58, 0.1);
-  border: 1px solid rgba(103, 194, 58, 0.3);
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
   border-radius: 4px;
 }
 
@@ -535,7 +535,7 @@ const handleConfirm = async () => {
 .balance-value {
   font-size: 1rem;
   font-weight: 600;
-  color: #67C23A;
+  color: var(--accent-green);
   min-width: 64px;
 }
 
@@ -560,7 +560,7 @@ const handleConfirm = async () => {
 .total-price {
   font-size: 22px;
   font-weight: 700;
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 .footer-actions {

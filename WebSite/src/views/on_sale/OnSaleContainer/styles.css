@@ -13,10 +13,10 @@
   top: 0;
   bottom: 0;
   width: 220px;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(35, 35, 35, 0.95) 100%);
+  background: var(--bg-secondary);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(58, 58, 58, 0.8);
+  border-right: 1px solid var(--border-default);
   border-left: none;
   overflow-y: auto;
   overflow-x: hidden;
@@ -48,15 +48,15 @@
   transform: translateY(-50%);
   width: 36px;
   height: 80px;
-  background: linear-gradient(90deg, rgba(30, 30, 30, 0.95) 0%, rgba(30, 30, 30, 0.98) 100%);
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 0 12px 12px 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #b0b0b0;
+  color: var(--text-secondary);
   z-index: 101;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
 }
@@ -76,10 +76,10 @@
 }
 
 .toggle-button:hover {
-  background: linear-gradient(90deg, rgba(64, 158, 255, 0.2) 0%, rgba(64, 158, 255, 0.3) 100%);
-  color: #409eff;
-  border-color: #409eff;
-  box-shadow: 2px 0 12px rgba(64, 158, 255, 0.4);
+  background: linear-gradient(90deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.3) 100%);
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+  box-shadow: 2px 0 12px rgba(76, 175, 80, 0.4);
   transform: translateY(-50%) translateX(2px);
 }
 
@@ -104,13 +104,13 @@
 
 .sidebar-header {
   padding: 1.5rem 1.5rem 1rem 1.5rem;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid var(--border-default);
   margin-bottom: 0;
 }
 
 .sidebar-header h2 {
   font-size: 1.125rem;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   font-weight: 600;
 }
@@ -127,20 +127,20 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
 }
 
 .category-list li:hover {
-  background-color: #333333;
-  color: #ffffff;
+  background-color: var(--bg-overlay);
+  color: var(--text-primary);
 }
 
 .category-list li.active {
-  background-color: #409eff;
-  color: #ffffff;
+  background-color: var(--accent-green);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -151,7 +151,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background-color: #66b1ff;
+  background-color: var(--accent-green);
 }
 
 .category-list li span {

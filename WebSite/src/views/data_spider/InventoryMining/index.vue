@@ -317,7 +317,7 @@
               </div>
             </div>
             <div v-else class="expand-content-empty">
-              <span style="color: #999;">仅有1件物品，无需展开</span>
+              <span style="color: var(--text-secondary);">仅有1件物品，无需展开</span>
             </div>
           </template>
         </el-table-column>
@@ -395,7 +395,7 @@
         
         <el-table-column prop="weapon_float" label="磨损值" width="200" align="left">
           <template #default="scope">
-            <div v-if="groupMode && scope.row.item_count > 1" style="color: #888;">
+            <div v-if="groupMode && scope.row.item_count > 1" style="color: var(--text-secondary);">
               多个磨损值
             </div>
             <div v-else-if="scope.row.weapon_float && scope.row.weapon_float !== '0' && scope.row.weapon_float !== '0.0'">
@@ -414,7 +414,7 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">N/A</span>
+            <span v-else style="color: var(--text-secondary);">N/A</span>
           </template>
         </el-table-column>
         
@@ -422,13 +422,13 @@
         
         <el-table-column label="价格" min-width="150" sortable :sort-method="sortByPrice">
           <template #default="scope">
-            <span v-if="groupMode && scope.row.total_value" style="color: #4CAF50; font-weight: bold;">
+            <span v-if="groupMode && scope.row.total_value" style="color: var(--accent-green); font-weight: bold;">
               ¥{{ scope.row.total_value.toFixed(2) }}
             </span>
-            <span v-else-if="scope.row.market_price && scope.row.market_price !== '0'" style="color: #4CAF50; font-weight: bold;">
+            <span v-else-if="scope.row.market_price && scope.row.market_price !== '0'" style="color: var(--accent-green); font-weight: bold;">
               ¥{{ parseFloat(scope.row.market_price).toFixed(2) }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         
@@ -509,7 +509,7 @@ export default {
   width: 280px;
   min-width: 280px;
   flex-shrink: 0;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -531,12 +531,12 @@ export default {
 .sidebar-header-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .sidebar-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+  background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
   margin-bottom: 1rem;
 }
 
@@ -547,8 +547,8 @@ export default {
 }
 
 .history-item {
-  background-color: #252525;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 0.75rem;
@@ -558,12 +558,12 @@ export default {
 }
 
 .history-item:hover {
-  border-color: #4CAF50;
-  background-color: #2a2a2a;
+  border-color: var(--accent-green);
+  background-color: var(--bg-tertiary);
 }
 
 .history-item.active {
-  border-color: #4CAF50;
+  border-color: var(--accent-green);
   background-color: rgba(76, 175, 80, 0.1);
   box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
 }
@@ -607,7 +607,7 @@ export default {
 .history-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -615,7 +615,7 @@ export default {
 
 .history-steam-id {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-secondary);
   font-family: monospace;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -630,7 +630,7 @@ export default {
 
 .history-time {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .history-stats {
@@ -651,16 +651,16 @@ export default {
 }
 
 .mining-section {
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(35, 35, 35, 0.95) 100%);
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  border: 1px solid var(--border-default);
 }
 
 .section-title {
   font-size: 1.5rem;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0 0 1.5rem 0;
   font-weight: 600;
 }
@@ -695,26 +695,26 @@ export default {
 
 .progress-label {
   display: block;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
 .progress-value {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 600;
 }
 
 .progress-value.highlight {
-  color: #409eff;
+  color: var(--accent-blue);
   font-size: 1.3rem;
 }
 
 .result-section {
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(58, 58, 58, 0.8);
+  border-top: 1px solid var(--border-default);
 }
 
 .result-stats {
@@ -728,47 +728,47 @@ export default {
   border-radius: 8px;
   padding: 1.5rem;
   text-align: center;
-  border: 1px solid rgba(58, 58, 58, 0.6);
+  border: 1px solid var(--border-default);
 }
 
 .stat-label {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
 .stat-value {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1.8rem;
   font-weight: 700;
 }
 
 .stat-value.highlight {
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 .stat-value.success {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .results-table-section {
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(35, 35, 35, 0.95) 100%);
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
   padding: 2rem;
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  border: 1px solid var(--border-default);
 }
 
 .user-tree-section {
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(35, 35, 35, 0.95) 100%);
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  border: 1px solid var(--border-default);
 }
 
 .user-tree {
   background: transparent;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-top: 1rem;
 }
 
@@ -813,7 +813,7 @@ export default {
 }
 
 .tree-icon {
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 .tree-label-container {
@@ -825,13 +825,13 @@ export default {
 }
 
 .tree-label {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 500;
 }
 
 .tree-steam-id {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-size: 0.85rem;
   font-family: monospace;
   white-space: nowrap;
@@ -884,9 +884,9 @@ export default {
 }
 
 .item-card {
-  background: linear-gradient(135deg, rgba(45, 45, 45, 0.8) 0%, rgba(35, 35, 35, 0.9) 100%);
-  border: 1px solid rgba(58, 58, 58, 0.8);
-  border-radius: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -903,12 +903,12 @@ export default {
 .item-card-image {
   width: 100%;
   height: 180px;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(35, 35, 35, 0.9) 100%);
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  border-bottom: 1px solid rgba(58, 58, 58, 0.6);
+  border-bottom: 1px solid var(--border-default);
   position: relative;
 }
 
@@ -925,7 +925,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -940,7 +940,7 @@ export default {
 .item-card-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -968,12 +968,12 @@ export default {
 .price-value {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .price-empty {
   font-size: 0.9rem;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .item-card-footer {
@@ -982,7 +982,7 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(58, 58, 58, 0.6);
+  border-top: 1px solid var(--border-default);
   margin-top: auto;
 }
 
@@ -995,7 +995,7 @@ export default {
 }
 
 .no-image-small {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.8rem;
 }
 
@@ -1015,7 +1015,7 @@ export default {
 }
 
 .no-image {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
@@ -1026,7 +1026,7 @@ export default {
 .item-title {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
@@ -1065,7 +1065,7 @@ export default {
 }
 
 .sticker-placeholder {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
 }
 
@@ -1083,7 +1083,7 @@ export default {
 
 .rename-text {
   font-size: 0.85rem;
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 .rename-value {
@@ -1117,7 +1117,7 @@ export default {
 }
 
 .expand-item-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.75rem;
@@ -1126,7 +1126,7 @@ export default {
 }
 
 .expand-item-card:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-color: rgba(76, 175, 80, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -1240,7 +1240,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: bold;
 }
@@ -1284,7 +1284,7 @@ export default {
 }
 
 .expand-value-small {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.75rem;
   font-family: monospace;
@@ -1303,12 +1303,12 @@ export default {
 }
 
 .expand-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.8rem;
 }
 
 .expand-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
   font-size: 0.85rem;
 }
@@ -1383,7 +1383,7 @@ export default {
 
 .float-segment.fn {
   flex: 7;
-  background: linear-gradient(90deg, #4CAF50, #66BB6A);
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-green));
 }
 
 .float-segment.mw {
@@ -1463,61 +1463,22 @@ export default {
   gap: 0.5rem;
 }
 
-:deep(.el-pagination .el-pager li) {
-  background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-:deep(.el-pagination .el-pager li:hover) {
-  background-color: #333;
-}
-
-:deep(.el-pagination .el-pager li.is-active) {
-  background-color: #4CAF50;
-  color: #fff;
-}
-
-:deep(.el-pagination .btn-prev),
-:deep(.el-pagination .btn-next) {
-  background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-:deep(.el-pagination .btn-prev:hover),
-:deep(.el-pagination .btn-next:hover) {
-  background-color: #333;
-}
-
-:deep(.el-pagination .el-select .el-input__inner) {
-  background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-:deep(.el-pagination .el-input__inner) {
-  background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
-}
-
 /* 表格样式 */
 :deep(.el-table) {
   background-color: transparent;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-table th) {
   background-color: var(--bg-tertiary) !important;
-  color: #fff;
+  color: var(--text-primary);
   border-bottom: 1px solid var(--border-default);
 }
 
 :deep(.el-table td) {
   background-color: transparent !important;
   border-bottom: 1px solid var(--border-default);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-table tr:hover > td) {

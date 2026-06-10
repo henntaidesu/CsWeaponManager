@@ -19,12 +19,12 @@
 
 .update-overlay-content {
   text-align: center;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 .update-overlay-icon {
   font-size: 48px;
-  color: #409eff;
+  color: var(--accent-blue);
   margin-bottom: 1rem;
 }
 
@@ -36,12 +36,12 @@
 
 .update-overlay-status {
   font-size: 0.875rem;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .doc-box {
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -71,17 +71,17 @@
 
 /* 版本检查区域（紧凑版） */
 .version-check-section {
-  background-color: #252525;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
   padding: 1rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   flex-shrink: 0;
 }
 
 .version-header h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #409eff;
+  color: var(--accent-blue);
   margin: 0 0 0.75rem 0;
 }
 
@@ -96,19 +96,19 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 4px;
 }
 
 .current-version .label {
   font-size: 0.875rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .current-version .value {
   font-size: 1rem;
   font-weight: 600;
-  color: #409eff;
+  color: var(--accent-blue);
 }
 
 .update-alert,
@@ -119,10 +119,10 @@
 /* 文档目录 */
 .doc-sidebar {
   flex: 1;
-  background-color: #252525;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
   padding: 1.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -136,7 +136,7 @@
 .sidebar-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #409eff;
+  color: var(--accent-blue);
   margin: 0;
 }
 
@@ -151,7 +151,7 @@
 .tree-error {
   padding: 2rem 1rem;
   text-align: center;
-  color: #b0b0b0;
+  color: var(--text-secondary);
 }
 
 .tree-loading p {
@@ -189,10 +189,10 @@
   width: 240px;
   min-width: 240px;
   flex-shrink: 0;
-  background-color: #252525;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
   padding: 1.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   height: 100%;
   overflow: hidden;
   display: flex;
@@ -202,7 +202,7 @@
 .toc-header h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #67c23a;
+  color: var(--accent-green);
   margin: 0 0 1rem 0;
 }
 
@@ -223,7 +223,7 @@
 }
 
 .toc-link {
-  color: #b0b0b0;
+  color: var(--text-secondary);
   text-decoration: none;
   padding: 0.4rem 0.5rem;
   border-radius: 4px;
@@ -238,14 +238,14 @@
 }
 
 .toc-link:hover {
-  color: #409eff;
+  color: var(--accent-blue);
   background-color: rgba(64, 158, 255, 0.1);
 }
 
 .toc-link.active {
-  color: #409eff;
+  color: var(--accent-blue);
   background-color: rgba(64, 158, 255, 0.15);
-  border-left-color: #409eff;
+  border-left-color: var(--accent-blue);
   font-weight: 500;
 }
 
@@ -273,7 +273,7 @@
   top: 50%;
   width: 4px;
   height: 4px;
-  background-color: #67c23a;
+  background-color: var(--accent-green);
   border-radius: 50%;
   transform: translateY(-50%);
   opacity: 0.5;
@@ -289,7 +289,7 @@
   content: '›';
   position: absolute;
   left: 1.2rem;
-  color: #67c23a;
+  color: var(--accent-green);
   opacity: 0.5;
   font-size: 0.9rem;
 }
@@ -304,7 +304,7 @@
   content: '·';
   position: absolute;
   left: 2rem;
-  color: #67c23a;
+  color: var(--accent-green);
   opacity: 0.4;
 }
 
@@ -312,7 +312,7 @@
 .toc-level-6 {
   padding-left: 3.5rem;
   font-size: 0.7rem;
-  color: #909399;
+  color: var(--text-secondary);
   opacity: 0.8;
 }
 
@@ -326,26 +326,26 @@
 }
 
 .toc-nav::-webkit-scrollbar-thumb {
-  background: rgba(103, 194, 58, 0.3);
+  background: rgba(76, 175, 80, 0.3);
   border-radius: 3px;
 }
 
 .toc-nav::-webkit-scrollbar-thumb:hover {
-  background: rgba(103, 194, 58, 0.5);
+  background: rgba(76, 175, 80, 0.5);
 }
 
 .loading-container,
 .empty-state,
 .error-container {
-  background-color: #252525;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
   padding: 4rem 2rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   height: 100%;
 }
 
@@ -356,9 +356,9 @@
 }
 
 .content-section {
-  background-color: #252525;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -367,13 +367,13 @@
 
 .content-header {
   padding: 1.5rem 2rem;
-  background-color: #2a2a2a;
-  border-bottom: 1px solid #333;
+  background-color: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-default);
   flex-shrink: 0;
 }
 
 .content-header h2 {
-  color: #409eff;
+  color: var(--accent-blue);
   font-size: 1.5rem;
   margin: 0;
   font-weight: 600;
@@ -381,7 +381,7 @@
 
 .markdown-content {
   padding: 2rem;
-  color: #e0e0e0;
+  color: var(--text-primary);
   line-height: 1.8;
   overflow-y: auto;
   flex: 1;
@@ -417,7 +417,7 @@
 }
 
 .markdown-content :deep(h1) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 2rem;
   font-weight: 700;
   margin: 2rem 0 1.5rem 0;
@@ -430,23 +430,23 @@
 }
 
 .markdown-content :deep(h2) {
-  color: #409eff;
+  color: var(--accent-blue);
   font-size: 1.5rem;
   font-weight: 600;
   margin: 1.8rem 0 1rem 0;
   padding-left: 0.5rem;
-  border-left: 4px solid #409eff;
+  border-left: 4px solid var(--accent-blue);
 }
 
 .markdown-content :deep(h3) {
-  color: #67c23a;
+  color: var(--accent-green);
   font-size: 1.25rem;
   font-weight: 600;
   margin: 1.5rem 0 0.8rem 0;
 }
 
 .markdown-content :deep(h4) {
-  color: #e6a23c;
+  color: var(--accent-orange);
   font-size: 1.1rem;
   font-weight: 600;
   margin: 1.2rem 0 0.6rem 0;
@@ -454,7 +454,7 @@
 
 .markdown-content :deep(p) {
   margin: 0.8rem 0;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 .markdown-content :deep(ul),
@@ -465,12 +465,12 @@
 
 .markdown-content :deep(li) {
   margin: 0.5rem 0;
-  color: #e0e0e0;
+  color: var(--text-primary);
 }
 
 .markdown-content :deep(code) {
   background: rgba(64, 158, 255, 0.1);
-  color: #409eff;
+  color: var(--accent-blue);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
@@ -488,39 +488,39 @@
 
 .markdown-content :deep(pre code) {
   background: transparent;
-  color: #67c23a;
+  color: var(--accent-green);
   padding: 0;
   font-size: 0.9rem;
   line-height: 1.6;
 }
 
 .markdown-content :deep(blockquote) {
-  border-left: 4px solid #409eff;
+  border-left: 4px solid var(--accent-blue);
   padding-left: 1rem;
   margin: 1rem 0;
-  color: #b0b0b0;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .markdown-content :deep(a) {
-  color: #409eff;
+  color: var(--accent-blue);
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .markdown-content :deep(a:hover) {
-  color: #66b1ff;
+  color: var(--accent-blue);
   text-decoration: underline;
 }
 
 .markdown-content :deep(strong) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .markdown-content :deep(hr) {
   border: none;
-  border-top: 1px solid rgba(58, 58, 58, 0.8);
+  border-top: 1px solid var(--border-default);
   margin: 2rem 0;
 }
 
@@ -539,7 +539,7 @@
 
 .markdown-content :deep(th) {
   background: rgba(64, 158, 255, 0.1);
-  color: #409eff;
+  color: var(--accent-blue);
   font-weight: 600;
 }
 

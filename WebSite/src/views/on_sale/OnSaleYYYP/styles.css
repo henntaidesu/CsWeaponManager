@@ -29,15 +29,15 @@
 }
 
 .trade-type-tab:hover {
-  background: rgba(64, 158, 255, 0.1);
-  border-color: rgba(64, 158, 255, 0.3);
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.3);
   transform: translateY(-2px);
 }
 
 .trade-type-tab.active {
-  background: linear-gradient(135deg, rgba(64, 158, 255, 0.2) 0%, rgba(64, 158, 255, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.1) 100%);
   border-color: var(--el-color-primary);
-  box-shadow: 0 0 12px rgba(64, 158, 255, 0.3);
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
 }
 
 .trade-type-icon {
@@ -72,7 +72,7 @@
 
 .trade-type-tab.active .trade-type-count {
   background: var(--el-color-primary);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .trade-type-tab.disabled {
@@ -168,7 +168,7 @@
   position: relative;
   width: 100%;
   height: 150px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -214,7 +214,7 @@
 }
 
 .sticker-placeholder-overlay {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -253,7 +253,7 @@
   left: 8px;
   padding: 4px 8px;
   background: rgba(76, 175, 80, 0.9);
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.7rem;
   font-weight: 600;
   border-radius: 4px;
@@ -283,7 +283,7 @@
 .card-title {
   font-size: 0.8rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -321,7 +321,7 @@
 }
 
 .float-segment.fn {
-  background: #4CAF50;
+  background: var(--accent-green);
   flex: 0.07;
 }
 
@@ -359,7 +359,7 @@
 .float-value {
   text-align: left;
   font-size: 0.75rem;
-  color: #ccc;
+  color: var(--text-secondary);
   font-family: monospace;
   margin-top: 0.2rem;
   margin-bottom: 0;
@@ -392,31 +392,31 @@
 }
 
 .price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
 .price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 0.75rem;
 }
 
 .price-profit {
-  color: #f56c6c;
+  color: var(--accent-red-light);
 }
 
 .price-loss {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .price-equal {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .sale-price {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 /* 卡片底部 */
@@ -513,7 +513,7 @@
 }
 
 .sticker-placeholder {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 10px;
 }
 
@@ -552,7 +552,7 @@
 }
 
 .update-price-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -644,7 +644,7 @@
 }
 
 .preview-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -698,7 +698,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 .preview-image-placeholder {
@@ -707,9 +707,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1.2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 .preview-info-section {
@@ -777,7 +777,7 @@
 
 .preview-rename {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
   display: flex;
@@ -791,7 +791,7 @@
 
 .preview-rename-text {
   font-size: 1rem;
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
@@ -799,13 +799,13 @@
 .preview-sticker-list-section {
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
 
 .preview-sticker-list-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 0.75rem;
@@ -867,13 +867,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1.2rem;
   font-weight: bold;
 }
 
 .preview-sticker-list-name {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
   flex: 1;
   overflow: hidden;
@@ -884,13 +884,13 @@
 /* 预览弹窗中的挂件信息 */
 .preview-pendant-section {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
 
 .preview-pendant-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 0.75rem;
@@ -952,13 +952,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1.2rem;
   font-weight: bold;
 }
 
 .preview-pendant-list-name {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
   flex: 1;
   overflow: hidden;
@@ -997,7 +997,7 @@
   transform: translateX(-50%);
   background: var(--bg-tertiary);
   border: 2px solid var(--el-color-primary);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
@@ -1019,7 +1019,7 @@
 }
 
 .multi-select-actions .selected-count {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
 }
@@ -1041,7 +1041,7 @@
 
 .inventory-card.selected {
   border-color: var(--el-color-primary);
-  background: rgba(64, 158, 255, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   box-shadow: 0 0 0 2px var(--el-color-primary);
 }
 
@@ -1056,7 +1056,7 @@
 }
 
 .batch-change-price-dialog .selected-items-summary {
-  background: rgba(64, 158, 255, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -1200,12 +1200,12 @@
 }
 
 .current-price-text .price-higher {
-  color: #F56C6C;
+  color: var(--accent-red-light);
   font-weight: 600;
 }
 
 .current-price-text .price-lower {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
@@ -1222,12 +1222,12 @@
 }
 
 .reference-price-text .price-higher {
-  color: #F56C6C;
+  color: var(--accent-red-light);
   font-weight: 600;
 }
 
 .reference-price-text .price-lower {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
@@ -1260,13 +1260,13 @@
 
 /* 改价状态样式 */
 .price-input-section .input-success :deep(.el-input__wrapper) {
-  border-color: #67C23A;
-  box-shadow: 0 0 0 1px #67C23A inset;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 1px var(--accent-green) inset;
 }
 
 .price-input-section .input-error :deep(.el-input__wrapper) {
-  border-color: #F56C6C;
-  box-shadow: 0 0 0 1px #F56C6C inset;
+  border-color: var(--accent-red-light);
+  box-shadow: 0 0 0 1px var(--accent-red-light) inset;
 }
 
 .status-indicator {
@@ -1289,7 +1289,7 @@
   background: rgba(245, 108, 108, 0.1);
   border: 1px solid rgba(245, 108, 108, 0.3);
   border-radius: 4px;
-  color: #F56C6C;
+  color: var(--accent-red-light);
   font-size: 12px;
   line-height: 1.5;
   word-break: break-word;

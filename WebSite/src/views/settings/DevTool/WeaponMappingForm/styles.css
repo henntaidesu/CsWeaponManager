@@ -1,18 +1,18 @@
 .sync-section {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid #444;
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
   margin-bottom: 1.5rem;
 }
 
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #444;
+  border-bottom: 2px solid var(--border-default);
 }
 
 .sync-controls {
@@ -61,12 +61,12 @@
 
 .csqaq-file-path {
   font-size: 0.875rem;
-  color: #888;
+  color: var(--text-secondary);
   margin-left: 0.25rem;
 }
 
 .csqaq-file-path a {
-  color: #409EFF;
+  color: var(--accent-blue);
   text-decoration: none;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .sync-time {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-size: 0.875rem;
 }
 
@@ -106,17 +106,17 @@
 }
 
 .progress-label {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .progress-value {
-  color: #409EFF;
+  color: var(--accent-blue);
   font-weight: 600;
 }
 
 .progress-value.success-rate {
-  color: #67C23A;
+  color: var(--accent-green);
 }
 
 .status-row {
@@ -126,27 +126,27 @@
 }
 
 .status-label {
-  color: #888;
+  color: var(--text-secondary);
   min-width: 60px;
   font-weight: 500;
 }
 
 .status-value {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .status-value.success-text {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
 .status-value.error {
-  color: #F56C6C;
+  color: var(--accent-red-light);
   font-weight: 600;
 }
 
 .status-value.highlight {
-  color: #E6A23C;
+  color: var(--accent-orange);
   font-weight: 600;
   font-size: 1.1rem;
 }

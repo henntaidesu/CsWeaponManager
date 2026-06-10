@@ -357,7 +357,7 @@
               :disabled="isTypeDisabled('steam')"
             >
               <span>Steam市场</span>
-              <span v-if="isTypeDisabled('steam')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isTypeDisabled('steam')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="!isIndependentDataSourceMode"
@@ -366,7 +366,7 @@
               :disabled="isTypeDisabled('perfectworld')"
             >
               <span>完美世界APP</span>
-              <span v-if="isTypeDisabled('perfectworld')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isTypeDisabled('perfectworld')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="!isIndependentDataSourceMode"
@@ -375,7 +375,7 @@
               :disabled="isTypeDisabled('buff')"
             >
               <span>网易BUFF</span>
-              <span v-if="isTypeDisabled('buff')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isTypeDisabled('buff')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="!isIndependentDataSourceMode"
@@ -384,7 +384,7 @@
               :disabled="isTypeDisabled('youpin')"
             >
               <span>悠悠有品</span>
-              <span v-if="isTypeDisabled('youpin')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isTypeDisabled('youpin')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="!isIndependentDataSourceMode"
@@ -393,7 +393,7 @@
               :disabled="isTypeDisabled('csfloat')"
             >
               <span>CsFloat</span>
-              <span v-if="isTypeDisabled('csfloat')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isTypeDisabled('csfloat')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="!isIndependentDataSourceMode"
@@ -402,7 +402,7 @@
               :disabled="isTypeDisabled('c5game')"
             >
               <span>C5 GAME</span>
-              <span v-if="isTypeDisabled('c5game')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isTypeDisabled('c5game')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="isIndependentDataSourceMode"
@@ -411,7 +411,7 @@
               :disabled="isIndependentTypeDisabled('csqaq')"
             >
               <span>CSQAQ</span>
-              <span v-if="isIndependentTypeDisabled('csqaq')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isIndependentTypeDisabled('csqaq')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
             <el-option 
               v-if="isIndependentDataSourceMode"
@@ -420,7 +420,7 @@
               :disabled="isIndependentTypeDisabled('steamdt')"
             >
               <span>SteamDT</span>
-              <span v-if="isIndependentTypeDisabled('steamdt')" style="color: #909399; font-size: 12px; margin-left: 10px;">(已存在)</span>
+              <span v-if="isIndependentTypeDisabled('steamdt')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -450,18 +450,18 @@
               <el-icon style="margin-right: 5px;"><Grid /></el-icon>
               {{ buffTokenLoading ? '正在获取令牌...' : buffTokenStatus === 'success' ? '✓ 令牌已获取' : '一键获取BUFF令牌' }}
             </el-button>
-            <div v-if="buffTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: #fff7e6; border-radius: 4px; border-left: 3px solid #faad14;">
-              <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
+            <div v-if="buffTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-orange);">
+              <div style="color: var(--accent-orange); font-weight: 500; margin-bottom: 5px;">
                 <el-icon><Loading /></el-icon> 等待手机APP访问...
               </div>
-              <div style="color: #666; font-size: 12px;">
+              <div style="color: var(--text-secondary); font-size: 12px;">
                 1. 在手机WiFi设置中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
                 2. 打开BUFF APP并登录<br/>
                 3. 系统将自动获取令牌
               </div>
             </div>
-            <div v-if="buffTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-              <div style="color: #52c41a; font-weight: 500;">
+            <div v-if="buffTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+              <div style="color: var(--accent-green); font-weight: 500;">
                 <el-icon><CircleCheck /></el-icon> 令牌获取成功!
               </div>
             </div>
@@ -594,25 +594,25 @@
                 :style="{
                   textAlign: 'center', 
                   padding: '20px', 
-                  background: '#f5f5f5', 
+                  background: 'var(--bg-tertiary)', 
                   borderRadius: '8px',
                   cursor: steamQRStatus === 'success' ? 'default' : 'pointer',
                   transition: 'all 0.3s'
                 }"
-                @mouseenter="$event.currentTarget.style.background = steamQRStatus === 'success' ? '#f5f5f5' : '#e8e8e8'"
-                @mouseleave="$event.currentTarget.style.background = '#f5f5f5'"
+                @mouseenter="$event.currentTarget.style.background = steamQRStatus === 'success' ? 'var(--bg-tertiary)' : 'var(--bg-overlay)'"
+                @mouseleave="$event.currentTarget.style.background = 'var(--bg-tertiary)'"
               >
                 <div v-if="!steamQRCode && !steamQRLoading">
-                  <el-icon :size="80" color="#409EFF"><Grid /></el-icon>
-                  <p style="color: #409EFF; margin-top: 10px; font-weight: 500;">点击获取Steam登录二维码</p>
+                  <el-icon :size="80" color="var(--accent-blue)"><Grid /></el-icon>
+                  <p style="color: var(--accent-blue); margin-top: 10px; font-weight: 500;">点击获取Steam登录二维码</p>
                 </div>
                 <div v-else-if="steamQRLoading">
-                  <el-icon :size="80" class="is-loading" color="#409EFF"><Loading /></el-icon>
-                  <p style="color: #409EFF; margin-top: 10px;">正在获取二维码...</p>
+                  <el-icon :size="80" class="is-loading" color="var(--accent-blue)"><Loading /></el-icon>
+                  <p style="color: var(--accent-blue); margin-top: 10px;">正在获取二维码...</p>
                 </div>
                 <div v-else>
                   <img :src="steamQRCode" alt="Steam登录二维码" style="width: 200px; height: 200px;" />
-                  <p style="color: #666; margin-top: 10px; font-size: 14px;">
+                  <p style="color: var(--text-secondary); margin-top: 10px; font-size: 14px;">
                     请使用Steam手机APP扫描二维码
                   </p>
                   <el-tag :type="steamQRStatus === 'waiting' ? 'info' : steamQRStatus === 'success' ? 'success' : 'warning'" style="margin-top: 10px;">
@@ -650,7 +650,7 @@
                 placeholder="请输入5位Steam Guard验证码（如需要）"
                 maxlength="5"
               />
-              <div style="color: #999; font-size: 12px; margin-top: 5px;">
+              <div style="color: var(--text-secondary); font-size: 12px; margin-top: 5px;">
                 如果您的账号启用了Steam Guard手机令牌，请在此输入验证码
               </div>
             </el-form-item>
@@ -701,7 +701,7 @@
                   :rows="3"
                   placeholder="扫码登录成功后将自动填入，可手动粘贴基础Cookie"
                 />
-                <div style="color: #999; font-size: 12px; margin-top: 4px;">
+                <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
                   基础Cookies为扫码后立即返回的原始Cookie，建议同时保存以备验证。
                 </div>
               </el-form-item>
@@ -712,7 +712,7 @@
                   :rows="3"
                   placeholder="访问库存页后的完整Cookie，采集库存时将使用该值"
                 />
-                <div style="color: #999; font-size: 12px; margin-top: 4px;">
+                <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
                   若使用手动方式，请先填写基础Cookies，再填写库存Cookies。
                 </div>
               </el-form-item>
@@ -738,25 +738,25 @@
                 :style="{
                   textAlign: 'center', 
                   padding: '20px', 
-                  background: '#f5f5f5', 
+                  background: 'var(--bg-tertiary)', 
                   borderRadius: '8px',
                   cursor: steamQRStatus === 'success' ? 'default' : 'pointer',
                   transition: 'all 0.3s'
                 }"
-                @mouseenter="$event.currentTarget.style.background = steamQRStatus === 'success' ? '#f5f5f5' : '#e8e8e8'"
-                @mouseleave="$event.currentTarget.style.background = '#f5f5f5'"
+                @mouseenter="$event.currentTarget.style.background = steamQRStatus === 'success' ? 'var(--bg-tertiary)' : 'var(--bg-overlay)'"
+                @mouseleave="$event.currentTarget.style.background = 'var(--bg-tertiary)'"
               >
                 <div v-if="!steamQRCode && !steamQRLoading">
-                  <el-icon :size="80" color="#409EFF"><Grid /></el-icon>
-                  <p style="color: #409EFF; margin-top: 10px; font-weight: 500;">点击获取Steam登录二维码</p>
+                  <el-icon :size="80" color="var(--accent-blue)"><Grid /></el-icon>
+                  <p style="color: var(--accent-blue); margin-top: 10px; font-weight: 500;">点击获取Steam登录二维码</p>
                 </div>
                 <div v-else-if="steamQRLoading">
-                  <el-icon :size="80" class="is-loading" color="#409EFF"><Loading /></el-icon>
-                  <p style="color: #409EFF; margin-top: 10px;">正在获取二维码...</p>
+                  <el-icon :size="80" class="is-loading" color="var(--accent-blue)"><Loading /></el-icon>
+                  <p style="color: var(--accent-blue); margin-top: 10px;">正在获取二维码...</p>
                 </div>
                 <div v-else>
                   <img :src="steamQRCode" alt="Steam登录二维码" style="width: 200px; height: 200px;" />
-                  <p style="color: #666; margin-top: 10px; font-size: 14px;">
+                  <p style="color: var(--text-secondary); margin-top: 10px; font-size: 14px;">
                     请使用Steam手机APP扫描二维码
                   </p>
                   <el-tag :type="steamQRStatus === 'waiting' ? 'info' : steamQRStatus === 'success' ? 'success' : 'warning'" style="margin-top: 10px;">
@@ -794,7 +794,7 @@
                 placeholder="请输入5位Steam Guard验证码（如需要）"
                 maxlength="5"
               />
-              <div style="color: #999; font-size: 12px; margin-top: 5px;">
+              <div style="color: var(--text-secondary); font-size: 12px; margin-top: 5px;">
                 如果您的账号启用了Steam Guard手机令牌，请在此输入验证码
               </div>
             </el-form-item>
@@ -835,7 +835,7 @@
               :rows="3"
               placeholder="扫码或登录成功后自动填入，可手动粘贴基础Cookie"
             />
-            <div style="color: #999; font-size: 12px; margin-top: 4px;">
+            <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
               建议同时保存基础Cookies，以便后续校验或刷新登录状态。
             </div>
           </el-form-item>
@@ -846,7 +846,7 @@
               :rows="3"
               placeholder="访问库存页后的完整Cookie，采集库存使用该值"
             />
-            <div style="color: #999; font-size: 12px; margin-top: 4px;">
+            <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
               库存Cookies需可以访问 <code>inventory/730/16</code> 接口。
             </div>
           </el-form-item>
@@ -877,18 +877,18 @@
               <el-icon style="margin-right: 5px;"><Grid /></el-icon>
               {{ perfectWorldTokenLoading ? '正在获取令牌...' : perfectWorldTokenStatus === 'success' ? '✓ 令牌已获取' : '一键获取完美世界APP令牌' }}
             </el-button>
-            <div v-if="perfectWorldTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: #fff7e6; border-radius: 4px; border-left: 3px solid #faad14;">
-              <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
+            <div v-if="perfectWorldTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-orange);">
+              <div style="color: var(--accent-orange); font-weight: 500; margin-bottom: 5px;">
                 <el-icon><Loading /></el-icon> 等待手机APP访问...
               </div>
-              <div style="color: #666; font-size: 12px;">
+              <div style="color: var(--text-secondary); font-size: 12px;">
                 1. 在手机WiFi设置中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
                 2. 打开完美世界APP并登录<br/>
                 3. 系统将自动获取令牌
               </div>
             </div>
-            <div v-if="perfectWorldTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-              <div style="color: #52c41a; font-weight: 500;">
+            <div v-if="perfectWorldTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+              <div style="color: var(--accent-green); font-weight: 500;">
                 <el-icon><CircleCheck /></el-icon> 令牌获取成功!
               </div>
             </div>
@@ -984,18 +984,18 @@
               <el-icon style="margin-right: 5px;"><Grid /></el-icon>
               {{ csfloatTokenLoading ? '正在获取令牌...' : csfloatTokenStatus === 'success' ? '✓ 令牌已获取' : '一键获取CsFloat令牌' }}
             </el-button>
-            <div v-if="csfloatTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: #fff7e6; border-radius: 4px; border-left: 3px solid #faad14;">
-              <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
+            <div v-if="csfloatTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-orange);">
+              <div style="color: var(--accent-orange); font-weight: 500; margin-bottom: 5px;">
                 <el-icon><Loading /></el-icon> 等待浏览器访问...
               </div>
-              <div style="color: #666; font-size: 12px;">
+              <div style="color: var(--text-secondary); font-size: 12px;">
                 1. 在浏览器中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
                 2. 访问 https://csfloat.com 并登录<br/>
                 3. 系统将自动获取令牌
               </div>
             </div>
-            <div v-if="csfloatTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-              <div style="color: #52c41a; font-weight: 500;">
+            <div v-if="csfloatTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+              <div style="color: var(--accent-green); font-weight: 500;">
                 <el-icon><CircleCheck /></el-icon> 令牌获取成功!
               </div>
             </div>
@@ -1192,8 +1192,8 @@
                 <el-icon style="margin-right: 5px;"><Grid /></el-icon>
                 {{ yyypSmsLoginLoading ? '登录中...' : '短信登录' }}
               </el-button>
-              <div v-if="yyypSmsLoginStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-                <div style="color: #52c41a; font-weight: 500;">
+              <div v-if="yyypSmsLoginStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+                <div style="color: var(--accent-green); font-weight: 500;">
                   <el-icon><CircleCheck /></el-icon> 登录成功！配置信息已自动填充
                 </div>
               </div>
@@ -1213,18 +1213,18 @@
                 <el-icon style="margin-right: 5px;"><Grid /></el-icon>
                 {{ yyypTokenLoading ? '正在获取令牌...' : yyypTokenStatus === 'success' ? '✓ 令牌已获取' : '一键获取悠悠有品令牌' }}
               </el-button>
-              <div v-if="yyypTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: #fff7e6; border-radius: 4px; border-left: 3px solid #faad14;">
-                <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
+              <div v-if="yyypTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-orange);">
+                <div style="color: var(--accent-orange); font-weight: 500; margin-bottom: 5px;">
                   <el-icon><Loading /></el-icon> 等待手机APP访问...
                 </div>
-                <div style="color: #666; font-size: 12px;">
+                <div style="color: var(--text-secondary); font-size: 12px;">
                   1. 在手机WiFi设置中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
                   2. 打开悠悠有品APP并登录<br/>
                   3. 系统将自动获取令牌
                 </div>
               </div>
-              <div v-if="yyypTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-                <div style="color: #52c41a; font-weight: 500;">
+              <div v-if="yyypTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+                <div style="color: var(--accent-green); font-weight: 500;">
                   <el-icon><CircleCheck /></el-icon> 令牌获取成功!
                 </div>
               </div>

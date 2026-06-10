@@ -114,7 +114,7 @@
               <div class="price-row">
                 <div class="price-group">
                   <span class="price-label">押金:</span>
-                  <span class="price-value" style="color: #FFA500;">¥{{ parseFloat(item.deposit_amount || 0).toFixed(2) }}</span>
+                  <span class="price-value" style="color: var(--accent-orange);">¥{{ parseFloat(item.deposit_amount || 0).toFixed(2) }}</span>
                 </div>
                 <div class="price-group">
                   <span class="price-label">最长:</span>
@@ -235,39 +235,39 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">N/A</span>
+            <span v-else style="color: var(--text-secondary);">N/A</span>
           </template>
         </el-table-column>
 
         <!-- 转租类型的列 -->
         <el-table-column label="短租租金" width="120">
           <template #default="scope">
-            <span style="color: #67C23A; font-weight: bold;">¥{{ parseFloat(scope.row.short_lease_amount || 0).toFixed(2) }}/天</span>
+            <span style="color: var(--accent-green); font-weight: bold;">¥{{ parseFloat(scope.row.short_lease_amount || 0).toFixed(2) }}/天</span>
           </template>
         </el-table-column>
         <el-table-column label="长租租金" width="120">
           <template #default="scope">
-            <span v-if="scope.row.lease_max_days > 21" style="color: #409EFF; font-weight: bold;">¥{{ parseFloat(scope.row.long_lease_amount || 0).toFixed(2) }}/天</span>
-            <span v-else style="color: #999;">-</span>
+            <span v-if="scope.row.lease_max_days > 21" style="color: var(--accent-blue); font-weight: bold;">¥{{ parseFloat(scope.row.long_lease_amount || 0).toFixed(2) }}/天</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="押金" width="150">
           <template #default="scope">
-            <span style="color: #FFA500; font-weight: bold;">¥{{ parseFloat(scope.row.deposit_amount || 0).toFixed(2) }}</span>
+            <span style="color: var(--accent-orange); font-weight: bold;">¥{{ parseFloat(scope.row.deposit_amount || 0).toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="最长租期" width="100">
           <template #default="scope">
-            <span style="color: #fff;">{{ scope.row.lease_max_days || 0 }}天</span>
+            <span style="color: var(--text-primary);">{{ scope.row.lease_max_days || 0 }}天</span>
           </template>
         </el-table-column>
 
         <el-table-column prop="on_sale_time" label="上架时间" width="180">
           <template #default="scope">
-            <span v-if="scope.row.on_sale_time" style="color: #9E9E9E;">
+            <span v-if="scope.row.on_sale_time" style="color: var(--text-secondary);">
               {{ scope.row.on_sale_time }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">

@@ -264,7 +264,7 @@
                     ></div>
                   </div>
                 </div>
-                <span v-else style="color: #888;">-</span>
+                <span v-else style="color: var(--text-secondary);">-</span>
               </template>
             </el-table-column>
             <el-table-column prop="sell_price" label="实收价" width="100">
@@ -386,7 +386,7 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="买入" width="180">

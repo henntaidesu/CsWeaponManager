@@ -230,20 +230,20 @@
   justify-content: space-between;
   align-items: center;
   padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.375rem;
   min-height: 60px; /* 防止内容加载时高度变化 */
   contain: layout; /* 启用 CSS containment */
 }
 
 .stat-label {
-  color: #ccc;
+  color: var(--text-secondary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
 .stat-value {
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   font-size: clamp(0.875rem, 1.4vw, 1rem);
 }
 
@@ -297,46 +297,46 @@
 
 :deep(.el-pagination .el-pager li) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-pager li:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-pager li.is-active) {
-  background-color: #4CAF50;
-  color: #fff;
+  background-color: var(--accent-green);
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination .btn-prev),
 :deep(.el-pagination .btn-next) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .btn-prev:hover),
 :deep(.el-pagination .btn-next:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-select .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-table) {
   background-color: transparent;
-  color: #fff;
+  color: var(--text-primary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
 }
 
@@ -354,7 +354,7 @@
 
 :deep(.el-table th) {
   background-color: var(--bg-tertiary) !important;
-  color: #fff;
+  color: var(--text-primary);
   border-bottom: 1px solid var(--border-default);
   padding: 0.375rem 2px;
 }
@@ -362,7 +362,7 @@
 :deep(.el-table td) {
   background-color: transparent !important;
   border-bottom: 1px solid var(--border-default);
-  color: #fff;
+  color: var(--text-primary);
   padding: 0.375rem 2px;
   overflow: visible;
 }
@@ -377,102 +377,102 @@
 }
 
 :deep(.el-input__inner) {
-  background-color: #1a1a1a;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 :deep(.el-select .el-input__inner) {
-  background-color: #1a1a1a;
-  border-color: #333;
-  color: #fff;
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 /* 日期选择器样式 */
 :deep(.el-date-editor .el-input__inner) {
-  background-color: #1a1a1a !important;
-  border-color: #333 !important;
-  color: #fff !important;
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-default) !important;
+  color: var(--text-primary) !important;
 }
 
 :deep(.el-date-editor .el-input__prefix) {
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 :deep(.el-date-editor .el-input__suffix) {
-  color: #ccc;
+  color: var(--text-secondary);
 }
 
 /* 日历面板整体样式 */
 :deep(.el-picker-panel) {
-  background-color: #1a1a1a !important;
-  border: 1px solid #333 !important;
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-default) !important;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 :deep(.el-picker-panel__content) {
-  background-color: #1a1a1a !important;
-  color: #fff;
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary);
 }
 
 /* 日历头部 */
 :deep(.el-date-picker__header) {
-  background-color: #1a1a1a !important;
-  border-bottom: 1px solid #333;
-  color: #fff;
+  background-color: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
 }
 
 :deep(.el-picker-panel__icon-btn) {
-  color: #ccc !important;
+  color: var(--text-secondary) !important;
 }
 
 :deep(.el-picker-panel__icon-btn:hover) {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 /* 年月选择 */
 :deep(.el-date-picker__header-label) {
-  color: #fff !important;
+  color: var(--text-primary) !important;
 }
 
 :deep(.el-date-picker__header-label:hover) {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 /* 星期标题 */
 :deep(.el-date-table th) {
-  background-color: #1a1a1a !important;
-  color: #ccc !important;
-  border-bottom: 1px solid #333;
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+  border-bottom: 1px solid var(--border-default);
 }
 
 /* 日期单元格 */
 :deep(.el-date-table td) {
-  color: #fff !important;
-  background-color: #1a1a1a !important;
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
 }
 
 :deep(.el-date-table td span) {
-  color: #fff !important;
+  color: var(--text-primary) !important;
 }
 
 :deep(.el-date-table td.available:hover) {
-  background-color: #333 !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 :deep(.el-date-table td.current:not(.disabled)) {
-  background-color: #409eff !important;
-  color: #fff !important;
+  background-color: var(--accent-blue) !important;
+  color: var(--text-primary) !important;
   font-weight: bold;
 }
 
 :deep(.el-date-table td.today span) {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
   font-weight: bold;
 }
 
 :deep(.el-date-table td.disabled) {
-  background-color: #1a1a1a !important;
+  background-color: var(--bg-secondary) !important;
   color: #666 !important;
 }
 
@@ -483,69 +483,69 @@
 
 /* 范围选择 */
 :deep(.el-date-table td.in-range) {
-  background-color: #2a2a2a !important;
+  background-color: var(--bg-tertiary) !important;
 }
 
 :deep(.el-date-table td.start-date) {
-  background-color: #409eff !important;
-  color: #fff !important;
+  background-color: var(--accent-blue) !important;
+  color: var(--text-primary) !important;
 }
 
 :deep(.el-date-table td.end-date) {
-  background-color: #409eff !important;
-  color: #fff !important;
+  background-color: var(--accent-blue) !important;
+  color: var(--text-primary) !important;
 }
 
 /* 底部操作区 */
 :deep(.el-picker-panel__footer) {
-  background-color: #1a1a1a !important;
-  border-top: 1px solid #333;
+  background-color: var(--bg-secondary) !important;
+  border-top: 1px solid var(--border-default);
 }
 
 :deep(.el-button--text) {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 :deep(.el-button--text:hover) {
-  color: #66b1ff !important;
+  color: var(--accent-blue) !important;
 }
 
 /* 时间范围选择器的左右面板 */
 :deep(.el-date-range-picker__content) {
-  background-color: #1a1a1a !important;
+  background-color: var(--bg-secondary) !important;
 }
 
 :deep(.el-date-range-picker__content.is-left) {
-  border-right: 1px solid #333;
+  border-right: 1px solid var(--border-default);
 }
 
 /* 月份/年份选择面板 */
 :deep(.el-month-table td) {
-  color: #fff !important;
-  background-color: #1a1a1a !important;
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
 }
 
 :deep(.el-month-table td:hover) {
-  background-color: #333 !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 :deep(.el-month-table td.current:not(.disabled)) {
-  background-color: #409eff !important;
-  color: #fff !important;
+  background-color: var(--accent-blue) !important;
+  color: var(--text-primary) !important;
 }
 
 :deep(.el-year-table td) {
-  color: #fff !important;
-  background-color: #1a1a1a !important;
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
 }
 
 :deep(.el-year-table td:hover) {
-  background-color: #333 !important;
+  background-color: var(--bg-overlay) !important;
 }
 
 :deep(.el-year-table td.current:not(.disabled)) {
-  background-color: #409eff !important;
-  color: #fff !important;
+  background-color: var(--accent-blue) !important;
+  color: var(--text-primary) !important;
 }
 
 :deep(.el-pagination) {
@@ -554,41 +554,41 @@
 
 :deep(.el-pagination .el-pager li) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-pager li:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-pager li.is-active) {
-  background-color: #4CAF50;
-  color: #fff;
+  background-color: var(--accent-green);
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination .btn-prev),
 :deep(.el-pagination .btn-next) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .btn-prev:hover),
 :deep(.el-pagination .btn-next:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-select .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 /* 磨损值显示条样式 */
@@ -707,7 +707,7 @@
   position: relative;
   width: 32px;
   height: 32px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--bg-tertiary);
   border-radius: 3px;
   overflow: hidden;
   cursor: pointer;
@@ -726,7 +726,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 
@@ -736,10 +736,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1rem;
   font-weight: bold;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
 }
 
 /* 挂件样式 */
@@ -753,7 +753,7 @@
   height: 32px;
   object-fit: contain;
   border-radius: 2px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 /* 改名文本样式 */
@@ -762,7 +762,7 @@
   align-items: center;
   gap: 4px;
   font-size: 0.75rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .rename-label {
@@ -770,7 +770,7 @@
 }
 
 .rename-value {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-weight: 500;
 }
 
@@ -782,7 +782,7 @@
 }
 
 .preview-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1.1rem;
 }
@@ -836,7 +836,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 .preview-image-placeholder {
@@ -845,22 +845,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1.2rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
 }
 
 /* 预览弹窗中的贴纸列表 */
 .preview-sticker-list-section {
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
 
 .preview-sticker-list-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 0.75rem;
@@ -887,7 +887,7 @@
 }
 
 .preview-sticker-list-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-color: rgba(76, 175, 80, 0.5);
 }
 
@@ -922,13 +922,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 1.2rem;
   font-weight: bold;
 }
 
 .preview-sticker-list-name {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
   flex: 1;
   min-width: 0;
@@ -940,13 +940,13 @@
 /* 预览弹窗中的挂件信息 */
 .preview-pendant-section {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
 
 .preview-pendant-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 0.75rem;
@@ -973,7 +973,7 @@
 }
 
 .preview-pendant-list-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-tertiary);
   border-color: rgba(255, 215, 0, 0.5);
 }
 
@@ -1014,7 +1014,7 @@
 }
 
 .preview-pendant-list-name {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
   flex: 1;
   min-width: 0;
@@ -1035,7 +1035,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
 }
@@ -1045,7 +1045,7 @@
 }
 
 .preview-rename-text {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 500;
 }
@@ -1064,13 +1064,13 @@
 .preview-float-value {
   font-size: 1.1rem;
   font-family: monospace;
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
 .preview-float-range {
   font-size: 0.9rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 /* 价格信息 */
@@ -1079,7 +1079,7 @@
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
@@ -1098,19 +1098,19 @@
 }
 
 .preview-price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   white-space: nowrap;
 }
 
 .preview-price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 1rem;
 }
 
 .preview-price-value.buy-price {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .preview-info-row {
@@ -1127,13 +1127,13 @@
 }
 
 .preview-info-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   white-space: nowrap;
 }
 
 .preview-info-value {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 

@@ -115,7 +115,7 @@
               <div class="custom-config-grid">
                 <div class="custom-config-field" style="flex: 0 1 auto; min-width: 200px;">
                   <div class="field-label">
-                    <span style="color: #f56c6c; margin-right: 4px;">*</span>配置名称
+                    <span style="color: var(--accent-red-light); margin-right: 4px;">*</span>配置名称
                   </div>
                   <div class="field-control" style="width: auto; min-width: 150px;">
                     <el-input
@@ -128,7 +128,7 @@
 
                 <div class="custom-config-field" style="flex: 0 1 auto; min-width: 150px;">
                   <div class="field-label">
-                    <span style="color: #f56c6c; margin-right: 4px;">*</span>平台类型
+                    <span style="color: var(--accent-red-light); margin-right: 4px;">*</span>平台类型
                   </div>
                   <div class="field-control" style="width: auto; min-width: 120px;">
                     <el-select
@@ -168,7 +168,7 @@
 
                 <div class="custom-config-field" style="flex: 0 1 auto; min-width: 250px;">
                   <div class="field-label">
-                    <span style="color: #f56c6c; margin-right: 4px;">*</span>爬取账号
+                    <span style="color: var(--accent-red-light); margin-right: 4px;">*</span>爬取账号
                   </div>
                   <div class="field-control" style="width: auto; min-width: 180px;">
                     <el-select
@@ -189,7 +189,7 @@
 
                 <div class="custom-config-field" style="flex: 0 1 auto; min-width: 250px;">
                   <div class="field-label">
-                    <span style="color: #f56c6c; margin-right: 4px;">*</span>购买账号
+                    <span style="color: var(--accent-red-light); margin-right: 4px;">*</span>购买账号
                   </div>
                   <div class="field-control" style="width: auto; min-width: 180px;">
                     <el-select
@@ -342,7 +342,7 @@
                       style="width: 100px;"
                       clearable
                     />
-                    <span style="color: #909399;">至</span>
+                    <span style="color: var(--text-secondary);">至</span>
                     <el-input
                       v-model.number="crawlForm.priceMax"
                       type="number"
@@ -350,7 +350,7 @@
                       style="width: 100px;"
                       clearable
                     />
-                    <span style="color: #909399; font-size: 13px;">元</span>
+                    <span style="color: var(--text-secondary); font-size: 13px;">元</span>
                   </div>
                 </div>
               </div>
@@ -702,12 +702,12 @@
               <h3>{{ yyypBuyDetail.commodity.commodityName }}</h3>
               <el-descriptions :column="1" border size="small">
                 <el-descriptions-item label="订单号" v-if="yyypBuyDetail.orderNo">
-                  <span style="color: #409eff; font-size: 14px;">
+                  <span style="color: var(--accent-blue); font-size: 14px;">
                     {{ yyypBuyDetail.orderNo }}
                   </span>
                 </el-descriptions-item>
                 <el-descriptions-item label="价格">
-                  <span style="color: #f56c6c; font-size: 18px; font-weight: bold;">
+                  <span style="color: var(--accent-red-light); font-size: 18px; font-weight: bold;">
                     ¥{{ yyypBuyDetail.commodity.sellPrice }}
                   </span>
                 </el-descriptions-item>
@@ -735,7 +735,7 @@
                 style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"
               />
               <span style="font-size: 14px;">{{ filteredYYYPPayList[0].channelName }}</span>
-              <span v-if="filteredYYYPPayList[0].balance" style="color: #67c23a; margin-left: 10px; font-weight: bold;">
+              <span v-if="filteredYYYPPayList[0].balance" style="color: var(--accent-green); margin-left: 10px; font-weight: bold;">
                 ¥{{ filteredYYYPPayList[0].balance }}
               </span>
             </div>
@@ -801,7 +801,6 @@ export default {
 
 .spider-pendant-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
   padding: 2rem;
 }
 
@@ -822,7 +821,7 @@ export default {
   width: 280px;
   min-width: 280px;
   flex-shrink: 0;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -846,7 +845,7 @@ export default {
 .sidebar-header-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   white-space: nowrap;
   margin-bottom: 0.5rem;
 }
@@ -871,7 +870,7 @@ export default {
 .sidebar-header-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   white-space: nowrap;
 }
 
@@ -882,7 +881,7 @@ export default {
 .sidebar-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   margin: 0;
 }
 
@@ -906,8 +905,8 @@ export default {
 }
 
 .config-item {
-  background-color: #252525;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 0.5rem;
   padding: 0.875rem;
   margin-bottom: 0.625rem;
@@ -929,24 +928,24 @@ export default {
 }
 
 .config-item:hover {
-  border-color: #4CAF50;
-  background-color: #2a2a2a;
+  border-color: var(--accent-green);
+  background-color: var(--bg-tertiary);
   transform: translateX(2px);
 }
 
 .config-item:hover::before {
-  background-color: #4CAF50;
+  background-color: var(--accent-green);
 }
 
 .config-item.active {
-  border-color: #4CAF50;
+  border-color: var(--accent-green);
   background-color: rgba(76, 175, 80, 0.15);
   box-shadow: 0 0 12px rgba(76, 175, 80, 0.4);
   transform: translateX(0);
 }
 
 .config-item.active::before {
-  background-color: #4CAF50;
+  background-color: var(--accent-green);
   width: 4px;
 }
 
@@ -961,7 +960,7 @@ export default {
 .config-name {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -971,7 +970,7 @@ export default {
 }
 
 .config-item.active .config-name {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .config-item-meta {
@@ -980,12 +979,12 @@ export default {
 
 .config-time {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .config-description {
   font-size: 0.8rem;
-  color: #aaa;
+  color: var(--text-secondary);
   margin-top: 0.375rem;
   line-height: 1.4;
   overflow: hidden;
@@ -1004,7 +1003,7 @@ export default {
 
 .config-progress .progress-text {
   font-size: 0.75rem;
-  color: #999;
+  color: var(--text-secondary);
   white-space: nowrap;
   -webkit-box-orient: vertical;
   padding-left: 0.25rem;
@@ -1023,7 +1022,7 @@ export default {
 }
 
 .empty-config :deep(.el-empty__description) {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -1056,7 +1055,7 @@ export default {
 
 /* 统一工具区域容器 */
 .unified-tool-section {
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.5rem 2rem;
   margin-bottom: 2rem;
@@ -1074,7 +1073,7 @@ export default {
   align-items: center;
   cursor: pointer;
   padding: 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.5rem;
   margin-bottom: 1.5rem;
   user-select: none;
@@ -1082,11 +1081,11 @@ export default {
 }
 
 .tool-section-header:hover {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 .tool-section-header .section-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 600;
   margin: 0;
@@ -1099,17 +1098,17 @@ export default {
 
 .collapse-btn {
   padding: 0.25rem;
-  color: #4CAF50;
+  color: var(--accent-green);
   transition: transform 0.3s ease;
 }
 
 .collapse-btn:hover {
-  color: #66BB6A;
+  color: var(--accent-green);
   transform: scale(1.1);
 }
 
 .main-section-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
@@ -1133,17 +1132,17 @@ export default {
 .content-card {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: #252525;
-  border-radius: 0.75rem;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
 }
 
 .search-section {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: #252525;
-  border-radius: 0.75rem;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
 }
 
 .search-container {
@@ -1163,7 +1162,7 @@ export default {
 
 .search-results-table {
   margin-top: 1rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   border-top: none;
   border-radius: 0 0 0.5rem 0.5rem;
   overflow: hidden;
@@ -1174,9 +1173,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.5rem 0.5rem 0 0;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   border-bottom: none;
   cursor: pointer;
   user-select: none;
@@ -1184,13 +1183,13 @@ export default {
 }
 
 .results-header:hover {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 .results-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .results-actions {
@@ -1217,7 +1216,7 @@ export default {
 }
 
 .collapsible-label .label-text:hover {
-  color: #409EFF;
+  color: var(--accent-blue);
 }
 
 .collapsible-label .collapse-icon-inline {
@@ -1231,30 +1230,30 @@ export default {
 }
 
 .weapon-name {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 /* 武器图标和名称样式已移至 resultSection.css */
 
 .hash-name-text {
-  color: #aaa;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .no-data {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .price-text {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .count-text {
-  color: #409EFF;
+  color: var(--accent-blue);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -1270,14 +1269,14 @@ export default {
   align-items: center;
   gap: 0.25rem;
   margin-top: 0.5rem;
-  color: #E6A23C;
+  color: var(--accent-orange);
   font-size: 0.75rem;
 }
 
 .load-more-container {
   text-align: center;
   padding: 1rem;
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -1286,11 +1285,11 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: #409EFF;
+  color: var(--accent-blue);
 }
 
 .no-more-data {
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .can-load-more {
@@ -1312,10 +1311,10 @@ export default {
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #444;
+  border-bottom: 2px solid var(--border-default);
 }
 
 .section-title-group {
@@ -1333,11 +1332,11 @@ export default {
 
 /* 查询进度样式 - 单行显示 */
 .crawl-progress-section {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 8px;
   padding: 1rem 1.5rem;
   margin-top: 1.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
 }
 
 .progress-single-line {
@@ -1349,7 +1348,7 @@ export default {
 .progress-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
@@ -1365,12 +1364,12 @@ export default {
 }
 
 .stat-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .stat-value {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-size: 1rem;
   font-weight: 600;
 }
@@ -1387,7 +1386,7 @@ export default {
   padding: 0.5rem 1rem;
   background-color: rgba(76, 175, 80, 0.1);
   border-radius: 6px;
-  border-left: 3px solid #4CAF50;
+  border-left: 3px solid var(--accent-green);
   width: 350px;
   min-width: 350px;
   max-width: 350px;
@@ -1408,12 +1407,12 @@ export default {
 }
 
 .current-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .current-name {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
   max-width: 300px;
   overflow: hidden;
@@ -1422,9 +1421,9 @@ export default {
 }
 
 .form-container {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
 }
 
@@ -1466,7 +1465,7 @@ export default {
 }
 
 .form-hint {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   margin-left: 0.5rem;
 }
@@ -1503,7 +1502,7 @@ export default {
 .price-range-hint {
   margin-top: 8px;
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -1552,7 +1551,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .result-item:last-child {
@@ -1560,70 +1559,53 @@ export default {
 }
 
 .result-label {
-  color: #888;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .result-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .result-value.success {
-  color: #67C23A;
+  color: var(--accent-green);
 }
 
 .result-value.error {
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 .result-value.highlight {
-  color: #E6A23C;
+  color: var(--accent-orange);
   font-size: 1.1rem;
 }
 
 /* Element Plus 组件深色主题适配 */
-:deep(.el-input__wrapper) {
-  background-color: #1e1e1e;
-  box-shadow: 0 0 0 1px #444 inset;
-}
-
-:deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #4CAF50 inset;
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #4CAF50 inset !important;
-}
-
 :deep(.el-input__inner) {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-textarea__inner) {
-  background-color: #1e1e1e;
-  color: #fff;
-  border-color: #444;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-textarea__inner:hover) {
-  border-color: #4CAF50;
+  border-color: var(--accent-green);
 }
 
 :deep(.el-textarea__inner:focus) {
-  border-color: #4CAF50;
-}
-
-:deep(.el-select .el-input__wrapper) {
-  background-color: #1e1e1e;
+  border-color: var(--accent-green);
 }
 
 :deep(.el-form-item__label) {
-  color: #aaa;
+  color: var(--text-secondary);
 }
 
 :deep(.el-switch) {
-  --el-switch-on-color: #4CAF50;
+  --el-switch-on-color: var(--accent-green);
   --el-switch-off-color: #555;
 }
 
@@ -2157,7 +2139,7 @@ export default {
 }
 
 .config-list::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 
@@ -2197,7 +2179,7 @@ export default {
 /* CS2 标准磨损等级颜色 */
 .float-bar-mini .float-segment.fn {
   flex: 7;  /* 0.00 - 0.07 */
-  background: linear-gradient(to right, #4CAF50, #66BB6A);
+  background: linear-gradient(to right, var(--accent-green), var(--accent-green));
 }
 
 .float-bar-mini .float-segment.mw {
@@ -2269,9 +2251,9 @@ export default {
 
 /* 查询模式对话框样式 */
 .search-mode-dialog :deep(.el-dialog) {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  border-radius: 12px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
 }
 
 .search-mode-dialog :deep(.el-dialog__header) {
@@ -2280,7 +2262,7 @@ export default {
 }
 
 .search-mode-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -2310,8 +2292,8 @@ export default {
   width: 100%;
   margin: 0 !important;
   padding: 18px 20px !important;
-  background-color: #252525 !important;
-  border: 2px solid #333 !important;
+  background-color: var(--bg-secondary) !important;
+  border: 2px solid var(--border-default) !important;
   border-radius: 8px !important;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -2320,14 +2302,14 @@ export default {
 }
 
 .mode-radio-item:hover {
-  border-color: #4CAF50 !important;
-  background-color: #2a2a2a !important;
+  border-color: var(--accent-green) !important;
+  background-color: var(--bg-tertiary) !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
 }
 
 .mode-radio-item.is-checked {
-  border-color: #4CAF50 !important;
+  border-color: var(--accent-green) !important;
   background-color: rgba(76, 175, 80, 0.1) !important;
   box-shadow: 0 0 16px rgba(76, 175, 80, 0.3);
 }
@@ -2344,14 +2326,14 @@ export default {
 .mode-title {
   font-size: 15px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   display: block;
   width: 100%;
   text-align: center;
 }
 
 .mode-radio-item.is-checked .mode-title {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 /* 第三方网站链接样式 */
@@ -2383,8 +2365,8 @@ export default {
 .price-trend-chart-placeholder {
   width: 100%;
   height: 100px;
-  background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
-  border: 2px dashed #333;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%);
+  border: 2px dashed var(--border-default);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -2397,8 +2379,8 @@ export default {
 }
 
 .price-trend-chart-placeholder:hover {
-  border-color: #4CAF50;
-  background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+  border-color: var(--accent-green);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
   box-shadow: 0 0 12px rgba(76, 175, 80, 0.2);
 }
 
@@ -2420,8 +2402,8 @@ export default {
     to right,
     transparent 0%,
     transparent 20%,
-    #4CAF50 20%,
-    #66BB6A 40%,
+    var(--accent-green) 20%,
+    var(--accent-green) 40%,
     #8BC34A 60%,
     #FFC107 80%,
     #FF9800 100%
@@ -2447,8 +2429,8 @@ export default {
   background: linear-gradient(
     to right,
     transparent 0%,
-    #4CAF50 20%,
-    #66BB6A 40%,
+    var(--accent-green) 20%,
+    var(--accent-green) 40%,
     #8BC34A 60%,
     #FFC107 80%,
     #FF9800 100%
@@ -2479,7 +2461,7 @@ export default {
 .chart-dots .dot {
   width: 6px;
   height: 6px;
-  background: #4CAF50;
+  background: var(--accent-green);
   border-radius: 50%;
   box-shadow: 0 0 6px rgba(76, 175, 80, 0.8);
   animation: pulse 2s ease-in-out infinite;
@@ -2492,7 +2474,7 @@ export default {
 .chart-dots .dot:nth-child(2) {
   margin-top: 36px;
   animation-delay: 0.2s;
-  background: #66BB6A;
+  background: var(--accent-green);
   box-shadow: 0 0 6px rgba(102, 187, 106, 0.8);
 }
 
@@ -2530,7 +2512,7 @@ export default {
 
 .chart-placeholder-text {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
   text-align: center;
   letter-spacing: 0.5px;
@@ -2540,7 +2522,7 @@ export default {
 }
 
 .price-trend-chart-placeholder:hover .chart-placeholder-text {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 /* 对话框按钮样式 */
@@ -2552,13 +2534,13 @@ export default {
 }
 
 .search-mode-dialog :deep(.el-button--primary) {
-  background-color: #4CAF50;
-  border-color: #4CAF50;
+  background-color: var(--accent-green);
+  border-color: var(--accent-green);
 }
 
 .search-mode-dialog :deep(.el-button--primary):hover {
-  background-color: #66BB6A;
-  border-color: #66BB6A;
+  background-color: var(--accent-green);
+  border-color: var(--accent-green);
 }
 </style>
 

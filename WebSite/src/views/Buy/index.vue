@@ -303,7 +303,7 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">N/A</span>
+            <span v-else style="color: var(--text-secondary);">N/A</span>
           </template>
         </el-table-column>
         <el-table-column prop="weapon_type" label="类型" width="120" />
@@ -420,7 +420,7 @@
                 </div>
                 <!-- 武器主体悠悠有品价格信息 -->
                 <div class="preview-price-row" v-if="yyypPriceInfo.yyyp_price || yyypPriceInfo.yyyp_on_sale_count">
-                  <div class="preview-price-item" style="color: #409eff; font-size: 14px; display: flex; gap: 12px;">
+                  <div class="preview-price-item" style="color: var(--accent-blue); font-size: 14px; display: flex; gap: 12px;">
                     <span v-if="yyypPriceInfo.yyyp_price">
                       悠悠价格: ¥{{ yyypPriceInfo.yyyp_price }}
                     </span>
@@ -431,7 +431,7 @@
                 </div>
                 <!-- 武器主体BUFF价格信息 -->
                 <div class="preview-price-row" v-if="buffPriceInfo.buff_price || buffPriceInfo.buff_on_sale_count">
-                  <div class="preview-price-item" style="color: #67c23a; font-size: 14px; display: flex; gap: 12px;">
+                  <div class="preview-price-item" style="color: var(--accent-green); font-size: 14px; display: flex; gap: 12px;">
                     <span v-if="buffPriceInfo.buff_price">
                       BUFF价格: ¥{{ buffPriceInfo.buff_price }}
                     </span>
@@ -523,7 +523,7 @@
                     </div>
                     <!-- 印花价格信息（悠悠蓝色 + BUFF绿色，一行显示） -->
                     <div v-if="stickersPriceInfo.find(s => s.name === sticker.name)" class="preview-sticker-price-info" style="font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap;">
-                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_price || stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_on_sale_count" style="color: #409eff;">
+                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_price || stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_on_sale_count" style="color: var(--accent-blue);">
                         <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.yyyp_price">
                           悠悠: ¥{{ stickersPriceInfo.find(s => s.name === sticker.name).yyyp_price }}
                         </span>
@@ -531,7 +531,7 @@
                           ({{ stickersPriceInfo.find(s => s.name === sticker.name).yyyp_on_sale_count }})
                         </span>
                       </span>
-                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.buff_price || stickersPriceInfo.find(s => s.name === sticker.name)?.buff_on_sale_count" style="color: #67c23a;">
+                      <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.buff_price || stickersPriceInfo.find(s => s.name === sticker.name)?.buff_on_sale_count" style="color: var(--accent-green);">
                         <span v-if="stickersPriceInfo.find(s => s.name === sticker.name)?.buff_price">
                           BUFF: ¥{{ stickersPriceInfo.find(s => s.name === sticker.name).buff_price }}
                         </span>
@@ -567,7 +567,7 @@
                     </div>
                     <!-- 挂件价格信息（悠悠蓝色 + BUFF绿色，一行显示） -->
                     <div v-if="pendantPriceInfo" class="preview-pendant-price-info" style="font-size: 12px; display: flex; gap: 12px; flex-wrap: wrap;">
-                      <span v-if="pendantPriceInfo.yyyp_price || pendantPriceInfo.yyyp_on_sale_count" style="color: #409eff;">
+                      <span v-if="pendantPriceInfo.yyyp_price || pendantPriceInfo.yyyp_on_sale_count" style="color: var(--accent-blue);">
                         <span v-if="pendantPriceInfo.yyyp_price">
                           悠悠: ¥{{ pendantPriceInfo.yyyp_price }}
                         </span>
@@ -575,7 +575,7 @@
                           ({{ pendantPriceInfo.yyyp_on_sale_count }})
                         </span>
                       </span>
-                      <span v-if="pendantPriceInfo.buff_price || pendantPriceInfo.buff_on_sale_count" style="color: #67c23a;">
+                      <span v-if="pendantPriceInfo.buff_price || pendantPriceInfo.buff_on_sale_count" style="color: var(--accent-green);">
                         <span v-if="pendantPriceInfo.buff_price">
                           BUFF: ¥{{ pendantPriceInfo.buff_price }}
                         </span>

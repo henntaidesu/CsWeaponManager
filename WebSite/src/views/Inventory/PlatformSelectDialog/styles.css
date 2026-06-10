@@ -1,23 +1,23 @@
 .platform-select-dialog :deep(.el-dialog__header) {
-  background: var(--bg-tertiary, #2a2a2a);
-  border-bottom: 1px solid var(--border-color, #3a3a3a);
+  background: var(--bg-tertiary, var(--bg-tertiary));
+  border-bottom: 1px solid var(--border-color, var(--border-default));
   padding: 1.25rem 1.5rem;
 }
 
 .platform-select-dialog :deep(.el-dialog__title) {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 1.1rem;
 }
 
 .platform-select-dialog :deep(.el-dialog__body) {
-  background: var(--bg-secondary, #1a1a1a);
+  background: var(--bg-secondary, var(--bg-secondary));
   padding: 1.5rem;
 }
 
 .platform-select-dialog :deep(.el-dialog__footer) {
-  background: var(--bg-secondary, #1a1a1a);
-  border-top: 1px solid var(--border-color, #3a3a3a);
+  background: var(--bg-secondary, var(--bg-secondary));
+  border-top: 1px solid var(--border-color, var(--border-default));
   padding: 1rem 1.5rem;
 }
 
@@ -33,9 +33,9 @@
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   background: rgba(64, 158, 255, 0.1);
-  border-left: 3px solid #409EFF;
+  border-left: 3px solid var(--accent-blue);
   border-radius: 4px;
-  color: #409EFF;
+  color: var(--accent-blue);
   font-size: 0.9rem;
 }
 
@@ -54,8 +54,8 @@
   align-items: center;
   gap: 1rem;
   padding: 1.25rem;
-  background: var(--bg-tertiary, #2a2a2a);
-  border: 2px solid var(--border-color, #3a3a3a);
+  background: var(--bg-tertiary, var(--bg-tertiary));
+  border: 2px solid var(--border-color, var(--border-default));
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -67,7 +67,7 @@
 }
 
 .platform-card.clickable:hover {
-  background: #333;
+  background: var(--bg-overlay);
   border-color: #4a4a4a;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -92,12 +92,12 @@
   justify-content: center;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   flex-shrink: 0;
 }
 
 .platform-icon.yyyp-icon {
-  background: linear-gradient(135deg, #67C23A, #85CE61);
+  background: linear-gradient(135deg, var(--accent-green), #66BB6A);
 }
 
 .platform-icon.buff-icon {
@@ -111,13 +111,13 @@
 .platform-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .platform-desc {
   font-size: 0.85rem;
-  color: #999;
+  color: var(--text-secondary);
 }
 
 .platform-badge {
@@ -132,9 +132,9 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-tertiary);
   border-radius: 6px;
-  color: #ccc;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 

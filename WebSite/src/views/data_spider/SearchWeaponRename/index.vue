@@ -472,12 +472,12 @@
               <h3>{{ yyypBuyDetail.commodity.commodityName }}</h3>
               <el-descriptions :column="1" border size="small">
                 <el-descriptions-item v-if="yyypBuyDetail.orderNo" label="订单号">
-                  <span style="color: #409eff; font-size: 14px; font-weight: bold;">
+                  <span style="color: var(--accent-blue); font-size: 14px; font-weight: bold;">
                     {{ yyypBuyDetail.orderNo }}
                   </span>
                 </el-descriptions-item>
                 <el-descriptions-item label="价格">
-                  <span style="color: #f56c6c; font-size: 18px; font-weight: bold;">
+                  <span style="color: var(--accent-red-light); font-size: 18px; font-weight: bold;">
                     {{ yyypBuyDetail.commodity.sellPrice }}
                   </span>
                 </el-descriptions-item>
@@ -505,7 +505,7 @@
                 style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"
               />
               <span style="font-size: 14px;">{{ filteredYYYPPayList[0].channelName }}</span>
-              <span v-if="filteredYYYPPayList[0].balance" style="color: #67c23a; margin-left: 10px; font-weight: bold;">
+              <span v-if="filteredYYYPPayList[0].balance" style="color: var(--accent-green); margin-left: 10px; font-weight: bold;">
                 ¥{{ filteredYYYPPayList[0].balance }}
               </span>
             </div>
@@ -571,7 +571,6 @@ export default {
 
 .spider-weapon-rename-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
   padding: 2rem;
 }
 
@@ -592,7 +591,7 @@ export default {
   width: 280px;
   min-width: 280px;
   flex-shrink: 0;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -616,7 +615,7 @@ export default {
 .sidebar-header-title {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   white-space: nowrap;
   margin-bottom: 0.5rem;
 }
@@ -641,7 +640,7 @@ export default {
 .sidebar-header-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   white-space: nowrap;
 }
 
@@ -671,7 +670,7 @@ export default {
 .sidebar-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
   margin: 0;
 }
 
@@ -695,8 +694,8 @@ export default {
 }
 
 .config-item {
-  background-color: #252525;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 0.5rem;
   padding: 0.875rem;
   margin-bottom: 0.625rem;
@@ -718,24 +717,24 @@ export default {
 }
 
 .config-item:hover {
-  border-color: #4CAF50;
-  background-color: #2a2a2a;
+  border-color: var(--accent-green);
+  background-color: var(--bg-tertiary);
   transform: translateX(2px);
 }
 
 .config-item:hover::before {
-  background-color: #4CAF50;
+  background-color: var(--accent-green);
 }
 
 .config-item.active {
-  border-color: #4CAF50;
+  border-color: var(--accent-green);
   background-color: rgba(76, 175, 80, 0.15);
   box-shadow: 0 0 12px rgba(76, 175, 80, 0.4);
   transform: translateX(0);
 }
 
 .config-item.active::before {
-  background-color: #4CAF50;
+  background-color: var(--accent-green);
   width: 4px;
 }
 
@@ -750,7 +749,7 @@ export default {
 .config-name {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -760,7 +759,7 @@ export default {
 }
 
 .config-item.active .config-name {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .config-item-meta {
@@ -769,12 +768,12 @@ export default {
 
 .config-time {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .config-description {
   font-size: 0.8rem;
-  color: #aaa;
+  color: var(--text-secondary);
   margin-top: 0.375rem;
   line-height: 1.4;
   overflow: hidden;
@@ -799,7 +798,7 @@ export default {
 }
 
 .empty-config :deep(.el-empty__description) {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -813,7 +812,7 @@ export default {
 
 /* 统一工具区域容器 */
 .unified-tool-section {
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.5rem 2rem;
   margin-bottom: 2rem;
@@ -831,7 +830,7 @@ export default {
   align-items: center;
   cursor: pointer;
   padding: 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.5rem;
   margin-bottom: 1.5rem;
   user-select: none;
@@ -839,11 +838,11 @@ export default {
 }
 
 .tool-section-header:hover {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 .tool-section-header .section-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 600;
   margin: 0;
@@ -855,7 +854,7 @@ export default {
 }
 
 .main-section-title {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
@@ -863,12 +862,12 @@ export default {
 
 .collapse-btn {
   padding: 0.25rem;
-  color: #4CAF50;
+  color: var(--accent-green);
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .collapse-btn:hover {
-  color: #66BB6A;
+  color: var(--accent-green);
   transform: scale(1.1);
 }
 
@@ -890,17 +889,17 @@ export default {
 .content-card {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: #252525;
-  border-radius: 0.75rem;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
 }
 
 .search-section {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: #252525;
-  border-radius: 0.75rem;
-  border: 1px solid #333;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
 }
 
 .search-container {
@@ -939,21 +938,21 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   border-radius: 0.5rem 0.5rem 0 0;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
   border-bottom: none;
   cursor: pointer;
 }
 
 .results-header:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--bg-tertiary);
 }
 
 .results-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 .results-actions {
@@ -968,13 +967,13 @@ export default {
 }
 
 .price-text {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .count-text {
-  color: #409EFF;
+  color: var(--accent-blue);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -986,17 +985,17 @@ export default {
 }
 
 .weapon-name {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .hash-name-text {
-  color: #aaa;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .no-data {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -1015,16 +1014,16 @@ export default {
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #444;
+  border-bottom: 2px solid var(--border-default);
 }
 
 .form-container {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
 }
 
@@ -1046,7 +1045,7 @@ export default {
 .custom-config-field .field-label {
   width: 100px;
   font-size: 0.9rem;
-  color: #ffffff;
+  color: var(--text-primary);
   text-align: left;
   margin-right: 10px;
 }
@@ -1072,7 +1071,7 @@ export default {
 }
 
 .form-row :deep(.el-form-item__label) {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
   justify-content: flex-start;
   text-align: left;
   padding: 0 10px 0 0;
@@ -1102,7 +1101,7 @@ export default {
 }
 
 .form-hint {
-  color: #888;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   margin-left: 0.5rem;
 }
@@ -1138,7 +1137,7 @@ export default {
 }
 
 .collapsible-label .label-text:hover {
-  color: #409EFF;
+  color: var(--accent-blue);
 }
 
 .collapse-icon-inline {
@@ -1165,11 +1164,11 @@ export default {
 /* 结果区域样式已移至 resultSection.css */
 
 .log-section {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
 }
 
 .log-section-header {
@@ -1194,10 +1193,10 @@ export default {
 .log-list {
   max-height: 320px;
   overflow-y: auto;
-  background-color: #1e1e1e;
+  background-color: var(--bg-secondary);
   border-radius: 0.5rem;
   padding: 1rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border-default);
 }
 
 .log-entry {
@@ -1211,23 +1210,23 @@ export default {
 }
 
 .log-entry.log-info {
-  border-color: #409eff;
+  border-color: var(--accent-blue);
 }
 
 .log-entry.log-success {
-  border-color: #67c23a;
+  border-color: var(--accent-green);
 }
 
 .log-entry.log-warning {
-  border-color: #e6a23c;
+  border-color: var(--accent-orange);
 }
 
 .log-entry.log-error {
-  border-color: #f56c6c;
+  border-color: var(--accent-red-light);
 }
 
 .log-time {
-  color: #999;
+  color: var(--text-secondary);
   min-width: 72px;
   font-family: 'Consolas', 'Monaco', monospace;
 }
@@ -1238,15 +1237,15 @@ export default {
 }
 
 .log-entry.log-success .log-message {
-  color: #67c23a;
+  color: var(--accent-green);
 }
 
 .log-entry.log-warning .log-message {
-  color: #e6a23c;
+  color: var(--accent-orange);
 }
 
 .log-entry.log-error .log-message {
-  color: #f56c6c;
+  color: var(--accent-red-light);
 }
 
 .log-empty {
@@ -1266,7 +1265,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .result-item:last-child {
@@ -1274,70 +1273,53 @@ export default {
 }
 
 .result-label {
-  color: #888;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .result-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .result-value.success {
-  color: #67C23A;
+  color: var(--accent-green);
 }
 
 .result-value.error {
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 .result-value.highlight {
-  color: #E6A23C;
+  color: var(--accent-orange);
   font-size: 1.1rem;
 }
 
 /* Element Plus 组件深色主题适配 */
-:deep(.el-input__wrapper) {
-  background-color: #1e1e1e;
-  box-shadow: 0 0 0 1px #444 inset;
-}
-
-:deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #4CAF50 inset;
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 1px #4CAF50 inset !important;
-}
-
 :deep(.el-input__inner) {
-  color: #fff;
+  color: var(--text-primary);
 }
 
 :deep(.el-textarea__inner) {
-  background-color: #1e1e1e;
-  color: #fff;
-  border-color: #444;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-textarea__inner:hover) {
-  border-color: #4CAF50;
+  border-color: var(--accent-green);
 }
 
 :deep(.el-textarea__inner:focus) {
-  border-color: #4CAF50;
-}
-
-:deep(.el-select .el-input__wrapper) {
-  background-color: #1e1e1e;
+  border-color: var(--accent-green);
 }
 
 :deep(.el-form-item__label) {
-  color: #aaa;
+  color: var(--text-secondary);
 }
 
 :deep(.el-switch) {
-  --el-switch-on-color: #4CAF50;
+  --el-switch-on-color: var(--accent-green);
   --el-switch-off-color: #555;
 }
 
@@ -1741,7 +1723,7 @@ export default {
 }
 
 .config-list::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 

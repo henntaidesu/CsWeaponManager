@@ -76,7 +76,7 @@
 }
 
 .sticker-placeholder-overlay {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -120,7 +120,7 @@
 .card-title {
   font-size: 0.8rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -158,7 +158,7 @@
 }
 
 .float-segment.fn {
-  background: #4CAF50;
+  background: var(--accent-green);
   flex: 0.07;
 }
 
@@ -196,7 +196,7 @@
 .float-value {
   text-align: left;
   font-size: 0.75rem;
-  color: #ccc;
+  color: var(--text-secondary);
   font-family: monospace;
   margin-top: 0.2rem;
   margin-bottom: 0;
@@ -229,19 +229,19 @@
 }
 
 .price-label {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
 .price-value {
-  color: #fff;
+  color: var(--text-primary);
   font-weight: bold;
   font-size: 0.75rem;
 }
 
 .sale-price {
-  color: #4CAF50;
+  color: var(--accent-green);
 }
 
 /* 卡片底部 */
@@ -338,7 +338,7 @@
 }
 
 .sticker-placeholder {
-  color: #999;
+  color: var(--text-secondary);
   font-size: 10px;
 }
 
@@ -373,7 +373,7 @@
   transform: translateX(-50%);
   background: var(--bg-tertiary);
   border: 2px solid var(--el-color-primary);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
@@ -395,7 +395,7 @@
 }
 
 .multi-select-actions .selected-count {
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: bold;
 }
@@ -417,7 +417,7 @@
 
 .inventory-card.selected {
   border-color: var(--el-color-primary);
-  background: rgba(64, 158, 255, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   box-shadow: 0 0 0 2px var(--el-color-primary);
 }
 

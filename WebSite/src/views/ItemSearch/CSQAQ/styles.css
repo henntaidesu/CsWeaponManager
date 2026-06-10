@@ -104,7 +104,7 @@
 .good-detail-statistic .value {
   font-size: 18px;
   font-weight: 600;
-  color: #e6a23c;
+  color: var(--accent-orange);
 }
 
 .good-detail-statistic .hint {
@@ -149,7 +149,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .overview-card--today {
@@ -201,9 +201,9 @@
 }
 
 .platform-title .tag-low {
-  background: rgba(103, 194, 58, 0.25);
-  color: #67c23a;
-  border-color: #67c23a;
+  background: rgba(76, 175, 80, 0.25);
+  color: var(--accent-green);
+  border-color: var(--accent-green);
 }
 
 .platform-grid {
@@ -366,7 +366,7 @@
 .statistic-value-number {
   font-size: 28px;
   font-weight: 600;
-  color: #e6a23c;
+  color: var(--accent-orange);
 }
 
 .container-list {

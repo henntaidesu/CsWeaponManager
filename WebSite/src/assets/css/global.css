@@ -36,8 +36,11 @@ div, section, article, aside, main, header, footer, nav {
     --text-accent: #58a6ff;
     --border-default: #30363d;
     --border-muted: #21262d;
-    --accent-green: #238636;
+    --accent-green: #4CAF50;
     --accent-red: #da3633;
+    --accent-red-light: #f56c6c;
+    --accent-blue: #409eff;
+    --accent-orange: #e6a23c;
     --accent-yellow: #d29922;
     --shadow: rgba(0, 0, 0, 0.5);
     

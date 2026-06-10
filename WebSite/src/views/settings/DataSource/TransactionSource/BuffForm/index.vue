@@ -11,18 +11,18 @@
         <el-icon style="margin-right: 5px;"><Grid /></el-icon>
         {{ buffTokenLoading ? '正在获取令牌...' : buffTokenStatus === 'success' ? '✓ 令牌已获取' : (isEditMode ? '重新获取BUFF令牌' : '一键获取BUFF令牌') }}
       </el-button>
-      <div v-if="buffTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: #fff7e6; border-radius: 4px; border-left: 3px solid #faad14;">
-        <div style="color: #faad14; font-weight: 500; margin-bottom: 5px;">
+      <div v-if="buffTokenStatus === 'waiting'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-orange);">
+        <div style="color: var(--accent-orange); font-weight: 500; margin-bottom: 5px;">
           <el-icon><Loading /></el-icon> 等待手机APP访问...
         </div>
-        <div style="color: #666; font-size: 12px;">
+        <div style="color: var(--text-secondary); font-size: 12px;">
           1. 在手机WiFi设置中配置代理: <strong>{{ proxyAddress || '...' }}</strong><br/>
           2. 打开已经登录的BUFF APP<br/>
           3. 系统将自动获取令牌
         </div>
       </div>
-      <div v-if="buffTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: #f6ffed; border-radius: 4px; border-left: 3px solid #52c41a;">
-        <div style="color: #52c41a; font-weight: 500;">
+      <div v-if="buffTokenStatus === 'success'" style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 4px; border-left: 3px solid var(--accent-green);">
+        <div style="color: var(--accent-green); font-weight: 500;">
           <el-icon><CircleCheck /></el-icon> 令牌获取成功!
         </div>
       </div>

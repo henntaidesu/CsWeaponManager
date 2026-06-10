@@ -1,7 +1,7 @@
 <template>
   <div class="automate-management">
     <div class="config-toolbar">
-      <el-button type="primary" @click="openCreateIndependentDrawer">添加独立更新任务</el-button>
+      <el-button type="danger" :loading="bulkStopping" @click="stopAllTasks">一键停止</el-button>
     </div>
 
     <!-- 账号卡片 -->
@@ -29,8 +29,8 @@
       <el-empty description="暂无已配置的账号" />
     </div>
 
-    <!-- 独立更新任务卡片 -->
-    <div v-if="independentTasks.length" class="independent-section">
+    <!-- 独立更新任务卡片：点击卡片右侧弹出编辑，未创建时点击创建 -->
+    <div class="independent-section">
       <div class="section-title">独立更新任务</div>
       <div class="account-card-grid">
         <div
@@ -48,6 +48,19 @@
           <div class="account-card-steamid">
             {{ typeLabel(task) }} · {{ stockPriceSourceLabel(task.config.source) }} · 每 {{ formatInterval(task.interval) }}
           </div>
+        </div>
+
+        <!-- 未创建 -->
+        <div
+          v-if="!independentTasks.length"
+          class="account-card"
+          @click="openCreateIndependentDrawer"
+        >
+          <div class="account-card-header">
+            <span class="account-card-name">更新库存组件价格</span>
+            <el-tag size="small" type="info" effect="dark">未创建</el-tag>
+          </div>
+          <div class="account-card-steamid">点击卡片创建任务</div>
         </div>
       </div>
     </div>
@@ -237,10 +250,12 @@ const {
   updateIndependentTask,
   stockPriceSourceLabel,
   formatInterval,
+  deleteTask,
   startTask,
   stopTask,
   updateTaskInterval,
-  deleteTask
+  bulkStopping,
+  stopAllTasks
 } = useAutomateManagement()
 
 const detailVisible = ref(false)

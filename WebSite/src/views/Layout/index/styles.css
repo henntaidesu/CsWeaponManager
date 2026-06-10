@@ -80,7 +80,7 @@
 }
 
 .sidebar li.disabled .menu-text {
-  color: #666;
+  color: var(--text-secondary);
 }
 
 /* 收缩状态下的菜单项 - 保持相同高度和左对齐 */
@@ -110,7 +110,7 @@
 /* 侧边栏底部用户信息 */
 .sidebar-footer {
   padding: 1rem;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-default);
   transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -127,7 +127,7 @@
 }
 
 .username {
-  color: #4CAF50;
+  color: var(--accent-green);
   font-size: 0.875rem;
   font-weight: 500;
   flex: 1;
@@ -139,8 +139,8 @@
 
 .logout-btn {
   padding: 0.375rem 0.75rem;
-  background-color: #f56c6c;
-  color: #fff;
+  background-color: var(--accent-red-light);
+  color: var(--text-primary);
   border: none;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -162,8 +162,8 @@
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
-  background-color: #f56c6c;
-  color: #fff;
+  background-color: var(--accent-red-light);
+  color: var(--text-primary);
   border: none;
   border-radius: 6px;
   font-size: 0;

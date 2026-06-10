@@ -244,9 +244,9 @@ const handleConfirm = async () => {
   font-weight: 700;
 }
 
-.market-value.blue  { color: #409EFF; }
-.market-value.red   { color: #F56C6C; }
-.market-value.green { color: #67C23A; }
+.market-value.blue  { color: var(--accent-blue); }
+.market-value.red   { color: var(--accent-red-light); }
+.market-value.green { color: var(--accent-green); }
 
 /* 表单 */
 .form-inline-row {
@@ -267,7 +267,7 @@ const handleConfirm = async () => {
 
 .form-label.required::before {
   content: '* ';
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 /* 总价行 */
@@ -286,7 +286,7 @@ const handleConfirm = async () => {
 .total-price {
   font-size: 20px;
   font-weight: 700;
-  color: #F56C6C;
+  color: var(--accent-red-light);
 }
 
 .total-bought {
@@ -296,7 +296,7 @@ const handleConfirm = async () => {
 }
 
 .hint-green {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
@@ -333,7 +333,7 @@ const handleConfirm = async () => {
 .rules-title {
   font-size: 13px;
   font-weight: 600;
-  color: #E6A23C;
+  color: var(--accent-orange);
   margin-bottom: 6px;
 }
 

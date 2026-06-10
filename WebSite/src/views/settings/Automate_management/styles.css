@@ -4,11 +4,11 @@
 }
 
 .config-section {
-  background: rgba(26, 26, 26, 0.6);
+  background: var(--bg-secondary);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  border: 1px solid var(--border-default);
 }
 
 .config-toolbar {
@@ -34,16 +34,16 @@
 
 .task-list-section,
 .history-section {
-  background: rgba(26, 26, 26, 0.6);
+  background: var(--bg-secondary);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  border: 1px solid var(--border-default);
 }
 
 .task-list-section h3 {
   font-size: 18px;
-  color: #e8e8e8;
+  color: var(--text-primary);
   margin: 0 0 16px 0;
   font-weight: 600;
 }
@@ -72,8 +72,8 @@
 }
 
 .task-group-collapse :deep(.el-collapse-item__header) {
-  background: rgba(35, 35, 35, 0.7);
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
   padding: 0 12px;
   min-height: 42px;
@@ -100,7 +100,7 @@
 }
 
 .task-group-count {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
@@ -117,13 +117,14 @@
 .section-title {
   font-size: 15px;
   font-weight: 600;
-  color: #e8e8e8;
+  color: var(--text-primary);
   margin: 8px 0 14px;
 }
 
 .independent-section {
   margin-top: 24px;
 }
+
 
 .independent-status-row {
   display: flex;
@@ -136,7 +137,7 @@
   display: block;
   margin-top: 4px;
   font-size: 12px;
-  color: #e6a23c;
+  color: var(--accent-orange);
 }
 
 /* 账号卡片网格 */
@@ -147,8 +148,8 @@
 }
 
 .account-card {
-  background: rgba(26, 26, 26, 0.6);
-  border: 1px solid rgba(58, 58, 58, 0.8);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 18px 20px;
   cursor: pointer;
@@ -171,7 +172,7 @@
 .account-card-name {
   font-size: 16px;
   font-weight: 600;
-  color: #e8e8e8;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -180,7 +181,7 @@
 .account-card-steamid {
   margin-top: 4px;
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .account-card-stats {
@@ -195,15 +196,15 @@
 }
 
 .account-card-stats .stat-running {
-  color: #67c23a;
+  color: var(--accent-green);
 }
 
 .account-card-stats .stat-stopped {
-  color: #e6a23c;
+  color: var(--accent-orange);
 }
 
 .account-card-stats .stat-uncreated {
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 /* 详情抽屉 */
@@ -218,10 +219,10 @@
 .detail-type-title {
   font-size: 14px;
   font-weight: 600;
-  color: #e8e8e8;
+  color: var(--text-primary);
   margin-bottom: 8px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(58, 58, 58, 0.8);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .detail-item {
@@ -248,7 +249,7 @@
 }
 
 .detail-item-name {
-  color: #e8e8e8;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
@@ -260,14 +261,14 @@
 
 .detail-item-interval {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
   min-width: 56px;
   text-align: right;
 }
 
 .detail-item-hint {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-secondary);
 }
 
 .custom-interval-footer {
@@ -275,17 +276,17 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border-top: 1px solid rgba(58, 58, 58, 0.8);
+  border-top: 1px solid var(--border-default);
 }
 
 .custom-interval-footer span {
-  color: #e8e8e8;
+  color: var(--text-primary);
   font-size: 12px;
 }
 
 /* Element Plus 表单样式调整 */
 :deep(.el-form-item__label) {
-  color: #e8e8e8;
+  color: var(--text-primary);
 }
 
 :deep(.el-select) {
@@ -293,21 +294,21 @@
 }
 
 :deep(.el-input__wrapper) {
-  background-color: rgba(35, 35, 35, 0.8);
-  border-color: rgba(58, 58, 58, 0.8);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-input__inner) {
-  color: #e8e8e8;
+  color: var(--text-primary);
 }
 
 :deep(.el-select-dropdown) {
-  background-color: rgba(26, 26, 26, 0.98);
-  border-color: rgba(58, 58, 58, 0.8);
+  background-color: var(--bg-secondary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-select-dropdown__item) {
-  color: #e8e8e8;
+  color: var(--text-primary);
 }
 
 :deep(.el-select-dropdown__item:hover) {
@@ -316,13 +317,13 @@
 
 :deep(.el-table) {
   background-color: transparent;
-  color: #e8e8e8;
+  color: var(--text-primary);
 }
 
 :deep(.el-table th.el-table__cell) {
-  background-color: rgba(35, 35, 35, 0.8);
-  color: #e8e8e8;
-  border-color: rgba(58, 58, 58, 0.8);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-table tr) {
@@ -330,7 +331,7 @@
 }
 
 :deep(.el-table td.el-table__cell) {
-  border-color: rgba(58, 58, 58, 0.8);
+  border-color: var(--border-default);
 }
 
 :deep(.el-table__body tr:hover > td) {
@@ -342,8 +343,8 @@
 }
 
 :deep(.el-input-number .el-input__wrapper) {
-  background-color: rgba(35, 35, 35, 0.8);
-  border-color: rgba(58, 58, 58, 0.8);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-default);
 }
 
 :deep(.el-empty) {
@@ -351,6 +352,6 @@
 }
 
 :deep(.el-empty__description) {
-  color: #909399;
+  color: var(--text-secondary);
 }
 

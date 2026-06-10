@@ -1,8 +1,8 @@
 /* 查询结果区域样式 */
 .result-section {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 1.5rem;
-  border-radius: 0.75rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -21,15 +21,15 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #444;
+  border-bottom: 2px solid var(--border-default);
 }
 
 /* 表格容器优化 */
 .result-section :deep(.el-table) {
   background-color: transparent;
-  color: #fff;
+  color: var(--text-primary);
   overflow: visible !important;
 }
 
@@ -65,16 +65,16 @@
 }
 
 .result-section :deep(.el-table th) {
-  background-color: #1e1e1e;
-  color: #fff;
-  border-bottom: 1px solid #444;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
   font-weight: 600;
 }
 
 .result-section :deep(.el-table td) {
-  background-color: #252525;
-  color: #fff;
-  border-bottom: 1px solid #333;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .result-section :deep(.el-table tr:hover > td) {
@@ -82,7 +82,7 @@
 }
 
 .result-section :deep(.el-table--striped .el-table__body tr.el-table__row--striped td) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
 }
 
 .result-section :deep(.el-table--striped .el-table__body tr.el-table__row--striped:hover > td) {
@@ -115,7 +115,7 @@
 }
 
 .no-icon {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -129,7 +129,7 @@
 
 /* 武器名称单元格 */
 .weapon-name-cell {
-  color: #409eff;
+  color: var(--accent-blue);
   font-weight: 500;
   font-size: 0.9rem;
   white-space: normal;
@@ -141,7 +141,7 @@
 }
 
 .weapon-name-cell:hover {
-  color: #66b1ff;
+  color: var(--accent-blue);
   text-decoration: underline;
 }
 
@@ -176,18 +176,18 @@
 
 .price-value {
   font-size: 0.85rem;
-  color: #409eff;
+  color: var(--accent-blue);
   font-weight: 500;
 }
 
 .commission-fee {
   font-size: 0.85rem;
-  color: #909399;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .reference-price {
-  color: #67c23a;
+  color: var(--accent-green);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -244,7 +244,7 @@
 }
 
 .pendant-name {
-  color: #67c23a;
+  color: var(--accent-green);
   font-weight: 600;
   font-size: 14px;
   white-space: nowrap;
@@ -260,18 +260,18 @@
 }
 
 .pendant-price {
-  color: #f56c6c;
+  color: var(--accent-red-light);
   font-weight: 700;
   font-size: 13px;
 }
 
 .pendant-pattern {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
 .no-pendant {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 13px;
   font-style: italic;
   padding: 8px;
@@ -305,7 +305,7 @@
 }
 
 .result-section::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--bg-secondary);
   border-radius: 4px;
 }
 
@@ -479,29 +479,29 @@
 
 /* ========== 悠悠有品购买对话框样式 ========== */
 .yyyp-buy-dialog {
-  --el-dialog-bg-color: #2a2a2a;
+  --el-dialog-bg-color: var(--bg-tertiary);
 }
 
 .yyyp-buy-dialog :deep(.el-dialog__header) {
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
 .yyyp-buy-dialog :deep(.el-dialog__title) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
 
 .yyyp-buy-dialog :deep(.el-dialog__body) {
-  background-color: #2a2a2a;
+  background-color: var(--bg-tertiary);
   padding: 20px;
 }
 
 .yyyp-buy-dialog :deep(.el-dialog__footer) {
-  background-color: #1e1e1e;
-  border-top: 1px solid #3a3a3a;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-default);
   padding: 16px 20px;
 }
 
@@ -520,9 +520,9 @@
   display: flex;
   gap: 20px;
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .commodity-image-large {
@@ -532,10 +532,10 @@
   justify-content: center;
   width: 200px;
   height: 150px;
-  background: #252525;
+  background: var(--bg-secondary);
   border-radius: 8px;
   padding: 10px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .commodity-info-details {
@@ -544,7 +544,7 @@
 
 .commodity-info-details h3 {
   margin: 0 0 15px 0;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 16px;
   font-weight: 600;
 }
@@ -555,27 +555,27 @@
 }
 
 .commodity-info-details :deep(.el-descriptions__label) {
-  background-color: #252525;
-  color: #909399;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .commodity-info-details :deep(.el-descriptions__content) {
-  background-color: #1e1e1e;
-  color: #ffffff;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .commodity-info-details :deep(.el-descriptions__cell) {
-  border-color: #3a3a3a;
+  border-color: var(--border-default);
 }
 
 /* 支付方式区域 */
 .payment-section {
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .payment-section .payment-info {
@@ -592,23 +592,23 @@
   display: flex;
   gap: 30px;
   padding: 20px;
-  background: #1e1e1e;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--border-default);
 }
 
 .buy-options-section :deep(.el-checkbox) {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .buy-options-section :deep(.el-checkbox__label) {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 14px;
 }
 
 .buy-options-section :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  background-color: #409eff;
-  border-color: #409eff;
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
 }
 
 /* 空状态 */
@@ -620,9 +620,9 @@
 }
 
 .no-detail-section :deep(.el-empty) {
-  --el-empty-fill-color-0: #252525;
+  --el-empty-fill-color-0: var(--bg-secondary);
 }
 
 .no-detail-section :deep(.el-empty__description) {
-  color: #909399;
+  color: var(--text-secondary);
 }

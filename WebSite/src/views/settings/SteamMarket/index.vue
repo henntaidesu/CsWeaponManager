@@ -149,9 +149,9 @@
                     type="success"
                     size="small"
                     :style="{
-                      backgroundColor: '#52c41a',
-                      borderColor: '#52c41a',
-                      color: '#FFFFFF'
+                      backgroundColor: 'var(--accent-green)',
+                      borderColor: 'var(--accent-green)',
+                      color: 'var(--text-primary)'
                     }"
                   >
                     {{ scope.row.status }}
@@ -320,9 +320,9 @@
                     type="success"
                     size="small"
                     :style="{
-                      backgroundColor: '#52c41a',
-                      borderColor: '#52c41a',
-                      color: '#FFFFFF'
+                      backgroundColor: 'var(--accent-green)',
+                      borderColor: 'var(--accent-green)',
+                      color: 'var(--text-primary)'
                     }"
                   >
                     {{ scope.row.status }}

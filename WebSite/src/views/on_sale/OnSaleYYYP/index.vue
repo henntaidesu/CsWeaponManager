@@ -429,10 +429,10 @@
                 </div>
                 <!-- 状态指示器 -->
                 <div v-if="batchChangePriceForm.priceUpdateStatus[index]" class="status-indicator">
-                  <el-icon v-if="batchChangePriceForm.priceUpdateStatus[index] === 'success'" class="success-icon" color="#67C23A">
+                  <el-icon v-if="batchChangePriceForm.priceUpdateStatus[index] === 'success'" class="success-icon" color="var(--accent-green)">
                     <CircleCheck />
                   </el-icon>
-                  <el-icon v-if="batchChangePriceForm.priceUpdateStatus[index] === 'error'" class="error-icon" color="#F56C6C">
+                  <el-icon v-if="batchChangePriceForm.priceUpdateStatus[index] === 'error'" class="error-icon" color="var(--accent-red-light)">
                     <CircleClose />
                   </el-icon>
                 </div>

@@ -37,54 +37,54 @@
 
 :deep(.el-pagination .el-pager li) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-pager li:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-pager li.is-active) {
-  background-color: #4CAF50;
-  color: #fff;
+  background-color: var(--accent-green);
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination .btn-prev),
 :deep(.el-pagination .btn-next) {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .btn-prev:hover),
 :deep(.el-pagination .btn-next:hover) {
-  background-color: #333;
+  background-color: var(--bg-overlay);
 }
 
 :deep(.el-pagination .el-select .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 :deep(.el-pagination .el-input__inner) {
   background-color: #484848 !important;
-  color: #fff;
-  border: 1px solid #333;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 /* 表格样式 */
 :deep(.el-table) {
   background-color: transparent;
-  color: #fff;
+  color: var(--text-primary);
   font-size: clamp(0.75rem, 1.2vw, 0.875rem);
   min-width: 1000px;
 }
 
 :deep(.el-table th) {
   background-color: var(--bg-tertiary);
-  color: #ccc;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
@@ -93,11 +93,11 @@
 }
 
 :deep(.el-table td) {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-default);
 }
 
 :deep(.el-table__body tr:hover > td) {
-  background-color: #2a2a2a !important;
+  background-color: var(--bg-tertiary) !important;
 }
 
 :deep(.el-table .el-table__cell) {
@@ -136,13 +136,13 @@
 .id-text {
   font-family: 'Courier New', monospace;
   font-size: 12px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .user-id {
   font-family: 'Courier New', monospace;
   font-size: 12px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 /* 响应式布局 */
@@ -171,11 +171,11 @@
 }
 
 :deep(.el-loading-spinner) {
-  color: #409eff !important;
+  color: var(--accent-blue) !important;
 }
 
 :deep(.el-loading-text) {
-  color: #fff !important;
+  color: var(--text-primary) !important;
 }
 
 

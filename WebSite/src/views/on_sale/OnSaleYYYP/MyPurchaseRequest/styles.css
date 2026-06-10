@@ -67,12 +67,12 @@
 }
 
 .sub-tab:hover {
-  background: rgba(64, 158, 255, 0.1);
+  background: rgba(76, 175, 80, 0.1);
 }
 
 .sub-tab.active {
   border-bottom-color: var(--el-color-primary);
-  background: rgba(64, 158, 255, 0.15);
+  background: rgba(76, 175, 80, 0.15);
 }
 
 .sub-tab-label {
@@ -93,7 +93,7 @@
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
-  background: rgba(64, 158, 255, 0.2);
+  background: rgba(76, 175, 80, 0.2);
   border-radius: 10px;
   font-size: 0.75rem;
   font-weight: 600;
@@ -102,7 +102,7 @@
 
 .sub-tab.active .sub-tab-count {
   background: var(--el-color-primary);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .purchase-request-content {
@@ -130,30 +130,30 @@
 
 .purchase-request-item:hover {
   border-color: var(--el-color-primary);
-  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 /* 暂停中样式 */
 .purchase-request-item.paused {
   opacity: 0.7;
-  border-color: rgba(250, 173, 20, 0.3);
+  border-color: rgba(230, 162, 60, 0.3);
 }
 
 .purchase-request-item.paused:hover {
   opacity: 1;
-  border-color: rgba(250, 173, 20, 0.6);
-  box-shadow: 0 2px 8px rgba(250, 173, 20, 0.2);
+  border-color: rgba(230, 162, 60, 0.6);
+  box-shadow: 0 2px 8px rgba(230, 162, 60, 0.2);
 }
 
 /* 待支付样式 */
 .purchase-request-item.pending-payment {
-  border-color: rgba(103, 194, 58, 0.3);
-  background: linear-gradient(135deg, rgba(103, 194, 58, 0.05) 0%, rgba(103, 194, 58, 0.02) 100%);
+  border-color: rgba(76, 175, 80, 0.3);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(76, 175, 80, 0.02) 100%);
 }
 
 .purchase-request-item.pending-payment:hover {
-  border-color: rgba(103, 194, 58, 0.6);
-  box-shadow: 0 2px 8px rgba(103, 194, 58, 0.2);
+  border-color: rgba(76, 175, 80, 0.6);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 /* 历史记录样式 */
@@ -221,7 +221,7 @@
   align-items: center;
   gap: 0.3rem;
   padding: 2px 8px;
-  background: rgba(103, 194, 58, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   border-radius: 4px;
 }
 
@@ -237,7 +237,7 @@
 .rank-value {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #409EFF;
+  color: var(--accent-blue);
 }
 
 .price-info-inline {
@@ -245,7 +245,7 @@
   align-items: center;
   gap: 0.3rem;
   padding: 2px 8px;
-  background: rgba(103, 194, 58, 0.1);
+  background: rgba(76, 175, 80, 0.1);
   border-radius: 4px;
 }
 
@@ -271,18 +271,18 @@
 .price-value {
   font-size: 1rem;
   font-weight: 600;
-  color: #67C23A;
+  color: var(--accent-green);
 }
 
 .max-price-value {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #E6A23C;
+  color: var(--accent-orange);
 }
 
 .price-value.highlight {
   font-size: 1.1rem;
-  color: #409EFF;
+  color: var(--accent-blue);
 }
 
 .quantity-value {
@@ -292,7 +292,7 @@
 }
 
 .buy-quantity {
-  color: #67C23A;
+  color: var(--accent-green);
   font-weight: 600;
 }
 
@@ -315,7 +315,7 @@
 .deal-price-value {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #E6A23C;
+  color: var(--accent-orange);
 }
 
 .request-item-right {
@@ -366,15 +366,15 @@
 }
 
 .countdown-value.countdown-normal {
-  color: #67C23A;
+  color: var(--accent-green);
 }
 
 .countdown-value.countdown-warning {
-  color: #E6A23C;
+  color: var(--accent-orange);
 }
 
 .countdown-value.countdown-danger {
-  color: #F56C6C;
+  color: var(--accent-red-light);
   animation: pulse-text 1.5s ease-in-out infinite;
 }
 
@@ -465,8 +465,8 @@
   align-items: center;
   gap: 0.4rem;
   padding: 3px 10px;
-  background: rgba(103, 194, 58, 0.1);
-  border: 1px solid rgba(103, 194, 58, 0.3);
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
   border-radius: 4px;
 }
 
@@ -478,7 +478,7 @@
 .balance-value {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #67C23A;
+  color: var(--accent-green);
   min-width: 60px;
 }
 
@@ -527,12 +527,12 @@
 .transfer-available-value {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #67C23A;
+  color: var(--accent-green);
 }
 
 .transfer-error {
   font-size: 0.82rem;
-  color: #F56C6C;
+  color: var(--accent-red-light);
   padding-left: 2px;
 }
 
@@ -565,33 +565,33 @@
   background: rgba(230, 162, 60, 0.1);
   border-radius: 4px;
   font-size: 0.82rem;
-  color: #E6A23C;
+  color: var(--accent-orange);
   font-weight: 500;
 }
 
 /* 状态标签颜色 */
 .el-tag.el-tag--success {
-  --el-tag-bg-color: rgba(103, 194, 58, 0.1);
-  --el-tag-border-color: rgba(103, 194, 58, 0.3);
-  --el-tag-text-color: #67C23A;
+  --el-tag-bg-color: rgba(76, 175, 80, 0.1);
+  --el-tag-border-color: rgba(76, 175, 80, 0.3);
+  --el-tag-text-color: var(--accent-green);
 }
 
 .el-tag.el-tag--warning {
-  --el-tag-bg-color: rgba(250, 173, 20, 0.1);
-  --el-tag-border-color: rgba(250, 173, 20, 0.3);
-  --el-tag-text-color: #FAAD14;
+  --el-tag-bg-color: rgba(230, 162, 60, 0.1);
+  --el-tag-border-color: rgba(230, 162, 60, 0.3);
+  --el-tag-text-color: var(--accent-orange);
 }
 
 .el-tag.el-tag--info {
   --el-tag-bg-color: rgba(144, 147, 153, 0.1);
   --el-tag-border-color: rgba(144, 147, 153, 0.3);
-  --el-tag-text-color: #909399;
+  --el-tag-text-color: var(--text-secondary);
 }
 
 .el-tag.el-tag--danger {
   --el-tag-bg-color: rgba(245, 108, 108, 0.1);
   --el-tag-border-color: rgba(245, 108, 108, 0.3);
-  --el-tag-text-color: #F56C6C;
+  --el-tag-text-color: var(--accent-red-light);
 }
 
 /* 响应式设计 */

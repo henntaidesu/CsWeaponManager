@@ -526,12 +526,12 @@
               <h3>{{ presaleDetail.commodity.commodityName }}</h3>
               <el-descriptions :column="1" border size="small">
                 <el-descriptions-item label="价格">
-                  <span style="color: #f56c6c; font-size: 18px; font-weight: bold;">
+                  <span style="color: var(--accent-red-light); font-size: 18px; font-weight: bold;">
                     {{ presaleDetail.commodity.sellPrice }}
                   </span>
                 </el-descriptions-item>
                 <el-descriptions-item label="定金" v-if="presaleDetail.commodity.commodityPreSaleDTO">
-                  <span style="color: #e6a23c; font-size: 16px; font-weight: bold;">
+                  <span style="color: var(--accent-orange); font-size: 16px; font-weight: bold;">
                     ¥{{ presaleDetail.commodity.commodityPreSaleDTO.depositAmount }}
                   </span>
                 </el-descriptions-item>
@@ -562,12 +562,12 @@
 
             <el-descriptions :column="2" border>
               <el-descriptions-item label="未发货赔付">
-                <span style="color: #67c23a; font-weight: bold;">
+                <span style="color: var(--accent-green); font-weight: bold;">
                   ¥{{ presaleDetail.commodity.commodityPreSaleDTO.buyerCompensationAmount }}
                 </span>
               </el-descriptions-item>
               <el-descriptions-item label="不收货惩罚">
-                <span style="color: #f56c6c; font-weight: bold;">
+                <span style="color: var(--accent-red-light); font-weight: bold;">
                   ¥{{ presaleDetail.commodity.commodityPreSaleDTO.buyerLiquidatedDamagesAmount }}
                 </span>
               </el-descriptions-item>
@@ -590,7 +590,7 @@
                 style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;"
               />
               <span style="font-size: 14px;">{{ filteredPayList[0].channelName }}</span>
-              <span v-if="filteredPayList[0].balance" style="color: #67c23a; margin-left: 10px; font-weight: bold;">
+              <span v-if="filteredPayList[0].balance" style="color: var(--accent-green); margin-left: 10px; font-weight: bold;">
                 ¥{{ filteredPayList[0].balance }}
               </span>
             </div>
@@ -669,7 +669,7 @@
               <h3>{{ onSaleDetail.commodity.commodityName }}</h3>
               <el-descriptions :column="1" border size="small">
                 <el-descriptions-item label="价格">
-                  <span style="color: #f56c6c; font-size: 18px; font-weight: bold;">
+                  <span style="color: var(--accent-red-light); font-size: 18px; font-weight: bold;">
                     ¥{{ onSaleDetail.commodity.sellPrice }}
                   </span>
                 </el-descriptions-item>
@@ -690,7 +690,7 @@
           <!-- 订单和余额信息 -->
           <div class="payment-section" style="margin-top: 12px;">
             <!-- 创建订单中 -->
-            <div v-if="onSaleOrderLoading" style="text-align: center; padding: 8px 0; color: #909399; font-size: 13px;">
+            <div v-if="onSaleOrderLoading" style="text-align: center; padding: 8px 0; color: var(--text-secondary); font-size: 13px;">
               <el-icon class="is-loading"><Loading /></el-icon> 正在创建订单并查询余额...
             </div>
 
@@ -698,25 +698,25 @@
             <template v-else-if="onSaleOrderNo">
               <el-descriptions :column="1" border size="small">
                 <el-descriptions-item label="订单号">
-                  <span style="color: #909399;">{{ onSaleOrderNo }}</span>
+                  <span style="color: var(--text-secondary);">{{ onSaleOrderNo }}</span>
                 </el-descriptions-item>
                 <el-descriptions-item label="有品余额">
-                  <span :style="{ color: onSaleBalanceInsufficient ? '#f56c6c' : '#67c23a', fontWeight: 'bold' }">
+                  <span :style="{ color: onSaleBalanceInsufficient ? 'var(--accent-red-light)' : 'var(--accent-green)', fontWeight: 'bold' }">
                     ¥{{ onSaleBalance !== null ? onSaleBalance.toFixed(2) : '获取失败' }}
                   </span>
                 </el-descriptions-item>
                 <el-descriptions-item label="支付金额">
-                  <span style="color: #f56c6c; font-weight: bold;">¥{{ onSalePrice.toFixed(2) }}</span>
+                  <span style="color: var(--accent-red-light); font-weight: bold;">¥{{ onSalePrice.toFixed(2) }}</span>
                 </el-descriptions-item>
                 <el-descriptions-item label="支付后余额">
-                  <span :style="{ color: onSaleBalanceInsufficient ? '#f56c6c' : '#909399' }">
+                  <span :style="{ color: onSaleBalanceInsufficient ? 'var(--accent-red-light)' : 'var(--text-secondary)' }">
                     {{ onSaleBalanceAfter !== null ? '¥' + onSaleBalanceAfter.toFixed(2) : '-' }}
                   </span>
                 </el-descriptions-item>
               </el-descriptions>
               <div
                 v-if="onSaleBalanceInsufficient"
-                style="margin-top: 8px; padding: 8px 12px; background: rgba(245,108,108,0.1); border: 1px solid rgba(245,108,108,0.3); border-radius: 4px; color: #909399; font-size: 13px;"
+                style="margin-top: 8px; padding: 8px 12px; background: rgba(245,108,108,0.1); border: 1px solid rgba(245,108,108,0.3); border-radius: 4px; color: var(--text-secondary); font-size: 13px;"
               >
                 余额不足，无法完成支付
               </div>
@@ -725,7 +725,7 @@
             <!-- 创建订单失败 -->
             <div
               v-else-if="onSaleOrderError"
-              style="margin-top: 8px; padding: 8px 12px; background: rgba(245,108,108,0.1); border: 1px solid rgba(245,108,108,0.3); border-radius: 4px; color: #909399; font-size: 13px;"
+              style="margin-top: 8px; padding: 8px 12px; background: rgba(245,108,108,0.1); border: 1px solid rgba(245,108,108,0.3); border-radius: 4px; color: var(--text-secondary); font-size: 13px;"
             >
               {{ onSaleOrderError }}
             </div>

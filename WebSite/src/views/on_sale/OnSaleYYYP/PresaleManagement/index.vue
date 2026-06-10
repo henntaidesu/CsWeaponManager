@@ -112,11 +112,11 @@
               <div class="price-row">
                 <div class="price-group" v-if="item.guard_price_desc">
                   <span class="price-label">保证金:</span>
-                  <span class="price-value" style="color: #FFA500;">{{ item.guard_price_desc }}</span>
+                  <span class="price-value" style="color: var(--accent-orange);">{{ item.guard_price_desc }}</span>
                 </div>
                 <div class="price-group" v-if="item.cache_expiration_desc">
                   <span class="price-label">冷却:</span>
-                  <span class="price-value" style="color: #67C23A;">{{ item.cache_expiration_desc }}</span>
+                  <span class="price-value" style="color: var(--accent-green);">{{ item.cache_expiration_desc }}</span>
                 </div>
               </div>
             </div>
@@ -233,41 +233,41 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">N/A</span>
+            <span v-else style="color: var(--text-secondary);">N/A</span>
           </template>
         </el-table-column>
 
         <!-- 预售类型的列 -->
         <el-table-column label="售价" width="150">
           <template #default="scope">
-            <span style="color: #67C23A; font-weight: bold;">¥{{ parseFloat(scope.row.sale_price).toFixed(2) }}</span>
+            <span style="color: var(--accent-green); font-weight: bold;">¥{{ parseFloat(scope.row.sale_price).toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column label="市场价" width="150">
           <template #default="scope">
-            <span v-if="scope.row.reference_price" style="color: #409EFF;">{{ scope.row.reference_price }}</span>
-            <span v-else style="color: #888;">-</span>
+            <span v-if="scope.row.reference_price" style="color: var(--accent-blue);">{{ scope.row.reference_price }}</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="保证金" width="120">
           <template #default="scope">
-            <span v-if="scope.row.guard_price_desc" style="color: #FFA500; font-weight: bold;">{{ scope.row.guard_price_desc }}</span>
-            <span v-else style="color: #888;">-</span>
+            <span v-if="scope.row.guard_price_desc" style="color: var(--accent-orange); font-weight: bold;">{{ scope.row.guard_price_desc }}</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="冷却时间" width="120">
           <template #default="scope">
-            <span v-if="scope.row.cache_expiration_desc" style="color: #E6A23C;">{{ scope.row.cache_expiration_desc }}</span>
-            <span v-else style="color: #888;">-</span>
+            <span v-if="scope.row.cache_expiration_desc" style="color: var(--accent-orange);">{{ scope.row.cache_expiration_desc }}</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
 
         <el-table-column prop="on_sale_time" label="上架时间" width="180">
           <template #default="scope">
-            <span v-if="scope.row.on_sale_time" style="color: #9E9E9E;">
+            <span v-if="scope.row.on_sale_time" style="color: var(--text-secondary);">
               {{ scope.row.on_sale_time }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">

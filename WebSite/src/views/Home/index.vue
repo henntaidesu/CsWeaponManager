@@ -11,7 +11,7 @@
           <h3>悠悠有品最低价</h3>
           <div class="stat-price-container">
             <p class="stat-number">{{ inventoryStats?.yyyp_price || '0.00' }} | {{ componentStats?.yyyp_price || '0.00' }}</p>
-            <p class="stat-diff" :style="{ color: (inventoryStats?.yyyp_diff || 0) >= 0 ? '#f56c6c' : '#4CAF50' }">
+            <p class="stat-diff" :style="{ color: (inventoryStats?.yyyp_diff || 0) >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
               {{ (inventoryStats?.yyyp_diff || 0) >= 0 ? '+' : '' }}¥{{ inventoryStats?.yyyp_diff || '0.00' }}
             </p>
           </div>
@@ -20,7 +20,7 @@
           <h3>BUFF最低价</h3>
           <div class="stat-price-container">
             <p class="stat-number">{{ inventoryStats?.buff_price || '0.00' }} | {{ componentStats?.buff_price || '0.00' }}</p>
-            <p class="stat-diff" :style="{ color: (inventoryStats?.buff_diff || 0) >= 0 ? '#f56c6c' : '#4CAF50' }">
+            <p class="stat-diff" :style="{ color: (inventoryStats?.buff_diff || 0) >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
               {{ (inventoryStats?.buff_diff || 0) >= 0 ? '+' : '' }}¥{{ inventoryStats?.buff_diff || '0.00' }}
             </p>
           </div>
@@ -29,7 +29,7 @@
           <h3>Steam参考价</h3>
           <div class="stat-price-container">
             <p class="stat-number">{{ inventoryStats?.steam_price || '0.00' }} | {{ componentStats?.steam_price || '0.00' }}</p>
-            <p class="stat-diff" :style="{ color: (inventoryStats?.steam_diff || 0) >= 0 ? '#f56c6c' : '#4CAF50' }">
+            <p class="stat-diff" :style="{ color: (inventoryStats?.steam_diff || 0) >= 0 ? 'var(--accent-red-light)' : 'var(--accent-green)' }">
               {{ (inventoryStats?.steam_diff || 0) >= 0 ? '+' : '' }}¥{{ inventoryStats?.steam_diff || '0.00' }}
             </p>
           </div>
@@ -250,7 +250,7 @@
             </el-table-column>
             <el-table-column label="磨损值" width="200">
               <template #default="scope">
-                <div v-if="scope.row.count > 1" style="color: #888;">
+                <div v-if="scope.row.count > 1" style="color: var(--text-secondary);">
                   多个磨损值
                 </div>
                 <div v-else-if="scope.row.weapon_float">
@@ -270,12 +270,12 @@
                     ></div>
                   </div>
                 </div>
-                <span v-else style="color: #888;">N/A</span>
+                <span v-else style="color: var(--text-secondary);">N/A</span>
               </template>
             </el-table-column>
             <el-table-column label="购入价格" width="150" align="right">
               <template #default="scope">
-                <span style="color: #4CAF50; font-weight: bold;">
+                <span style="color: var(--accent-green); font-weight: bold;">
                   ¥{{ parseFloat(scope.row.buy_price || 0).toFixed(2) }}
                 </span>
               </template>
@@ -283,12 +283,12 @@
             <el-table-column label="悠悠有品" width="150" align="right">
               <template #default="scope">
                 <div v-if="scope.row.yyyp_price && scope.row.buy_price" style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
-                  <span style="color: #fff; font-weight: bold;">
+                  <span style="color: var(--text-primary); font-weight: bold;">
                     ¥{{ parseFloat(scope.row.yyyp_price).toFixed(2) }}
                   </span>
                   <span 
                     :style="{
-                      color: parseFloat(scope.row.yyyp_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c',
+                      color: parseFloat(scope.row.yyyp_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)',
                       fontSize: '12px',
                       fontWeight: 'bold'
                     }"
@@ -297,21 +297,21 @@
                     ¥{{ Math.abs(parseFloat(scope.row.yyyp_price) - parseFloat(scope.row.buy_price)).toFixed(2) }}
                   </span>
                 </div>
-                <span v-else-if="scope.row.yyyp_price" style="color: #fff; font-weight: bold;">
+                <span v-else-if="scope.row.yyyp_price" style="color: var(--text-primary); font-weight: bold;">
                   ¥{{ parseFloat(scope.row.yyyp_price).toFixed(2) }}
                 </span>
-                <span v-else style="color: #888;">-</span>
+                <span v-else style="color: var(--text-secondary);">-</span>
               </template>
             </el-table-column>
             <el-table-column label="BUFF" width="150" align="right">
               <template #default="scope">
                 <div v-if="scope.row.buff_price && scope.row.buy_price" style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
-                  <span style="color: #fff; font-weight: bold;">
+                  <span style="color: var(--text-primary); font-weight: bold;">
                     ¥{{ parseFloat(scope.row.buff_price).toFixed(2) }}
                   </span>
                   <span 
                     :style="{
-                      color: parseFloat(scope.row.buff_price) < parseFloat(scope.row.buy_price) ? '#4CAF50' : '#f56c6c',
+                      color: parseFloat(scope.row.buff_price) < parseFloat(scope.row.buy_price) ? 'var(--accent-green)' : 'var(--accent-red-light)',
                       fontSize: '12px',
                       fontWeight: 'bold'
                     }"
@@ -320,18 +320,18 @@
                     ¥{{ Math.abs(parseFloat(scope.row.buff_price) - parseFloat(scope.row.buy_price)).toFixed(2) }}
                   </span>
                 </div>
-                <span v-else-if="scope.row.buff_price" style="color: #fff; font-weight: bold;">
+                <span v-else-if="scope.row.buff_price" style="color: var(--text-primary); font-weight: bold;">
                   ¥{{ parseFloat(scope.row.buff_price).toFixed(2) }}
                 </span>
-                <span v-else style="color: #888;">-</span>
+                <span v-else style="color: var(--text-secondary);">-</span>
               </template>
             </el-table-column>
             <el-table-column label="Steam" width="120" align="right">
               <template #default="scope">
-                <span v-if="scope.row.steam_price" style="color: #fff; font-weight: bold;">
+                <span v-if="scope.row.steam_price" style="color: var(--text-primary); font-weight: bold;">
                   ¥{{ parseFloat(scope.row.steam_price).toFixed(2) }}
                 </span>
-                <span v-else style="color: #888;">-</span>
+                <span v-else style="color: var(--text-secondary);">-</span>
               </template>
             </el-table-column>
           </el-table>

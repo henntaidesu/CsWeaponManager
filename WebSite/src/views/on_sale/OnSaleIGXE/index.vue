@@ -70,7 +70,7 @@
         </div>
         <div class="card">
           <h3>预期收益</h3>
-          <p class="stat-number" :style="{ color: onSaleStats.expectedProfit >= 0 ? '#4CAF50' : '#f56c6c' }">
+          <p class="stat-number" :style="{ color: onSaleStats.expectedProfit >= 0 ? 'var(--accent-green)' : 'var(--accent-red-light)' }">
             {{ onSaleStats.expectedProfit >= 0 ? '+' : '' }}¥{{ onSaleStats.expectedProfit }}
           </p>
         </div>
@@ -180,7 +180,7 @@
                   <span class="price-label">预期收益:</span>
                   <span 
                     class="price-value"
-                    :style="{ color: (parseFloat(item.sale_price) - parseFloat(item.buy_price)) >= 0 ? '#4CAF50' : '#f56c6c' }"
+                    :style="{ color: (parseFloat(item.sale_price) - parseFloat(item.buy_price)) >= 0 ? 'var(--accent-green)' : 'var(--accent-red-light)' }"
                   >
                     {{ (parseFloat(item.sale_price) - parseFloat(item.buy_price)) >= 0 ? '+' : '' }}¥{{ Math.abs(parseFloat(item.sale_price) - parseFloat(item.buy_price)).toFixed(2) }}
                   </span>
@@ -303,18 +303,18 @@
                 ></div>
               </div>
             </div>
-            <span v-else style="color: #888;">N/A</span>
+            <span v-else style="color: var(--text-secondary);">N/A</span>
           </template>
         </el-table-column>
         <el-table-column prop="sale_price" label="售价" width="150">
           <template #default="scope">
-            <span style="color: #fff; font-weight: bold;">¥{{ parseFloat(scope.row.sale_price).toFixed(2) }}</span>
+            <span style="color: var(--text-primary); font-weight: bold;">¥{{ parseFloat(scope.row.sale_price).toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="buy_price" label="购入价" width="150">
           <template #default="scope">
-            <span v-if="scope.row.buy_price" style="color: #fff;">¥{{ parseFloat(scope.row.buy_price).toFixed(2) }}</span>
-            <span v-else style="color: #888;">-</span>
+            <span v-if="scope.row.buy_price" style="color: var(--text-primary);">¥{{ parseFloat(scope.row.buy_price).toFixed(2) }}</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="预期收益" width="150">
@@ -322,21 +322,21 @@
             <span 
               v-if="scope.row.buy_price"
               :style="{ 
-                color: (parseFloat(scope.row.sale_price) - parseFloat(scope.row.buy_price)) >= 0 ? '#4CAF50' : '#f56c6c',
+                color: (parseFloat(scope.row.sale_price) - parseFloat(scope.row.buy_price)) >= 0 ? 'var(--accent-green)' : 'var(--accent-red-light)',
                 fontWeight: 'bold'
               }"
             >
               {{ (parseFloat(scope.row.sale_price) - parseFloat(scope.row.buy_price)) >= 0 ? '+' : '' }}¥{{ Math.abs(parseFloat(scope.row.sale_price) - parseFloat(scope.row.buy_price)).toFixed(2) }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column prop="on_sale_time" label="上架时间" width="180">
           <template #default="scope">
-            <span v-if="scope.row.on_sale_time" style="color: #9E9E9E;">
+            <span v-if="scope.row.on_sale_time" style="color: var(--text-secondary);">
               {{ scope.row.on_sale_time }}
             </span>
-            <span v-else style="color: #888;">-</span>
+            <span v-else style="color: var(--text-secondary);">-</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180" fixed="right">
@@ -449,7 +449,7 @@
                     <span class="preview-price-label">预期收益:</span>
                     <span
                       class="preview-price-value"
-                      :style="{ color: (parseFloat(previewItem.sale_price) - parseFloat(previewItem.buy_price)) >= 0 ? '#4CAF50' : '#f56c6c' }"
+                      :style="{ color: (parseFloat(previewItem.sale_price) - parseFloat(previewItem.buy_price)) >= 0 ? 'var(--accent-green)' : 'var(--accent-red-light)' }"
                     >
                       {{ (parseFloat(previewItem.sale_price) - parseFloat(previewItem.buy_price)) >= 0 ? '+' : '' }}¥{{ Math.abs(parseFloat(previewItem.sale_price) - parseFloat(previewItem.buy_price)).toFixed(2) }}
                     </span>
