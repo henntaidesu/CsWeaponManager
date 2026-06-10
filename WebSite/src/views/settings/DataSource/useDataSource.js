@@ -513,10 +513,6 @@ export function useDataSource() {
         ElMessage.error('请填写SK')
         return
       }
-      if (!inputForm.value.tracestate) {
-        ElMessage.error('请填写Tracestate')
-        return
-      }
       if (!inputForm.value.deviceInfo) {
         ElMessage.error('请填写Device Info')
         return
@@ -2975,10 +2971,6 @@ export function useDataSource() {
       }
       if (!editForm.value.sk) {
         ElMessage.error('请填写SK')
-        return
-      }
-      if (!editForm.value.tracestate) {
-        ElMessage.error('请填写Tracestate')
         return
       }
       if (!editForm.value.deviceInfo) {

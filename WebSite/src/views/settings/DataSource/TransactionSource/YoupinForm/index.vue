@@ -119,14 +119,6 @@
             placeholder="请输入SK"
           />
         </el-form-item>
-        <el-form-item label="Tracestate" required>
-          <el-input 
-            v-model="form.tracestate" 
-            type="textarea"
-            :rows="2"
-            placeholder="请输入Tracestate"
-          />
-        </el-form-item>
       </el-collapse-item>
     </el-collapse>
   </div>
