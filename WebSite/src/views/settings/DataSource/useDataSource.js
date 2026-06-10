@@ -994,7 +994,14 @@ export function useDataSource() {
     try {
       yyypTokenLoading.value = true
       yyypTokenStatus.value = 'waiting'
-      
+
+      // 启动前先清除服务端上一个账号残留的缓存数据，避免多账号更新时读到旧账号数据
+      try {
+        await axios.post(apiUrls.getAppTokenClearYyypData())
+      } catch (clearError) {
+        console.warn('清除悠悠有品缓存失败（忽略，继续启动）:', clearError)
+      }
+
       const url = apiUrls.getAppTokenStartYyyp()
       const response = await axios.post(url)
       

@@ -8,11 +8,14 @@ from src.db_manager.index.model.weapon_classID import WeaponClassIDModel
 
 class WeaponQuery:
 
+    # 待下载条件：if_down 为 NULL 且已存有 icon_url
+    _PENDING_WHERE = "[icon_url] IS NOT NULL AND TRIM([icon_url]) != '' AND [if_down] IS NULL"
+
     @staticmethod
     def fetch_weapon_icons():
         """为 Spider 提供待下载的饰品图标列表"""
         try:
-            where_clause = "[icon_url] IS NOT NULL AND TRIM([icon_url]) != '' AND ([if_down] IS NULL OR [if_down] = 0)"
+            where_clause = WeaponQuery._PENDING_WHERE
             pending_total = WeaponClassIDModel.count(where=where_clause)
             records = WeaponClassIDModel.find_all(where=where_clause)
 
@@ -77,7 +80,7 @@ class WeaponQuery:
     def pending_weapon_icons_count():
         """统计待下载图标数量"""
         try:
-            where_clause = "[icon_url] IS NOT NULL AND TRIM([icon_url]) != '' AND ([if_down] IS NULL OR [if_down] = 0)"
+            where_clause = WeaponQuery._PENDING_WHERE
             count = WeaponClassIDModel.count(where=where_clause)
             return jsonify({'success': True, 'count': count}), 200
         except Exception as e:

@@ -2,13 +2,24 @@
   <div class="sync-section">
     <div class="section-header">
       <h2 class="section-title">图片资源包</h2>
-      <el-button
-        type="primary"
-        @click="downloadWeaponIcons"
-        :loading="isDownloadingIcons"
-      >
-        {{ isDownloadingIcons ? '下载中...' : '下载武器图标' }}
-      </el-button>
+      <div class="header-actions">
+        <el-button
+          type="primary"
+          @click="downloadWeaponIcons('steam')"
+          :loading="downloadingSource === 'steam'"
+          :disabled="downloadingSource === 'youpin'"
+        >
+          {{ downloadingSource === 'steam' ? '下载中...' : '使用 Steam 下载' }}
+        </el-button>
+        <el-button
+          type="primary"
+          @click="downloadWeaponIcons('youpin')"
+          :loading="downloadingSource === 'youpin'"
+          :disabled="downloadingSource === 'steam'"
+        >
+          {{ downloadingSource === 'youpin' ? '下载中...' : '使用悠悠有品下载' }}
+        </el-button>
+      </div>
     </div>
 
     <div v-if="iconDownloadResult" class="sync-info" style="margin-top: 1rem;">

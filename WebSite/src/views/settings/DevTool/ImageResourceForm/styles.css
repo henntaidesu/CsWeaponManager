@@ -16,6 +16,11 @@
   border-bottom: 2px solid var(--border-default);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
