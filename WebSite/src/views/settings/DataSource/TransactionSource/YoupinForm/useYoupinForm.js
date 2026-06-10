@@ -84,7 +84,6 @@ export default function useYoupinForm(props, { emit }) {
               deviceuk: data.deviceuk,
               uk: data.uk,
               sk: data.sk,
-              tracestate: data.tracestate,
               deviceInfo: data.device_info,
               phone: data.phone || props.form.phone
             })

@@ -111,7 +111,6 @@ export function useDataSource() {
     deviceuk: '',
     uk: '',
     sk: '',
-    tracestate: '',
     deviceInfo: '',
     // BUFF特有字段
     cookie: '',
@@ -197,7 +196,6 @@ export function useDataSource() {
     deviceuk: '',
     uk: '',
     sk: '',
-    tracestate: '',
     deviceInfo: '',
     // BUFF特有字段
     cookie: '',
@@ -665,7 +663,6 @@ export function useDataSource() {
           deviceuk: inputForm.value.deviceuk,
           uk: inputForm.value.uk,
           sk: inputForm.value.sk,
-          tracestate: inputForm.value.tracestate,
           device_info: inputForm.value.deviceInfo
         })
       } else if (inputForm.value.type === 'perfectworld') {
@@ -1060,7 +1057,6 @@ export function useDataSource() {
             editForm.value.deviceuk = data.deviceuk
             editForm.value.uk = data.uk
             editForm.value.sk = data.sk
-            editForm.value.tracestate = data.tracestate
             editForm.value.deviceInfo = data.device_info
           } else {
             inputForm.value.sessionid = data.Sessionid
@@ -1076,7 +1072,6 @@ export function useDataSource() {
             inputForm.value.deviceuk = data.deviceuk
             inputForm.value.uk = data.uk
             inputForm.value.sk = data.sk
-            inputForm.value.tracestate = data.tracestate
             inputForm.value.deviceInfo = data.device_info
           }
           
@@ -1357,7 +1352,6 @@ export function useDataSource() {
       deviceuk: '',
       uk: '',
       sk: '',
-      tracestate: '',
       deviceInfo: '',
       // BUFF特有字段
       cookie: '',
@@ -2007,7 +2001,6 @@ export function useDataSource() {
       editForm.value.deviceuk = config.yyyp_deviceuk || ''
       editForm.value.uk = config.yyyp_uk || ''
       editForm.value.sk = config.yyyp_sk || ''
-      editForm.value.tracestate = config.yyyp_tracestate || ''
       editForm.value.deviceInfo = config.yyyp_device_info || ''
       
       // 短信登录相关字段 - 将已存储的 sessionid 同步到短信登录的 Session ID 输入框
@@ -2255,7 +2248,6 @@ export function useDataSource() {
       deviceuk: '',
       uk: '',
       sk: '',
-      tracestate: '',
       deviceInfo: '',
       // 悠悠有品短信登录字段
       yyypLoginMethod: 'sms',
@@ -3123,7 +3115,6 @@ export function useDataSource() {
           deviceuk: editForm.value.deviceuk,
           uk: editForm.value.uk,
           sk: editForm.value.sk,
-          tracestate: editForm.value.tracestate,
           device_info: editForm.value.deviceInfo
         })
       } else if (editForm.value.type === 'perfectworld') {
@@ -3874,7 +3865,6 @@ export function useDataSource() {
       // inputForm.value.deviceuk = response.data.deviceuk
       // inputForm.value.uk = response.data.uk
       // inputForm.value.sk = response.data.sk
-      // inputForm.value.tracestate = response.data.tracestate
       
       // 自动展开配置折叠面板
       inputYyypConfigCollapse.value = ['config']
@@ -3975,7 +3965,6 @@ export function useDataSource() {
       // editForm.value.deviceuk = response.data.deviceuk
       // editForm.value.uk = response.data.uk
       // editForm.value.sk = response.data.sk
-      // editForm.value.tracestate = response.data.tracestate
       
       // 自动展开配置折叠面板，方便查看
       editYyypBasicCollapse.value = ['basic']
