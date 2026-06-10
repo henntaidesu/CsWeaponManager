@@ -59,8 +59,9 @@
                       v-if="source.type !== 'perfectworld'"
                       type="warning" 
                       size="small" 
-                      @click="startCollection(source)" 
+                      @click="startCollection(source)"
                       :loading="collectingSourceIds.has(source.dataID)"
+                      :disabled="!source.enabled"
                     >
                       {{ collectingSourceIds.has(source.dataID) ? '采集中...' : '采集' }}
                     </el-button>
@@ -274,6 +275,7 @@
               type="warning" 
               @click="openFirstFetchDialog('youpin')"
               :loading="collectingSourceIds.has(editingSourceId)"
+              :disabled="!editForm.enabled"
             >
               首次数据获取
             </el-button>
@@ -282,6 +284,7 @@
               type="warning" 
               @click="openFirstFetchDialog('buff')"
               :loading="collectingSourceIds.has(editingSourceId)"
+              :disabled="!editForm.enabled"
             >
               首次数据获取
             </el-button>
@@ -290,6 +293,7 @@
               type="warning" 
               @click="openFirstFetchDialog('steam')"
               :loading="collectingSourceIds.has(editingSourceId)"
+              :disabled="!editForm.enabled"
             >
               首次数据获取
             </el-button>
@@ -298,6 +302,7 @@
               type="warning" 
               @click="openFirstFetchDialog('csfloat')"
               :loading="collectingSourceIds.has(editingSourceId)"
+              :disabled="!editForm.enabled"
             >
               首次数据获取
             </el-button>
@@ -306,6 +311,7 @@
               type="warning" 
               @click="openFirstFetchDialog('c5game')"
               :loading="collectingSourceIds.has(editingSourceId)"
+              :disabled="!editForm.enabled"
             >
               首次数据获取
             </el-button>
