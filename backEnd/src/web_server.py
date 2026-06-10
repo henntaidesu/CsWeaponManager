@@ -43,7 +43,9 @@ def proxy_api(path):
         url = f'{BACKEND_URL}/{path}'
 
         # 检查是否为流式端点（如版本更新下载的 SSE 进度流）
-        is_stream = path.endswith('downloadUpdate') or 'version_update/units/update/downloadUpdate' in path
+        is_stream = (path.endswith('downloadUpdate')
+                     or 'version_update/units/update/downloadUpdate' in path
+                     or 'dev_tools/units/csqaq/fetchPriceHistory' in path)
         timeout = 600 if is_stream else 30
 
         # 转发请求

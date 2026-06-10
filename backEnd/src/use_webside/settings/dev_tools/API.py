@@ -7,6 +7,7 @@ DevTools API 模块
 from flask import Blueprint
 from .units.dev_tools_adb import DevToolsAdb
 from .units.dev_tools_csqaq import DevToolsCsqaq
+from .units.dev_tools_csqaq_history import DevToolsCsqaqHistory
 from .units.dev_tools_filters import DevToolsFilters
 
 dev_tools_blueprint = Blueprint('dev_tools_v2', __name__)
@@ -30,6 +31,10 @@ dev_tools_blueprint.route('/dev_tools/units/adb/device/<serial>/shell', methods=
 
 # CSQAQ 映射
 dev_tools_blueprint.route('/dev_tools/units/csqaq/uploadMapping', methods=['POST'])(DevToolsCsqaq.upload_mapping)
+
+# CSQAQ 历史价格采集（SSE 流式）
+dev_tools_blueprint.route('/dev_tools/units/csqaq/fetchPriceHistory', methods=['POST'])(DevToolsCsqaqHistory.fetch_price_history)
+dev_tools_blueprint.route('/dev_tools/units/csqaq/stopFetchPriceHistory', methods=['POST'])(DevToolsCsqaqHistory.stop_fetch_price_history)
 
 # 筛选数据
 dev_tools_blueprint.route('/dev_tools/units/filters/getSteamAccounts', methods=['GET'])(DevToolsFilters.get_steam_accounts)

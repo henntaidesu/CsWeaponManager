@@ -486,6 +486,8 @@ export const API_CONFIG = {
     // CSQAQ相关（V2 API）
 
     CSQAQ_UPLOAD_MAPPING: '/backENDV2/src/use_webside/settings/dev_tools/units/csqaq/uploadMapping',  // 上传CSQAQ映射文件（DevTools）
+    CSQAQ_FETCH_PRICE_HISTORY: '/backENDV2/src/use_webside/settings/dev_tools/units/csqaq/fetchPriceHistory',  // CSQAQ历史价格采集（SSE流式，DevTools）
+    CSQAQ_STOP_FETCH_PRICE_HISTORY: '/backENDV2/src/use_webside/settings/dev_tools/units/csqaq/stopFetchPriceHistory',  // 停止CSQAQ历史价格采集（DevTools）
     CSQAQ_DATA_SOURCE_UPLOAD_MAPPING: '/backENDV2/src/use_webside/settings/data_source/csqaq/upload_mapping',  // 上传CSQAQ映射文件（DataSource）
     CSQAQ_DATA_SOURCE_CONFIG: '/backENDV2/src/use_webside/settings/data_source/csqaq/config',  // 获取CSQAQ配置
 
@@ -1272,6 +1274,8 @@ export const apiUrls = {
   // CSQAQ API
 
   csqaqUploadMapping: () => getApiUrl(API_CONFIG.ENDPOINTS.CSQAQ_UPLOAD_MAPPING),
+  csqaqFetchPriceHistory: () => getApiUrl(API_CONFIG.ENDPOINTS.CSQAQ_FETCH_PRICE_HISTORY),
+  csqaqStopFetchPriceHistory: () => getApiUrl(API_CONFIG.ENDPOINTS.CSQAQ_STOP_FETCH_PRICE_HISTORY),
   csqaqDataSourceUploadMapping: () => getApiUrl(API_CONFIG.ENDPOINTS.CSQAQ_DATA_SOURCE_UPLOAD_MAPPING),
   csqaqDataSourceConfig: () => getApiUrl(API_CONFIG.ENDPOINTS.CSQAQ_DATA_SOURCE_CONFIG),
 

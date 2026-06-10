@@ -6,6 +6,9 @@
     <!-- 平台饰品映射 -->
     <WeaponMappingForm />
 
+    <!-- CSQAQ 历史价格采集 -->
+    <CsqaqPriceHistoryForm />
+
     <!-- 图片资源包 -->
     <ImageResourceForm />
   </div>
@@ -15,6 +18,7 @@
 <script>
 import AdbCertForm from './AdbCertForm/index.vue'
 import WeaponMappingForm from './WeaponMappingForm/index.vue'
+import CsqaqPriceHistoryForm from './CsqaqPriceHistoryForm/index.vue'
 import ImageResourceForm from './ImageResourceForm/index.vue'
 
 export default {
@@ -22,6 +26,7 @@ export default {
   components: {
     AdbCertForm,
     WeaponMappingForm,
+    CsqaqPriceHistoryForm,
     ImageResourceForm
   }
 }

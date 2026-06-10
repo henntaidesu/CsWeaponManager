@@ -24,7 +24,10 @@ export default defineConfig({
         configure: (proxy) => {
           proxy.on('proxyRes', (proxyRes, req) => {
             // 对 SSE 流式端点禁用缓冲
-            if (req.url && req.url.includes('/version_update/units/update/downloadUpdate')) {
+            if (req.url && (
+              req.url.includes('/version_update/units/update/downloadUpdate') ||
+              req.url.includes('/dev_tools/units/csqaq/fetchPriceHistory')
+            )) {
               proxyRes.headers['cache-control'] = 'no-cache'
               proxyRes.headers['x-accel-buffering'] = 'no'
               proxyRes.headers['connection'] = 'keep-alive'
