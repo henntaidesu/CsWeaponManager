@@ -2,7 +2,7 @@
 echo Starting PyInstaller packaging process...
 
 :: Set version number (modify this for each release)
-set VERSION=v2.7.0
+set VERSION=v2.7.1
 
 :: Sync version to package.json
 echo Syncing version to package.json...
@@ -37,9 +37,11 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Create Releases directory and version subdirectory if they don't exist
+:: Create Releases directory and version subdirectory
 if not exist "Releases" mkdir Releases
-if not exist "Releases\%VERSION%" mkdir "Releases\%VERSION%"
+:: 先清空旧的版本目录，避免上一次构建的残留文件（如已废弃的 WebServer.exe、外置 WebSite\）被打进 ZIP
+if exist "Releases\%VERSION%" rmdir /s /q "Releases\%VERSION%"
+mkdir "Releases\%VERSION%"
 echo Creating release in: Releases\%VERSION%
 
 :: Clear previous builds
