@@ -207,27 +207,10 @@ export function useOnSaleBuff() {
       return
     }
 
-    updating.value = true
-    try {
-      const response = await axios.post(apiUrls.updateSalePrice(), {
-        id: selectedItem.value.id,
-        new_price: price,  // 直接传递原始字符串
-        account_id: selectedAccount.value
-      })
-
-      if (response.data && response.data.success) {
-        ElMessage.success('改价成功')
-        updatePriceDialogVisible.value = false
-        loadOnSaleData()
-      } else {
-        ElMessage.error(response.data?.message || '改价失败')
-      }
-    } catch (error) {
-      console.error('改价失败:', error)
-      ElMessage.error('改价失败: ' + error.message)
-    } finally {
-      updating.value = false
-    }
+    // BUFF 改价尚未打通：apiUrls 里没有 updateSalePrice，直接调用会 TypeError；
+    // 后端也没有对应路由。在 Spider 侧实现 BUFF 改价前，这里明确拒绝而不是发请求。
+    ElMessage.warning('BUFF 改价功能尚未接入，请前往 BUFF APP 操作')
+    updatePriceDialogVisible.value = false
   }
 
   // 下架商品
@@ -246,7 +229,8 @@ export function useOnSaleBuff() {
       loading.value = true
       const response = await axios.post(apiUrls.removeFromSale(), {
         id: item.id,
-        account_id: selectedAccount.value
+        account_id: selectedAccount.value,
+        platform: 'buff'  // 必传：后端据此拒绝把 BUFF 订单发往悠悠有品的下架接口
       })
 
       if (response.data && response.data.success) {

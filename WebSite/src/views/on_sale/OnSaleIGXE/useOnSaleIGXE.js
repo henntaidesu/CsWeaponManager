@@ -113,26 +113,9 @@ export function useOnSaleIGXE() {
       return
     }
 
-    updating.value = true
-    try {
-      const response = await axios.post(apiUrls.updateSalePrice(), {
-        id: selectedItem.value.id,
-        new_price: updatePriceForm.value.newPrice
-      })
-
-      if (response.data && response.data.success) {
-        ElMessage.success('改价成功')
-        updatePriceDialogVisible.value = false
-        loadOnSaleData()
-      } else {
-        ElMessage.error(response.data?.message || '改价失败')
-      }
-    } catch (error) {
-      console.error('改价失败:', error)
-      ElMessage.error('改价失败: ' + error.message)
-    } finally {
-      updating.value = false
-    }
+    // 与 BUFF 同理：apiUrls 没有 updateSalePrice，调用会 TypeError，后端也无对应路由
+    ElMessage.warning('IGXE 改价功能尚未接入，请前往 IGXE 平台操作')
+    updatePriceDialogVisible.value = false
   }
 
   // 下架商品
@@ -150,7 +133,8 @@ export function useOnSaleIGXE() {
 
       loading.value = true
       const response = await axios.post(apiUrls.removeFromSale(), {
-        id: item.id
+        id: item.id,
+        platform: 'igxe'  // 必传：后端据此拒绝把 IGXE 订单发往悠悠有品的下架接口
       })
 
       if (response.data && response.data.success) {

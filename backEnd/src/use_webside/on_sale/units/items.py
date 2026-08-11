@@ -190,11 +190,21 @@ class OnSaleItems:
 
             item_id = data.get('id')
             account_id = data.get('account_id')
+            # 兼容未传 platform 的老调用方：缺省按悠悠有品处理
+            platform = data.get('platform', 'yyyp')
 
             if not item_id:
                 return jsonify({
                     'success': False,
                     'message': '缺少必要参数: id'
+                }), 400
+
+            # 下面整段只实现了悠悠有品的下架（读 youpin 配置、调 youping 的 offShelf）。
+            # 其他平台若放行，会把该平台的订单号发到悠悠有品去下架，属于静默错走，必须拦住。
+            if platform != 'yyyp':
+                return jsonify({
+                    'success': False,
+                    'message': f'{platform} 平台的下架功能尚未接入，请前往对应平台APP操作'
                 }), 400
 
             # 如果提供了account_id，从config表获取steamId
