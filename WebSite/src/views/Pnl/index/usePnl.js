@@ -571,6 +571,7 @@ export function usePnl() {
       yyyp: '悠悠有品', buff: 'BUFF', csfloat: 'CsFloat',
       SMK: 'steam市场', ING: '游戏内购',
       c5: 'C5GAME', c5game: 'C5GAME', C5game: 'C5GAME', C5: 'C5GAME', C5GAME: 'C5GAME',
+      igxe: 'IGXE', IGXE: 'IGXE',
     }
     return map[val] || val
   }

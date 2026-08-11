@@ -189,6 +189,7 @@ export function useRental() {
     if (!val) return '-'
     if (val.toLowerCase() === 'yyyp') return '悠悠有品'
     if (val.toLowerCase() === 'buff') return 'BUFF'
+    if (val.toLowerCase() === 'igxe') return 'IGXE'
     return val
   }
 

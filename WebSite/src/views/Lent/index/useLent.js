@@ -188,6 +188,7 @@ export function useLent() {
   const mapSource = (val) => {
     if (!val) return '-'
     if (val.toLowerCase() === 'yyyp') return '悠悠有品'
+    if (val.toLowerCase() === 'igxe') return 'IGXE'
     return val
   }
 
