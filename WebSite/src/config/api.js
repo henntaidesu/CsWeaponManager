@@ -307,6 +307,10 @@ export const API_CONFIG = {
     C5GAME_SYNC_NEW_DATA: '/spiderApiV2/src/web_site/c5game/units/settings/data_source/syncNewData',  // C5 GAME增量采集
     C5GAME_SYNC_HISTORY_DATA: '/spiderApiV2/src/web_site/c5game/units/settings/data_source/syncHistoryData',  // C5 GAME全量采集
 
+    // IGXE 数据同步（V2 API）
+    IGXE_SYNC_NEW_DATA: '/spiderApiV2/src/web_site/igxe/units/settings/data_source/syncNewData',  // IGXE增量采集
+    IGXE_SYNC_HISTORY_DATA: '/spiderApiV2/src/web_site/igxe/units/settings/data_source/syncHistoryData',  // IGXE全量采集
+
     // 完美世界 库存组件（V2 API）
     PW_GET_INVENTORY_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/get_component/getInventoryComponent',  // 获取库存组件数据
     PW_DEPOSIT_TO_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/move_component/depositToComponent',  // 存入/取出物品到组件
@@ -452,6 +456,14 @@ export const API_CONFIG = {
     GET_APP_TOKEN_GET_C5GAME_DATA: '/spiderApiV2/src/get_app_token/units/settings/data_source/c5game/get_data',  // 获取C5 GAME数据
 
     GET_APP_TOKEN_CLEAR_C5GAME_DATA: '/spiderApiV2/src/get_app_token/units/settings/data_source/c5game/clear_data',  // 清除C5 GAME数据
+
+    GET_APP_TOKEN_START_IGXE: '/spiderApiV2/src/get_app_token/units/settings/data_source/igxe/start_proxy',  // 启动IGXE代理
+
+    GET_APP_TOKEN_STOP_IGXE: '/spiderApiV2/src/get_app_token/units/settings/data_source/igxe/stop_proxy',  // 停止IGXE代理
+
+    GET_APP_TOKEN_GET_IGXE_DATA: '/spiderApiV2/src/get_app_token/units/settings/data_source/igxe/get_data',  // 获取IGXE数据
+
+    GET_APP_TOKEN_CLEAR_IGXE_DATA: '/spiderApiV2/src/get_app_token/units/settings/data_source/igxe/clear_data',  // 清除IGXE数据
 
     GET_APP_TOKEN_PROXY_STATUS: '/spiderApiV2/src/get_app_token/units/settings/data_source/proxy_status',  // 查询代理状态
 
@@ -1193,6 +1205,14 @@ export const apiUrls = {
 
   getAppTokenClearC5GameData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.GET_APP_TOKEN_CLEAR_C5GAME_DATA),
 
+  getAppTokenStartIgxe: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.GET_APP_TOKEN_START_IGXE),
+
+  getAppTokenStopIgxe: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.GET_APP_TOKEN_STOP_IGXE),
+
+  getAppTokenGetIgxeData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.GET_APP_TOKEN_GET_IGXE_DATA),
+
+  getAppTokenClearIgxeData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.GET_APP_TOKEN_CLEAR_IGXE_DATA),
+
   csfloatSyncNewData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.CSFLOAT_SYNC_NEW_DATA),
 
   csfloatSyncHistoryData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.CSFLOAT_SYNC_HISTORY_DATA),
@@ -1200,6 +1220,10 @@ export const apiUrls = {
   c5gameSyncNewData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.C5GAME_SYNC_NEW_DATA),
 
   c5gameSyncHistoryData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.C5GAME_SYNC_HISTORY_DATA),
+
+  igxeSyncNewData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_NEW_DATA),
+
+  igxeSyncHistoryData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_HISTORY_DATA),
 
   pwGetInventoryComponent: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.PW_GET_INVENTORY_COMPONENT),
 

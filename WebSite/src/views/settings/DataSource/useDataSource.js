@@ -32,7 +32,8 @@ export function useDataSource() {
   const perfectWorldFormRef = ref(null)
   const csfloatFormRef = ref(null)
   const c5gameFormRef = ref(null)
-  
+  const igxeFormRef = ref(null)
+
   // 注意：全局自动采集定时器在 main.js 中初始化，无需在组件中管理
   
   // GetAppToken 相关状态
@@ -165,6 +166,15 @@ export function useDataSource() {
     c5gameAutoLogin: false,
     c5gameAutoLoginUsername: '',
     c5gameAutoLoginPassword: '',
+    // IGXE 特有字段
+    igxeToken: '',
+    igxeVersions: '',
+    igxeServerVersion: '',
+    igxeClientType: '',
+    igxeChannel: '',
+    igxeTheme: '',
+    igxeDeviceInfo: '',
+    igxeUserAgent: '',
     // CSQAQ特有字段
     csqaqApiToken: '',
     // SteamDT特有字段
@@ -252,6 +262,15 @@ export function useDataSource() {
     c5gameAutoLogin: false,
     c5gameAutoLoginUsername: '',
     c5gameAutoLoginPassword: '',
+    // IGXE 特有字段
+    igxeToken: '',
+    igxeVersions: '',
+    igxeServerVersion: '',
+    igxeClientType: '',
+    igxeChannel: '',
+    igxeTheme: '',
+    igxeDeviceInfo: '',
+    igxeUserAgent: '',
     // CSQAQ特有字段
     csqaqApiToken: '',
     // SteamDT特有字段
@@ -276,7 +295,8 @@ export function useDataSource() {
   }
 
   // 独立数据源类型列表
-  const independentDataSourceTypes = ['csqaq', 'steamdt', 'igxe', 'ecosteam']
+  // 注意：IGXE 绑定 Steam 账号（配置含 steam_uid），按 SteamID 分组展示，不属于独立数据源
+  const independentDataSourceTypes = ['csqaq', 'steamdt', 'ecosteam']
 
   // 独立数据源的计算属性
   const independentDataSources = computed(() => {
@@ -634,6 +654,17 @@ export function useDataSource() {
       }
     }
 
+    if (inputForm.value.type === 'igxe') {
+      if (!inputForm.value.steamID) {
+        ElMessage.error('请填写SteamID')
+        return
+      }
+      if (!inputForm.value.igxeToken) {
+        ElMessage.error('请填写登录令牌（token）')
+        return
+      }
+    }
+
     submitting.value = true
     try {
       // 获取当前时间作为创建时间
@@ -773,6 +804,20 @@ export function useDataSource() {
           auto_login: inputForm.value.c5gameAutoLogin,
           auto_login_username: inputForm.value.c5gameAutoLoginUsername,
           auto_login_password: inputForm.value.c5gameAutoLoginPassword,
+          sleep_time: '6000'
+        })
+      } else if (inputForm.value.type === 'igxe') {
+        // IGXE特殊配置，字段名与 Spider 的 IGXE_HEADER_FIELDS 对应
+        requestData.configJson = JSON.stringify({
+          steamID: inputForm.value.steamID,
+          token: inputForm.value.igxeToken,
+          versions: inputForm.value.igxeVersions,
+          server_version: inputForm.value.igxeServerVersion,
+          client_type: inputForm.value.igxeClientType,
+          channel: inputForm.value.igxeChannel,
+          theme: inputForm.value.igxeTheme,
+          device_info: inputForm.value.igxeDeviceInfo,
+          user_agent: inputForm.value.igxeUserAgent,
           sleep_time: '6000'
         })
       } else if (inputForm.value.type === 'csqaq') {
@@ -1409,6 +1454,15 @@ export function useDataSource() {
       c5gameStartReqTime: '',
       c5gameContentType: '',
       c5gameAcceptEncoding: '',
+      // IGXE 特有字段
+      igxeToken: '',
+      igxeVersions: '',
+      igxeServerVersion: '',
+      igxeClientType: '',
+      igxeChannel: '',
+      igxeTheme: '',
+      igxeDeviceInfo: '',
+      igxeUserAgent: '',
       // CSQAQ特有字段
       csqaqApiToken: '',
       // SteamDT特有字段
@@ -1752,6 +1806,71 @@ export function useDataSource() {
     }
   }
 
+  // IGXE专用爬虫采集函数（增量采集 - 只获取新数据）
+  const startIgxeSpiderCollection = async (source) => {
+    if (!source.enabled) {
+      ElMessage.warning('请先启用数据源')
+      return
+    }
+
+    if (collectingSourceIds.value.has(source.dataID)) {
+      ElMessage.info('该数据源正在采集中...')
+      return
+    }
+
+    const steamID =
+      source.steamID ||
+      source.config?.steamID ||
+      source.config?.steamId ||
+      source.config?.steam_id ||
+      ''
+
+    if (!steamID) {
+      ElMessage.error('请先在数据源配置中填写 SteamID')
+      return
+    }
+
+    try {
+      startCollecting(source.dataID)
+
+      ElMessage.info(`开始采集IGXE数据: ${source.dataName}`)
+
+      const response = await axios.post(apiUrls.igxeSyncNewData(), { steamID })
+
+      if (response.status === 200) {
+        const result = response.data || {}
+        if (result.success === false) {
+          ElMessage.error(result.message || 'IGXE采集失败')
+        } else {
+          ElMessage.success(`${source.dataName} - ${result.message || 'IGXE采集完成'}`)
+
+          const now = new Date()
+          source.lastUpdate = now
+          await updateLastUpdateInDatabase(source.dataID, now.toISOString())
+        }
+      } else {
+        ElMessage.error(`IGXE采集失败: ${response.data}`)
+      }
+    } catch (error) {
+      console.error('IGXE采集失败:', error)
+      let errorMessage = `IGXE采集 ${source.dataName} 失败`
+
+      if (error.response) {
+        errorMessage =
+          error.response.data?.message ||
+          `IGXE采集失败 (${error.response.status})`
+      } else if (error.request) {
+        errorMessage = '无法连接到IGXE爬虫服务器'
+      } else {
+        errorMessage = error.message || 'IGXE采集失败'
+      }
+
+      ElMessage.error(errorMessage)
+    } finally {
+      stopCollecting(source.dataID)
+    }
+  }
+
   // Steam专用爬虫采集函数（增量采集 - 只获取新数据）
   const startSteamSpiderCollection = async (source) => {
     if (!source.enabled) {
@@ -1842,7 +1961,11 @@ export function useDataSource() {
     if (source.type === 'c5game') {
       return startC5gameSpiderCollection(source)
     }
-    
+
+    if (source.type === 'igxe') {
+      return startIgxeSpiderCollection(source)
+    }
+
     // 如果是Steam，调用Steam爬虫采集
     if (source.type === 'steam') {
       return startSteamSpiderCollection(source)
@@ -2170,6 +2293,18 @@ export function useDataSource() {
       editForm.value.c5gameAutoLoginUsername = config.auto_login_username || ''
       editForm.value.c5gameAutoLoginPassword = config.auto_login_password || ''
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
+    } else if (source.type === 'igxe') {
+      console.log('IGXE配置解析:', config)
+      editForm.value.steamID = config.steamID || source.steamID || ''
+      editForm.value.igxeToken = config.token || ''
+      editForm.value.igxeVersions = config.versions != null && config.versions !== '' ? String(config.versions) : ''
+      editForm.value.igxeServerVersion = config.server_version || ''
+      editForm.value.igxeClientType = config.client_type != null && config.client_type !== '' ? String(config.client_type) : ''
+      editForm.value.igxeChannel = config.channel || ''
+      editForm.value.igxeTheme = config.theme || ''
+      editForm.value.igxeDeviceInfo = config.device_info || ''
+      editForm.value.igxeUserAgent = config.user_agent || ''
+      editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'csqaq') {
       // CSQAQ配置
       console.log('CSQAQ配置解析:', config)
@@ -2208,6 +2343,9 @@ export function useDataSource() {
     }
     if (c5gameFormRef.value?.cleanup) {
       await c5gameFormRef.value.cleanup()
+    }
+    if (igxeFormRef.value?.cleanup) {
+      await igxeFormRef.value.cleanup()
     }
 
     // 清除 Token 获取定时器
@@ -2312,6 +2450,15 @@ export function useDataSource() {
       c5gameAutoLogin: false,
       c5gameAutoLoginUsername: '',
       c5gameAutoLoginPassword: '',
+      // IGXE 特有字段
+      igxeToken: '',
+      igxeVersions: '',
+      igxeServerVersion: '',
+      igxeClientType: '',
+      igxeChannel: '',
+      igxeTheme: '',
+      igxeDeviceInfo: '',
+      igxeUserAgent: '',
       // CSQAQ特有字段
       csqaqApiToken: ''
     }
@@ -2386,6 +2533,9 @@ export function useDataSource() {
     }
     if (c5gameFormRef.value?.cleanup) {
       await c5gameFormRef.value.cleanup()
+    }
+    if (igxeFormRef.value?.cleanup) {
+      await igxeFormRef.value.cleanup()
     }
 
     // 清除二维码轮询定时器
@@ -2720,6 +2870,87 @@ export function useDataSource() {
         errorMessage = '无法连接到 C5 GAME 爬虫服务器'
       } else {
         errorMessage = error.message || 'C5 GAME 数据获取失败'
+      }
+
+      ElMessage.error(errorMessage)
+    } finally {
+      stopCollecting(editingSourceId.value)
+    }
+  }
+
+  // 编辑对话框中的 IGXE「首次数据获取」
+  // limitParams: { limitType: 'all'|'count'|'date', limitCount: number, limitDate: 'YYYY-MM-DD' }
+  const handleEditIgxeCollectAll = async (limitParams = {}) => {
+    if (!editForm.value.name) {
+      ElMessage.error('数据源信息不完整')
+      return
+    }
+
+    if (!editForm.value.enabled) {
+      ElMessage.warning('请先启用数据源')
+      return
+    }
+
+    if (editForm.value.type !== 'igxe') {
+      ElMessage.error('只有 IGXE 数据源才支持该功能')
+      return
+    }
+
+    if (collectingSourceIds.value.has(editingSourceId.value)) {
+      ElMessage.info('该数据源正在采集中...')
+      return
+    }
+
+    const steamID =
+      editForm.value.steamID ||
+      editForm.value.steamId ||
+      ''
+
+    if (!steamID) {
+      ElMessage.error('请先填写 IGXE 数据源的 SteamID')
+      return
+    }
+
+    const { limitType = 'all', limitCount = null, limitDate = null } = limitParams
+
+    let limitDesc = ''
+    if (limitType === 'count') limitDesc = `（条数限制: ${limitCount}）`
+    else if (limitType === 'date') limitDesc = `（日期限制: ${limitDate} 之后）`
+
+    try {
+      startCollecting(editingSourceId.value)
+
+      ElMessage.info(`开始执行 IGXE 首次数据获取: ${editForm.value.name}${limitDesc}`)
+
+      const response = await axios.post(apiUrls.igxeSyncHistoryData(), {
+        steamID,
+        limit_type: limitType,
+        limit_count: limitCount,
+        limit_date: limitDate,
+      })
+
+      if (response.status === 200) {
+        const result = response.data || {}
+        if (result.success === false) {
+          ElMessage.error(result.message || 'IGXE 数据获取失败')
+        } else {
+          ElMessage.success(result.message || 'IGXE 数据获取完成！')
+        }
+      } else {
+        ElMessage.error(`IGXE 数据获取失败: ${response.data}`)
+      }
+    } catch (error) {
+      console.error('IGXE 数据获取失败:', error)
+      let errorMessage = `IGXE 数据获取 ${editForm.value.name} 失败`
+
+      if (error.response) {
+        errorMessage =
+          error.response.data?.message ||
+          `IGXE 数据获取失败 (${error.response.status})`
+      } else if (error.request) {
+        errorMessage = '无法连接到 IGXE 爬虫服务器'
+      } else {
+        errorMessage = error.message || 'IGXE 数据获取失败'
       }
 
       ElMessage.error(errorMessage)
@@ -3095,6 +3326,17 @@ export function useDataSource() {
       }
     }
 
+    if (editForm.value.type === 'igxe') {
+      if (!editForm.value.steamID) {
+        ElMessage.error('请填写SteamID')
+        return
+      }
+      if (!editForm.value.igxeToken) {
+        ElMessage.error('请填写登录令牌（token）')
+        return
+      }
+    }
+
     editSubmitting.value = true
     try {
       let requestData = {
@@ -3223,6 +3465,21 @@ export function useDataSource() {
           auto_login: editForm.value.c5gameAutoLogin,
           auto_login_username: editForm.value.c5gameAutoLoginUsername,
           auto_login_password: editForm.value.c5gameAutoLoginPassword,
+          updateFreq: editForm.value.updateFreq,
+          sleep_time: '6000'
+        })
+      } else if (editForm.value.type === 'igxe') {
+        // IGXE特殊配置，字段名与 Spider 的 IGXE_HEADER_FIELDS 对应
+        requestData.configJson = JSON.stringify({
+          steamID: editForm.value.steamID,
+          token: editForm.value.igxeToken,
+          versions: editForm.value.igxeVersions,
+          server_version: editForm.value.igxeServerVersion,
+          client_type: editForm.value.igxeClientType,
+          channel: editForm.value.igxeChannel,
+          theme: editForm.value.igxeTheme,
+          device_info: editForm.value.igxeDeviceInfo,
+          user_agent: editForm.value.igxeUserAgent,
           updateFreq: editForm.value.updateFreq,
           sleep_time: '6000'
         })
@@ -4121,6 +4378,7 @@ export function useDataSource() {
     perfectWorldFormRef,
     csfloatFormRef,
     c5gameFormRef,
+    igxeFormRef,
     // GetAppToken 相关
     buffTokenLoading,
     yyypTokenLoading,
@@ -4182,6 +4440,7 @@ export function useDataSource() {
     handleEditBuffCollectAll,
     handleEditCsfloatCollectAll,
     handleEditC5gameCollectAll,
+    handleEditIgxeCollectAll,
     handleEditSteamCollectAll,
     handleEditDelete,
     openAddDialog,
