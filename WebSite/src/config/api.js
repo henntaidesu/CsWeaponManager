@@ -387,6 +387,8 @@ export const API_CONFIG = {
 
     YOUPIN_SELL_INVENTORY_ITEM: '/spiderApiV2/src/web_site/youping/units/inventory/sell/sellInventoryItem',  // 上架单个库存饰品（新版API）
 
+    YOUPIN_GET_PUT_SHELF_INIT: '/spiderApiV2/src/web_site/youping/units/inventory/put_shelf/getPutShelfInit',  // 获取上架系数与协议（价格区间提示）
+
     CSQAQ_TASK_RESULT: '/csqaqSpiderV1/getTaskResult',  // CSQAQ获取任务结果
 
     CSQAQ_EXPORT: '/csqaqSpiderV1/exportGoods',  // CSQAQ导出商品

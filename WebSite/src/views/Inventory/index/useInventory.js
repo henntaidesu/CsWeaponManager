@@ -1554,42 +1554,71 @@ export function useInventory() {
   const handleRentFormSubmit = async (formData) => {
     console.log('[出租提交] 表单数据:', formData)
 
-    // 显示加载提示
-    const loading = ElLoading.service({
+    // 显示加载提示（二次确认时会先关掉、确认后重新开）
+    const showLoading = () => ElLoading.service({
       lock: true,
       text: '正在上架出租...',
       background: 'rgba(0, 0, 0, 0.7)'
     })
+    let loading = showLoading()
+
+    // 组装上架请求体。confirmed 为 true 时表示用户已在二次确认弹框中点了"继续上架"
+    const buildPayload = (confirmed) => ({
+      steamId: selectedSteamId.value,
+      confirmed,
+      items: formData.items.map(item => {
+        const itemData = {
+          assetid: item.assetid,
+          // 悠悠按 commodityHashName 下发价格区间系数，用于上架前校验
+          hashName: selectedItems.value.find(i => i.assetid === item.assetid)?.steam_hash_name || '',
+          shortRentPrice: item.shortRentPrice,
+          depositPrice: item.depositPrice,
+          rentDays: formData.rentDays,
+          tradeMode: item.tradeMode || 1,  // 每个饰品独立的交易方式，默认租赁
+          zeroCooldown: item.zeroCooldown || false,  // 每个饰品独立的0CD开关
+          rentActivity: item.rentActivity || false,  // 每个饰品独立的租送活动
+          marketDynamicPricingMinCoefficient: item.marketDynamicPricingMinCoefficient || '95',  // 0CD动态定价系数
+          price: item.price || null,
+          remark: ''
+        }
+
+        // 仅当租期>21天时才传递长租价格
+        if (formData.rentDays > 21 && item.longRentPrice) {
+          itemData.longRentPrice = item.longRentPrice
+        }
+
+        return itemData
+      })
+    })
+
+    const uploadUrl = `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.YOUPIN_UPLOAD_RENT}`
 
     try {
       // 调用上架出租 API
-      const response = await axios.post(
-        `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.YOUPIN_UPLOAD_RENT}`,
-        {
-          steamId: selectedSteamId.value,
-          items: formData.items.map(item => {
-            const itemData = {
-              assetid: item.assetid,
-              shortRentPrice: item.shortRentPrice,
-              depositPrice: item.depositPrice,
-              rentDays: formData.rentDays,
-              tradeMode: item.tradeMode || 1,  // 每个饰品独立的交易方式，默认租赁
-              zeroCooldown: item.zeroCooldown || false,  // 每个饰品独立的0CD开关
-              rentActivity: item.rentActivity || false,  // 每个饰品独立的租送活动
-              marketDynamicPricingMinCoefficient: item.marketDynamicPricingMinCoefficient || '95',  // 0CD动态定价系数
-              price: item.price || null,
-              remark: ''
-            }
+      let response = await axios.post(uploadUrl, buildPayload(false))
 
-            // 仅当租期>21天时才传递长租价格
-            if (formData.rentDays > 21 && item.longRentPrice) {
-              itemData.longRentPrice = item.longRentPrice
+      // 价格与市场价偏离较大时，悠悠 APP 会弹二次确认；这里复刻同样的交互
+      if (!response.data.success && response.data.needConfirm) {
+        loading.close()
+        const detail = (response.data.warnings || []).map(w => w.message).join('\n')
+        try {
+          await ElMessageBox.confirm(
+            detail ? `${response.data.message}\n\n${detail}` : response.data.message,
+            '价格确认',
+            {
+              confirmButtonText: '继续上架',
+              cancelButtonText: '返回修改',
+              type: 'warning',
+              customStyle: { whiteSpace: 'pre-line' }
             }
-
-            return itemData
-          })
+          )
+        } catch {
+          console.log('[出租提交] 用户取消了二次确认')
+          return
         }
-      )
+        loading = showLoading()
+        response = await axios.post(uploadUrl, buildPayload(true))
+      }
 
       if (response.data.success) {
         const stats = response.data.stats
@@ -1687,6 +1716,8 @@ export function useInventory() {
           itemsData.push({
             assetid: item.assetid,
             name: getCardTitle(item),
+            // 悠悠按 commodityHashName 下发价格区间系数，用于上架前校验
+            hashName: item.steam_hash_name || '',
             price: groupForm.price,
             remark: groupForm.remark || ''
           })
@@ -1705,6 +1736,8 @@ export function useInventory() {
         itemsData = selectedItems.value.map((item, index) => ({
           assetid: item.assetid,
           name: getCardTitle(item),
+          // 悠悠按 commodityHashName 下发价格区间系数，用于上架前校验
+          hashName: item.steam_hash_name || '',
           price: itemForms.value[index].price,
           remark: itemForms.value[index].remark || ''
         }))
@@ -1743,17 +1776,47 @@ export function useInventory() {
           try {
             console.log(`[${i + 1}/${itemsData.length}] 正在上架: ${item.name}`)
             
-            const response = await axios.post(
-              `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.ENDPOINTS.YOUPIN_SELL_INVENTORY_ITEM}`,
-              {
-                steamId: selectedSteamId.value,
-                assetId: item.assetid,
-                price: item.price,
-                remark: item.remark,
-                isCanLease: false
+            const sellUrl = `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.ENDPOINTS.YOUPIN_SELL_INVENTORY_ITEM}`
+            const buildSellPayload = (confirmed) => ({
+              steamId: selectedSteamId.value,
+              assetId: item.assetid,
+              price: item.price,
+              remark: item.remark,
+              isCanLease: false,
+              hashName: item.hashName || '',
+              itemName: item.name,
+              confirmed
+            })
+
+            let response = await axios.post(sellUrl, buildSellPayload(false))
+
+            // 价格与市场价偏离较大时，悠悠 APP 会弹二次确认；这里复刻同样的交互
+            if (!response.data.success && response.data.needConfirm) {
+              let goOn = true
+              try {
+                await ElMessageBox.confirm(
+                  response.data.message,
+                  '价格确认',
+                  {
+                    confirmButtonText: '继续上架',
+                    cancelButtonText: '跳过该件',
+                    type: 'warning'
+                  }
+                )
+              } catch {
+                goOn = false
               }
-            )
-            
+              if (!goOn) {
+                failCount++
+                if (!isGroupedView.value) {
+                  itemForms.value[i].uploadStatus = 'failed'
+                  itemForms.value[i].uploadMessage = '已取消上架'
+                }
+                continue
+              }
+              response = await axios.post(sellUrl, buildSellPayload(true))
+            }
+
             if (response.data.success) {
               successCount++
               console.log(`✓ 上架成功: ${item.name}`)
