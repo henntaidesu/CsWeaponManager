@@ -737,3 +737,87 @@ body.device-ipad .card-image img {
   max-width: 85%;
   max-height: 85%;
 }
+
+
+/* 交易类型选择栏（与悠悠有品保持一致） */
+.trade-type-bar {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.trade-type-tabs {
+  display: flex;
+  gap: 0.5rem;
+  min-width: max-content;
+}
+
+.trade-type-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-tertiary);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  user-select: none;
+}
+
+.trade-type-tab:hover {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.3);
+  transform: translateY(-2px);
+}
+
+.trade-type-tab.active {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.1) 100%);
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+}
+
+.trade-type-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.trade-type-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.trade-type-tab.active .trade-type-label {
+  color: var(--el-color-primary);
+  font-weight: 600;
+}
+
+.trade-type-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.trade-type-tab.active .trade-type-count {
+  background: var(--el-color-primary);
+  color: var(--text-primary);
+}
+
+.trade-type-tab.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

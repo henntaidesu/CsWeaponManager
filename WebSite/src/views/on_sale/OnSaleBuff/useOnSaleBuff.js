@@ -1,10 +1,35 @@
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
+import { useRoute, useRouter } from 'vue-router'
 import { API_CONFIG, apiUrls } from '@/config/api.js'
 import { applyDeviceClass, watchDeviceType } from '@/utils/deviceDetect.js'
 
 export function useOnSaleBuff() {
+  const route = useRoute()
+  const router = useRouter()
+
+  // 子类型与 URL 同步，做法与悠悠有品一致。
+  // BUFF 没有转租、过户、秒到账这三种玩法，故不提供对应 tab。
+  const VALID_SUB_TYPES = ['sale', 'offer', 'purchase_request', 'favorite', 'rented_out', 'lease']
+  const tradeTypes = ref([
+    { value: 'sale', label: '在售', icon: '💰' },
+    { value: 'offer', label: '待发货', icon: '📤' },
+    { value: 'purchase_request', label: '求购', icon: '🛒' },
+    { value: 'favorite', label: '关注', icon: '⭐' },
+    { value: 'rented_out', label: '已租出', icon: '📦' },
+    { value: 'lease', label: '租入', icon: '🔄' }
+  ])
+  const selectedTradeType = computed(() => {
+    const sub = route.params.subType
+    return (sub && VALID_SUB_TYPES.includes(sub)) ? sub : 'sale'
+  })
+  const handleTradeTypeChange = (value) => {
+    if (value === selectedTradeType.value) return
+    localStorage.setItem('buff_selected_trade_type', value)
+    router.push(`/on-sale/buff/${value}`)
+  }
+
   const loading = ref(false)
   const updating = ref(false)
   const onSaleData = ref([])
@@ -90,11 +115,11 @@ export function useOnSaleBuff() {
     
     loading.value = true
     try {
-      const response = await axios.get(apiUrls.getOnSaleItems(), {
-        params: {
-          platform: 'buff',
-          account_id: selectedAccount.value
-        }
+      // 后端该路由只接受 POST + JSON body，此前用 GET + params 必然 405
+      const response = await axios.post(apiUrls.getOnSaleItems(), {
+        platform: 'buff',
+        account_id: selectedAccount.value,
+        trade_type: selectedTradeType.value
       })
       if (response.data && response.data.success) {
         onSaleData.value = response.data.data || []
@@ -395,6 +420,13 @@ export function useOnSaleBuff() {
     loadAccountList()
   })
 
+  // 切换子类型时重新拉数据；账号未就绪时跳过，由 loadAccountList 首次触发
+  watch(selectedTradeType, () => {
+    if (selectedAccount.value) {
+      loadOnSaleData()
+    }
+  })
+
   onUnmounted(() => {
     if (unwatchDevice) {
       unwatchDevice()
@@ -402,6 +434,9 @@ export function useOnSaleBuff() {
   })
 
   return {
+    tradeTypes,
+    selectedTradeType,
+    handleTradeTypeChange,
     loading,
     updating,
     onSaleData,

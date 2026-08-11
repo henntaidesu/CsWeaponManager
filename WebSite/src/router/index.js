@@ -82,6 +82,14 @@ const routes = [
           },
           {
             path: 'buff',
+            redirect: () => {
+              const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('buff_selected_trade_type') : null
+              const valid = saved && /^(sale|offer|purchase_request|favorite|rented_out|lease)$/.test(saved)
+              return '/on-sale/buff/' + (valid ? saved : 'sale')
+            }
+          },
+          {
+            path: 'buff/:subType',
             name: 'OnSaleBuff',
             component: () => import('@/views/on_sale/OnSaleBuff/index.vue'),
             meta: { title: 'BUFF' }

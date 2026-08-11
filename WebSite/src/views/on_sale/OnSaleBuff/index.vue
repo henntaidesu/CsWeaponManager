@@ -1,5 +1,21 @@
 <template>
   <div>
+    <!-- 交易类型选择栏 -->
+    <div class="trade-type-bar card">
+      <div class="trade-type-tabs">
+        <div
+          v-for="type in tradeTypes"
+          :key="type.value"
+          class="trade-type-tab"
+          :class="{ active: selectedTradeType === type.value }"
+          @click="handleTradeTypeChange(type.value)"
+        >
+          <span class="trade-type-icon">{{ type.icon }}</span>
+          <span class="trade-type-label">{{ type.label }}</span>
+        </div>
+      </div>
+    </div>
+
     <!-- 筛选器 -->
     <div class="filters card">
       <div class="flex flex-wrap gap-4 items-center">

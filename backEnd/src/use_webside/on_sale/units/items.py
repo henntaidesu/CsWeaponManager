@@ -24,10 +24,13 @@ class OnSaleItems:
         )
         return rows[0][0] if rows else None
 
+    # BUFF 支持的在售页子类型。转租/过户/秒到账是悠悠有品特有玩法，BUFF 没有
+    BUFF_TRADE_TYPES = ('sale', 'offer', 'purchase_request', 'favorite', 'rented_out', 'lease')
+
     @staticmethod
     def _get_buff_on_sale_items(account_id, trade_type):
-        """BUFF 在售列表：调 Spider 拿挂单，再从本地库补购入价"""
-        if trade_type != 'sale':
+        """BUFF 在售页列表：调 Spider 拿数据，再从本地库补购入价"""
+        if trade_type not in OnSaleItems.BUFF_TRADE_TYPES:
             return jsonify({
                 'success': False,
                 'message': f'BUFF 暂不支持 {trade_type} 类型'
@@ -39,7 +42,7 @@ class OnSaleItems:
 
         spider_response = requests.post(
             f"{SPIDER_API_ADDRESS}/spiderApiV2/src/web_site/buff/units/on_sale/sell/getOnSaleList",
-            json={'steamID': steam_id, 'page': 1, 'pageSize': 40},
+            json={'steamID': steam_id, 'page': 1, 'pageSize': 40, 'tradeType': trade_type},
             timeout=30
         )
         if spider_response.status_code != 200:
