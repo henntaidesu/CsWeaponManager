@@ -399,6 +399,37 @@
   font-weight: 600;
 }
 
+/* 数据库后端 / 迁移卡片中的提示条 —— Element Plus 默认是浅色底，改为深色主题配色 */
+.db-backend :deep(.el-alert) {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
+}
+
+.db-backend :deep(.el-alert--success) {
+  border-color: var(--accent-green);
+}
+
+.db-backend :deep(.el-alert--error) {
+  border-color: var(--accent-red);
+}
+
+.db-backend :deep(.el-alert__title) {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.db-backend :deep(.el-alert__description) {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.db-backend :deep(.el-alert__close-btn) {
+  color: var(--text-secondary);
+}
+
+.db-backend :deep(.el-alert__close-btn:hover) {
+  color: var(--text-primary);
+}
 
 .db-check-detail {
   margin: 0;

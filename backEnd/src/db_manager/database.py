@@ -19,6 +19,7 @@ import threading
 from contextlib import contextmanager
 from typing import List, Dict, Any, Optional, Tuple
 from ..units.read_conf import read_conf
+from .migration_gate import migration_gate
 
 
 # ============================================================
@@ -127,6 +128,13 @@ def write_bootstrap_db_config(config: Dict[str, str]) -> bool:
 # SQL 方言翻译（SQLite 风格 -> MySQL 风格）
 # ============================================================
 
+# 模型列名中与 MySQL 保留字冲突、且业务 SQL 里会不加引号直接书写的标识符。
+# 清单由「所有模型列名 ∩ information_schema.KEYWORDS(RESERVED=1)」得出，当前 schema 命中两个：
+# - rename：全仓 37 处裸用，MySQL 下会报 1064，统一在翻译时补反引号
+# - from  ：不能放进这里（FROM 同时是子句关键字，补引号会毁掉每条 SQL），
+#           业务代码一律写成 "from"，由双引号标识符规则转成反引号
+_MYSQL_RESERVED_COLUMNS = frozenset({'rename'})
+
 # GROUP_CONCAT(expr, 'sep') -> GROUP_CONCAT(expr SEPARATOR 'sep')
 _GROUP_CONCAT_RE = re.compile(
     r"GROUP_CONCAT\s*\(\s*([^,()]+?)\s*,\s*('(?:[^']|'')*')\s*\)",
@@ -136,49 +144,112 @@ _GROUP_CONCAT_RE = re.compile(
 def _translate_sql(sql: str, has_params: bool) -> str:
     """
     将 SQLite 风格 SQL 翻译为 MySQL 风格：
-    - 标识符 [name] -> `name`
+    - 标识符 [name] 和 "name" -> `name`
+      （MySQL 默认 sql_mode 下 "name" 是字符串字面量而非标识符，必须转换）
     - 占位符 ?      -> %s
     - 字面量 %      -> %%（仅当带参数，避免 pymysql 的 % 格式化报错）
     - GROUP_CONCAT(x, 'sep') -> GROUP_CONCAT(x SEPARATOR 'sep')
     - datetime('now') -> NOW()
+
+    字符串字面量与注释（-- 行注释、/* 块注释 */）内的内容原样保留，
+    只转义其中的 %，避免注释里的引号/问号/方括号影响整条语句的解析。
     """
     # MySQL 方言函数改写（在字符级扫描前，按整体正则替换）
     sql = _GROUP_CONCAT_RE.sub(r"GROUP_CONCAT(\1 SEPARATOR \2)", sql)
     sql = re.sub(r"datetime\(\s*'now'\s*\)", "NOW()", sql, flags=re.IGNORECASE)
 
+    def keep(text: str) -> str:
+        """原样保留的片段：仅转义字面量 %"""
+        return text.replace('%', '%%') if has_params else text
+
+    def scan_ident(start: int) -> int:
+        """返回从 start 开始的标识符（字母/下划线开头）的结束位置"""
+        j = start
+        while j < n and (sql[j].isalnum() or sql[j] in '_$'):
+            j += 1
+        return j
+
+    def scan_quoted(start: int, quote: str) -> int:
+        """返回以 quote 开头的引用片段的结束位置（含收尾引号），支持 '' / "" 转义"""
+        j = start + 1
+        while j < n:
+            if sql[j] == quote:
+                if j + 1 < n and sql[j + 1] == quote:
+                    j += 2
+                    continue
+                return j + 1
+            j += 1
+        return n  # 未闭合，按到末尾处理
+
     out = []
-    in_string = False
-    string_char = None
     i = 0
     n = len(sql)
     while i < n:
         ch = sql[i]
-        if in_string:
-            # 字符串内部：转义字面量 %（带参数时 pymysql 会对整条 SQL 做 % 格式化）
-            if ch == '%' and has_params:
-                out.append('%%')
-            else:
-                out.append(ch)
-            if ch == string_char:
-                # 处理 SQL 中的 '' 转义
-                if i + 1 < n and sql[i + 1] == string_char:
-                    out.append(string_char)
-                    i += 2
-                    continue
-                in_string = False
-                string_char = None
-            i += 1
+
+        # -- 行注释
+        if ch == '-' and sql.startswith('--', i):
+            end = sql.find('\n', i)
+            end = n if end < 0 else end
+            out.append(keep(sql[i:end]))
+            i = end
             continue
-        # 字符串外部
-        if ch in ("'", '"'):
-            in_string = True
-            string_char = ch
-            out.append(ch)
-        elif ch == '[':
-            out.append('`')
-        elif ch == ']':
-            out.append('`')
-        elif ch == '?':
+
+        # /* 块注释 */
+        if ch == '/' and sql.startswith('/*', i):
+            end = sql.find('*/', i + 2)
+            end = n if end < 0 else end + 2
+            out.append(keep(sql[i:end]))
+            i = end
+            continue
+
+        # 单引号字符串字面量
+        if ch == "'":
+            end = scan_quoted(i, "'")
+            out.append(keep(sql[i:end]))
+            i = end
+            continue
+
+        # 双引号标识符（SQLite 风格）-> MySQL 反引号
+        if ch == '"':
+            end = scan_quoted(i, '"')
+            raw = sql[i:end]
+            ident = raw[1:-1] if len(raw) >= 2 and raw.endswith('"') else raw[1:]
+            out.append('`' + ident.replace('""', '"').replace('`', '``') + '`')
+            i = end
+            continue
+
+        # [name] 标识符 -> 反引号（整段处理，内容不再参与后续替换）
+        if ch == '[':
+            end = sql.find(']', i + 1)
+            if end < 0:
+                out.append('`')
+                i += 1
+                continue
+            out.append('`' + sql[i + 1:end].replace('`', '``') + '`')
+            i = end + 1
+            continue
+
+        # 已经是反引号标识符的原样保留，避免被重复加引号
+        if ch == '`':
+            end = sql.find('`', i + 1)
+            end = n if end < 0 else end + 1
+            out.append(keep(sql[i:end]))
+            i = end
+            continue
+
+        # 裸标识符：与 MySQL 保留字冲突的列名补反引号
+        if ch.isalpha() or ch == '_':
+            end = scan_ident(i)
+            word = sql[i:end]
+            if word.lower() in _MYSQL_RESERVED_COLUMNS:
+                out.append(f'`{word}`')
+            else:
+                out.append(word)
+            i = end
+            continue
+
+        if ch == '?':
             out.append('%s')
         elif ch == '%' and has_params:
             out.append('%%')
@@ -233,9 +304,21 @@ def _mysql_column_type(field: Dict[str, Any], is_indexed: bool) -> str:
     length = field.get('length')
     if length:
         return f'VARCHAR({int(length)})'
-    if is_indexed or field.get('primary_key'):
+    # MySQL 的 TEXT/BLOB 列不允许设置 DEFAULT（错误 1101），
+    # 带默认值的文本列一律按短文本处理，保证默认值能与 SQLite 保持一致
+    if is_indexed or field.get('primary_key') or field.get('default') is not None:
         return 'VARCHAR(255)'
     return 'LONGTEXT'
+
+
+# MySQL 中不允许设置 DEFAULT 的列类型
+_MYSQL_NO_DEFAULT_TYPES = ('TEXT', 'BLOB', 'JSON', 'GEOMETRY')
+
+
+def _mysql_type_allows_default(mysql_type: str) -> bool:
+    """该 MySQL 列类型是否允许 DEFAULT 子句"""
+    upper = (mysql_type or '').upper()
+    return not any(key in upper for key in _MYSQL_NO_DEFAULT_TYPES)
 
 
 # MySQL 中需要使用前缀长度的文本类型（用于多列复合索引避免超出键长限制）
@@ -260,6 +343,10 @@ class DatabaseManager:
         if not hasattr(self, 'initialized'):
             self._local = threading.local()
             self.db_path = _resolve_sqlite_path()
+            # 最近一次建表/改列失败的原因（这些方法只返回 bool，调用方需要时可读取）
+            self.last_error = ''
+            # 后端代次：每次热切换加一，线程本地的旧连接据此失效重连
+            self._backend_generation = 0
             self.initialized = True
             self._load_backend_config()
             self._setup_database()
@@ -288,7 +375,15 @@ class DatabaseManager:
                 self.db_type = 'sqlite'
 
     def _close_local_mysql(self):
-        """关闭线程本地的 MySQL 连接"""
+        """
+        关闭线程本地的 MySQL 连接，并让其他线程的连接失效。
+
+        thread.local 只能访问到当前线程的连接，切换后端时无法直接关掉别的线程持有的连接；
+        这里通过递增后端代次，让那些线程在下次取连接时自行丢弃旧连接重连，
+        否则热切换到另一个 MySQL 后，旧线程会继续读写切换前的库。
+        """
+        self._backend_generation += 1
+        self._collation = None  # 排序规则随服务器变化，需要重新探测
         conn = getattr(self._local, 'mysql_conn', None)
         if conn is not None:
             try:
@@ -342,9 +437,38 @@ class DatabaseManager:
             conn.execute('PRAGMA foreign_keys=ON')
             conn.commit()
 
+    def mysql_collation(self) -> str:
+        """
+        与 SQLite 语义一致的排序规则（区分大小写的二进制比较）。
+
+        SQLite 的 TEXT 默认按字节比较，区分大小写；MySQL 默认的 utf8mb4_general_ci
+        不区分大小写，会把 SQLite 里合法的两行判成主键冲突。
+        优先用 utf8mb4_0900_bin（NO PAD，尾部空格也敏感，与 SQLite 完全一致），
+        老版本 MySQL 没有该排序规则时回退到 utf8mb4_bin（PAD SPACE）。
+        """
+        if getattr(self, '_collation', None) is None:
+            self._collation = 'utf8mb4_bin'
+            try:
+                rows = self.execute_query(
+                    "SELECT COLLATION_NAME FROM information_schema.COLLATIONS "
+                    "WHERE COLLATION_NAME=?", ('utf8mb4_0900_bin',))
+                if rows:
+                    self._collation = 'utf8mb4_0900_bin'
+            except Exception as e:
+                print(f"检测 MySQL 排序规则失败，使用 utf8mb4_bin: {e}")
+        return self._collation
+
     def _get_mysql_conn(self):
-        """获取线程本地的 MySQL 连接（断线自动重连）"""
+        """获取线程本地的 MySQL 连接（断线自动重连；后端热切换后丢弃旧连接）"""
         conn = getattr(self._local, 'mysql_conn', None)
+        if conn is not None and getattr(self._local, 'mysql_gen', None) != self._backend_generation:
+            # 本线程持有的是切换前的连接，直接丢弃重连
+            try:
+                conn.close()
+            except Exception:
+                pass
+            conn = None
+            self._local.mysql_conn = None
         if conn is not None:
             try:
                 conn.ping(reconnect=True)
@@ -369,11 +493,13 @@ class DatabaseManager:
             sql_mode='NO_ENGINE_SUBSTITUTION',
         )
         self._local.mysql_conn = conn
+        self._local.mysql_gen = self._backend_generation
         return conn
 
     @contextmanager
     def get_connection(self):
-        """获取数据库连接上下文管理器"""
+        """获取数据库连接上下文管理器（迁移期间只允许迁移线程访问）"""
+        migration_gate.ensure_allowed()
         if self.db_type == 'mysql':
             conn = self._get_mysql_conn()
             try:
@@ -454,7 +580,7 @@ class DatabaseManager:
         """检查表是否存在"""
         if self.db_type == 'mysql':
             sql = ("SELECT table_name FROM information_schema.tables "
-                   "WHERE table_schema=%s AND table_name=%s")
+                   "WHERE table_schema=? AND table_name=?")
             result = self.execute_query(sql, (self.mysql_database, table_name))
             return len(result) > 0
         sql = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
@@ -470,7 +596,7 @@ class DatabaseManager:
             sql = ("SELECT column_name, column_type, is_nullable, column_default, "
                    "column_key, ordinal_position "
                    "FROM information_schema.columns "
-                   "WHERE table_schema=%s AND table_name=%s "
+                   "WHERE table_schema=? AND table_name=? "
                    "ORDER BY ordinal_position")
             result = self.execute_query(sql, (self.mysql_database, table_name))
             columns = []
@@ -503,7 +629,7 @@ class DatabaseManager:
         """获取数据库中所有表的名称列表"""
         if self.db_type == 'mysql':
             sql = ("SELECT table_name FROM information_schema.tables "
-                   "WHERE table_schema=%s AND table_type='BASE TABLE' "
+                   "WHERE table_schema=? AND table_type='BASE TABLE' "
                    "ORDER BY table_name")
             tables = self.execute_query(sql, (self.mysql_database,))
             return [t[0] for t in tables]
@@ -524,6 +650,7 @@ class DatabaseManager:
                 return self.use_mysql(table_name, columns, indexes)
             return self.use_sqlite(table_name, columns, indexes)
         except Exception as e:
+            self.last_error = str(e)
             print(f"创建表 {table_name} 失败: {e}")
             return False
 
@@ -587,7 +714,7 @@ class DatabaseManager:
             if col.get('autoincrement') and col.get('primary_key') and len(pk_cols) == 1:
                 col_def += " AUTO_INCREMENT"
             default = col.get('default')
-            if default is not None:
+            if default is not None and _mysql_type_allows_default(mysql_type):
                 col_def += f" DEFAULT {self._mysql_default(default)}"
             column_defs.append(col_def)
 
@@ -596,7 +723,8 @@ class DatabaseManager:
             column_defs.append(f"PRIMARY KEY ({pk_list})")
 
         sql = (f"CREATE TABLE IF NOT EXISTS `{table_name}` "
-               f"({', '.join(column_defs)}) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4")
+               f"({', '.join(column_defs)}) ENGINE=InnoDB "
+               f"DEFAULT CHARSET=utf8mb4 COLLATE={self.mysql_collation()}")
         self.execute_update(sql)
 
         # 创建索引（MySQL 不支持 CREATE INDEX IF NOT EXISTS，重复时忽略）
@@ -622,11 +750,17 @@ class DatabaseManager:
 
     @staticmethod
     def _mysql_default(default) -> str:
-        """格式化 MySQL 默认值"""
+        """
+        格式化 MySQL 默认值。
+        模型里的默认值是「原始 SQL 字面量片段」（SQLite 分支直接拼接使用），
+        已经带引号的片段（如 "'rename'"）原样保留，否则补引号。
+        """
         if isinstance(default, (int, float)):
             return str(default)
-        s = str(default).replace("'", "''")
-        return f"'{s}'"
+        s = str(default)
+        if len(s) >= 2 and s.startswith("'") and s.endswith("'"):
+            return s
+        return "'" + s.replace("'", "''") + "'"
 
     # --------------------------------------------------------
     # 列变更
@@ -640,7 +774,8 @@ class DatabaseManager:
                 col_sql = f"`{column_def['name']}` {mysql_type}"
                 if column_def.get('not_null'):
                     col_sql += " NOT NULL"
-                if column_def.get('default') is not None:
+                if (column_def.get('default') is not None
+                        and _mysql_type_allows_default(mysql_type)):
                     col_sql += f" DEFAULT {self._mysql_default(column_def['default'])}"
                 sql = f"ALTER TABLE `{table_name}` ADD COLUMN {col_sql}"
                 self.execute_update(sql)
@@ -655,6 +790,7 @@ class DatabaseManager:
             self.execute_update(sql)
             return True
         except Exception as e:
+            self.last_error = str(e)
             print(f"添加列到表 {table_name} 失败: {e}")
             return False
 
@@ -678,6 +814,7 @@ class DatabaseManager:
             else:
                 return self._drop_column_recreate_table(table_name, column_name)
         except Exception as e:
+            self.last_error = str(e)
             print(f"删除列 {column_name} 从表 {table_name} 失败: {e}")
             return False
 

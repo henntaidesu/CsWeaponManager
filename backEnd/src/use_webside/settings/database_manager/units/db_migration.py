@@ -14,6 +14,8 @@
 - 全部成功后，再把 db_type 持久化到引导配置（基础 SQLite 的 config 表）
 """
 import os
+import time
+from contextlib import contextmanager
 
 from flask import request, jsonify
 from src.units.log import Log
@@ -21,8 +23,16 @@ from src.db_manager.database import (
     DatabaseManager, read_bootstrap_db_config, write_bootstrap_db_config,
 )
 from src.db_manager.manager import get_db_manager
+from src.db_manager.migration_gate import migration_gate
 
 _BATCH = 2000
+
+# 迁移时的锁等待上限（秒）。MySQL 的 lock_wait_timeout 默认是 31536000 秒（一年），
+# 一旦目标表被别的会话（例如数据库客户端里未提交的事务）占住，迁移会无限期挂起。
+_LOCK_WAIT_TIMEOUT = 60
+
+# 开始迁移前，等待正在执行的后台任务结束的上限（秒）
+_TASK_DRAIN_TIMEOUT = 20
 
 # 权限实测使用的临时表名
 _PRIV_TABLE = '__cswm_privilege_check'
@@ -82,6 +92,12 @@ def _friendly_mysql_error(e, cfg):
     if code == 1049:
         return (f"数据库 {database} 不存在（{raw}）。\n"
                 f"请先手动创建，或给账号授予 CREATE 权限以便迁移时自动建库。")
+    if code == 1205:
+        return (f"等待表锁超时（{raw}）。\n"
+                f"迁移需要独占地清空目标表，通常是有别的会话占着 {database} 里的表——"
+                f"最常见的是数据库客户端（Navicat/DBeaver 等）打开了这些表或留着未提交的事务。\n"
+                f"可在 MySQL 中执行 SHOW PROCESSLIST 找出占用的连接并 KILL，"
+                f"或先关掉数据库客户端再重试迁移。")
     if code == 1130:
         return (f"MySQL 不允许当前主机连接（{raw}）。\n"
                 f"请检查账号的 host 限制，以及服务器 bind-address 是否允许远程连接。")
@@ -150,9 +166,13 @@ def _check_mysql_ready(cfg, create_db=False):
         info['database_exists'] = cursor.fetchone() is not None
 
         if not info['database_exists'] and create_db:
+            # 排序规则必须与 SQLite 一致（区分大小写），否则仅大小写不同的主键会冲突
+            cursor.execute("SELECT COLLATION_NAME FROM information_schema.COLLATIONS "
+                           "WHERE COLLATION_NAME='utf8mb4_0900_bin'")
+            collation = 'utf8mb4_0900_bin' if cursor.fetchone() else 'utf8mb4_bin'
             try:
                 cursor.execute(f"CREATE DATABASE `{database}` "
-                               f"CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
+                               f"CHARACTER SET utf8mb4 COLLATE {collation}")
             except Exception as e:
                 raise MysqlCheckError(f"创建数据库 {database} 失败：\n{_friendly_mysql_error(e, cfg)}")
             info['database_exists'] = True
@@ -172,11 +192,82 @@ def _check_mysql_ready(cfg, create_db=False):
     return info
 
 
-def _copy_table(dm, src_type, src_conn, table_name, target_columns):
+def _find_pk_conflicts(src_conn, models):
+    """
+    找出在 MySQL 主键语义下会冲突的表。
+
+    SQLite 的主键列允许 NULL 且 NULL != NULL，同一个键可以有多行；
+    MySQL 的主键列隐式 NOT NULL，NULL 会落成空串，这些行就撞车了。
+    返回 {表名: {'keys': 主键列, 'groups': 冲突组数, 'dropped': 将丢弃的行数}}
+    """
+    conflicts = {}
+    cursor = src_conn.cursor()
+    for model in models:
+        table_name = model.get_table_name()
+        pk = [n for n, d in model.get_fields().items() if d.get('primary_key')]
+        if not pk:
+            continue
+        try:
+            cursor.execute(f"PRAGMA table_info([{table_name}])")
+            existing = {r[1] for r in cursor.fetchall()}
+            pk = [p for p in pk if p in existing]
+            if not pk:
+                continue
+            group = ', '.join(f"IFNULL([{p}],'')" for p in pk)
+            cursor.execute(
+                f"SELECT COUNT(*), IFNULL(SUM(n), 0) FROM "
+                f"(SELECT {group}, COUNT(*) n FROM [{table_name}] GROUP BY {group} HAVING n > 1)")
+            groups, rows = cursor.fetchone()
+        except Exception as e:
+            Log().write_log(f"检查表 {table_name} 主键冲突失败: {e}", 'ERROR')
+            continue
+        if groups:
+            conflicts[table_name] = {
+                'keys': pk, 'groups': groups, 'dropped': rows - groups,
+            }
+    return conflicts
+
+
+def _source_table_exists(src_type, src_conn, table_name):
+    """源后端中是否存在该表（这里用的是原始连接，占位符按各自方言书写）"""
+    cursor = src_conn.cursor()
+    try:
+        if src_type == 'mysql':
+            cursor.execute("SELECT COUNT(*) FROM information_schema.TABLES "
+                           "WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=%s", (table_name,))
+        else:
+            cursor.execute("SELECT COUNT(*) FROM sqlite_master "
+                           "WHERE type='table' AND name=?", (table_name,))
+        return cursor.fetchone()[0] > 0
+    finally:
+        try:
+            cursor.close()
+        except Exception:
+            pass
+
+
+def _clear_target_table(dm, table_name):
+    """清空目标表，避免主键冲突"""
+    if dm.db_type == 'mysql':
+        dm.execute_update(f"TRUNCATE TABLE `{table_name}`")
+    else:
+        dm.execute_update(f"DELETE FROM [{table_name}]")
+
+
+def _copy_table(dm, src_type, src_conn, table_name, target_columns, dedup_keys=None):
     """
     从源后端流式读取一张表并写入目标后端（dm 已指向目标），返回复制的行数。
     仅复制模型定义且源表中存在的列，按模型字段顺序。
+
+    dedup_keys 非空时，源表的主键在 MySQL 语义下有重复：按该主键分组，
+    每组只取 rowid 最大的一行（即最后写入、状态最新的那条）。
     """
+    # 模型已定义但源库中还没建过的表（如新增模型），按空表处理
+    if not _source_table_exists(src_type, src_conn, table_name):
+        Log().write_log(f"源库中不存在表 {table_name}，按空表迁移", 'INFO')
+        _clear_target_table(dm, table_name)
+        return 0
+
     if src_type == 'mysql':
         # SSCursor：逐行从服务端取数，避免整表载入内存
         from pymysql.cursors import SSCursor
@@ -184,7 +275,12 @@ def _copy_table(dm, src_type, src_conn, table_name, target_columns):
         select_sql = f"SELECT * FROM `{table_name}`"
     else:
         cursor = src_conn.cursor()
-        select_sql = f"SELECT * FROM [{table_name}]"
+        if dedup_keys:
+            group = ', '.join(f"IFNULL([{k}],'')" for k in dedup_keys)
+            select_sql = (f"SELECT * FROM [{table_name}] WHERE rowid IN "
+                          f"(SELECT MAX(rowid) FROM [{table_name}] GROUP BY {group})")
+        else:
+            select_sql = f"SELECT * FROM [{table_name}]"
 
     try:
         cursor.execute(select_sql)
@@ -195,11 +291,7 @@ def _copy_table(dm, src_type, src_conn, table_name, target_columns):
             return 0
         picks = [src_index[c] for c in use_cols]
 
-        # 先清空目标表，避免主键冲突
-        if dm.db_type == 'mysql':
-            dm.execute_update(f"TRUNCATE TABLE `{table_name}`")
-        else:
-            dm.execute_update(f"DELETE FROM [{table_name}]")
+        _clear_target_table(dm, table_name)
 
         col_sql = ', '.join(f"[{c}]" for c in use_cols)
         placeholders = ', '.join(['?'] * len(use_cols))
@@ -218,6 +310,47 @@ def _copy_table(dm, src_type, src_conn, table_name, target_columns):
             cursor.close()
         except Exception:
             pass
+
+
+@contextmanager
+def _maintenance_mode(note):
+    """
+    迁移期间的维护模式：
+    1. 暂停后台任务调度器，并等待正在执行的任务跑完（超时则放弃迁移，不强行打断）
+    2. 持有迁移闸门，此后其他线程的数据库操作一律被拒绝，API 统一返回 503
+    退出时无论成功失败都恢复调度器。
+    """
+    try:
+        from src.units.auto_process.task_scheduler import get_scheduler
+        scheduler = get_scheduler()
+    except Exception as e:
+        Log().write_log(f"获取任务调度器失败，跳过暂停: {e}", 'ERROR')
+        scheduler = None
+
+    if scheduler is not None:
+        scheduler.pause()
+        print('[迁移] 已暂停后台任务调度器', flush=True)
+    try:
+        if scheduler is not None:
+            deadline = time.time() + _TASK_DRAIN_TIMEOUT
+            busy = scheduler.get_currently_executing_tasks()
+            while busy and time.time() < deadline:
+                print(f"[迁移] 等待 {len(busy)} 个后台任务结束 ...", flush=True)
+                time.sleep(1)
+                busy = scheduler.get_currently_executing_tasks()
+            if busy:
+                names = '、'.join(t.get('taskName', '?') for t in busy)
+                raise RuntimeError(
+                    f'以下后台任务仍在执行，已等待 {_TASK_DRAIN_TIMEOUT} 秒仍未结束：{names}。'
+                    f'为避免迁移过程中数据被写乱，本次迁移未开始，请等任务结束后重试。')
+
+        with migration_gate.hold(note):
+            print(f'[迁移] 进入维护模式：{note}', flush=True)
+            yield
+    finally:
+        if scheduler is not None:
+            scheduler.resume()
+            print('[迁移] 已恢复后台任务调度器', flush=True)
 
 
 def _verify_target_rows(dm, stats):
@@ -288,7 +421,22 @@ def _format_size(num_bytes):
 
 
 def _do_migration(source_type, target_type, target_mysql_cfg):
-    """执行迁移，返回 (success, message, stats)。调用前应已完成目标库的连通性/权限检查"""
+    """
+    执行迁移，返回 (success, message, stats)。
+
+    整个过程处于维护模式：后台调度器被暂停并等待任务跑完，
+    其他线程的数据库操作会被闸门拒绝，API 层统一返回 503。
+    """
+    try:
+        with _maintenance_mode(f'{source_type} → {target_type}'):
+            return _run_migration(source_type, target_type, target_mysql_cfg)
+    except Exception as e:
+        Log().write_log(f"数据库迁移未开始: {e}", 'ERROR')
+        return False, f'迁移失败: {e}', {}
+
+
+def _run_migration(source_type, target_type, target_mysql_cfg):
+    """迁移主体（已处于维护模式内）。调用前应已完成目标库的连通性/权限检查"""
     dm = DatabaseManager()
     # 记录原始后端，便于失败回滚
     orig_type = dm.db_type
@@ -310,21 +458,59 @@ def _do_migration(source_type, target_type, target_mysql_cfg):
         if dm.db_type != target_type:
             raise RuntimeError('无法连接到目标数据库，已中止迁移（源数据未改动）')
 
-        # 在目标后端按模型重建所有表结构
-        models = get_db_manager().models
-        for model in models:
-            if not model.ensure_table_exists():
-                raise RuntimeError(f'在目标数据库创建表 {model.get_table_name()} 失败')
+        if target_type == 'mysql':
+            # 缩短锁等待，避免被别的会话的元数据锁无限期挂住（默认是一年）
+            for var in ('lock_wait_timeout', 'innodb_lock_wait_timeout'):
+                try:
+                    dm.execute_update(f"SET SESSION {var} = {_LOCK_WAIT_TIMEOUT}")
+                except Exception as e:
+                    print(f"[迁移] 设置 {var} 失败（继续执行）: {e}", flush=True)
 
-        # 逐表复制数据
+        models = get_db_manager().models
+
+        if target_type == 'mysql':
+            # 目标库中的同名表本来就会被整体覆盖，这里先删表再按当前模型重建，
+            # 保证表结构和排序规则始终与模型定义一致，不残留历史遗留的旧结构
+            print(f"[迁移] 清理目标库中的 {len(models)} 张旧表", flush=True)
+            for model in models:
+                dm.execute_update(f"DROP TABLE IF EXISTS `{model.get_table_name()}`")
+
+        # 在目标后端按模型重建所有表结构
+        print(f"[迁移] 开始在目标库创建 {len(models)} 张表结构", flush=True)
         for model in models:
+            # ensure_table_exists 只返回 bool，真实原因记在 dm.last_error 上
+            dm.last_error = ''
+            if not model.ensure_table_exists():
+                detail = dm.last_error or '未知原因，请查看后端控制台输出'
+                raise RuntimeError(
+                    f'在目标数据库创建表 {model.get_table_name()} 失败：{detail}')
+
+        # 迁往 MySQL 时，先找出主键在 MySQL 语义下会冲突的表
+        conflicts = {}
+        if source_type == 'sqlite' and target_type == 'mysql':
+            conflicts = _find_pk_conflicts(src_conn, models)
+            for name, info in conflicts.items():
+                print(f"[迁移] {name}: 主键 {info['keys']} 有 {info['groups']} 组重复，"
+                      f"每组只保留 rowid 最大（状态最新）的一行，丢弃 {info['dropped']} 行",
+                      flush=True)
+                Log().write_log(
+                    f"迁移去重: {name} 主键重复 {info['groups']} 组，丢弃 {info['dropped']} 行", 'ERROR')
+
+        # 逐表复制数据（日志级别通常是 error，进度直接打到控制台）
+        total = len(models)
+        for seq, model in enumerate(models, 1):
             table_name = model.get_table_name()
             target_columns = list(model.get_fields().keys())
+            print(f"[迁移] ({seq}/{total}) {table_name} ...", flush=True)
             try:
-                stats[table_name] = _copy_table(
-                    dm, source_type, src_conn, table_name, target_columns)
+                copied = _copy_table(
+                    dm, source_type, src_conn, table_name, target_columns,
+                    dedup_keys=conflicts.get(table_name, {}).get('keys'))
+                stats[table_name] = copied
+                print(f"[迁移] ({seq}/{total}) {table_name} 完成，{copied} 行", flush=True)
             except Exception as e:
                 Log().write_log(f"迁移表 {table_name} 失败: {e}", 'ERROR')
+                print(f"[迁移] ({seq}/{total}) {table_name} 失败: {e}", flush=True)
                 stats[table_name] = f"失败: {e}"
                 failed.append(table_name)
 
@@ -350,6 +536,11 @@ def _do_migration(source_type, target_type, target_mysql_cfg):
         dm.reconfigure()
         total_rows = sum(v for v in stats.values() if isinstance(v, int))
         message = f'迁移完成：{len(stats)} 张表，共 {total_rows} 行'
+        if conflicts:
+            dropped = sum(c['dropped'] for c in conflicts.values())
+            detail = '、'.join(f"{n} {c['dropped']} 行" for n, c in conflicts.items())
+            message += (f'\n主键去重：因 MySQL 主键不允许 NULL/重复，'
+                        f'共丢弃 {dropped} 行（{detail}），每组保留状态最新的一行')
 
         # 迁移到 MySQL 后清空本地 SQLite，只保留 config 表中的引导配置。
         # 属于不可逆操作，先核对目标库行数，不一致就跳过清理。
@@ -431,6 +622,8 @@ class DatabaseMigration:
                     'database': cfg.get('mysql_database', ''),
                 },
                 'active': DatabaseManager().db_type,
+                # 迁移期间前端靠它显示维护状态（本接口直连基础 SQLite，不受闸门影响）
+                'migrating': migration_gate.status(),
             })
         except Exception as e:
             Log().write_log(f"获取数据库配置失败: {e}", 'ERROR')

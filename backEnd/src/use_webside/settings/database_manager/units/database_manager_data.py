@@ -572,7 +572,7 @@ class DatabaseManagerData:
                 try:
                     res = dm.execute_query(
                         "SELECT ROUND(SUM(data_length+index_length)/1024/1024, 2) "
-                        "FROM information_schema.tables WHERE table_schema=%s",
+                        "FROM information_schema.tables WHERE table_schema=?",
                         (dm.mysql_database,))
                     if res and res[0][0] is not None:
                         db_size = f"{res[0][0]} MB"
@@ -622,7 +622,7 @@ class DatabaseManagerData:
                 try:
                     res = dm.execute_query(
                         "SELECT SUM(data_length+index_length) "
-                        "FROM information_schema.tables WHERE table_schema=%s",
+                        "FROM information_schema.tables WHERE table_schema=?",
                         (dm.mysql_database,))
                     if res and res[0][0] is not None:
                         info['size'] = int(res[0][0])

@@ -15,6 +15,7 @@ class TaskScheduler:
     
     def __init__(self):
         self.running = False
+        self.paused = False  # 维护模式（如数据库迁移）期间暂停调度，但保留已加载的任务
         self.tasks = {}  # {task_id: {'timer': threading.Timer, 'config': {...}}}
         self.lock = threading.Lock()
         self.execution_lock = threading.Lock()  # 任务执行互斥锁
@@ -86,6 +87,18 @@ class TaskScheduler:
         # 启动轮询线程,定期检查数据库中的任务状态变化
         self._start_polling()
         
+    def pause(self):
+        """暂停调度（数据库迁移等维护操作期间使用），不清空已注册的任务"""
+        if not self.paused:
+            self.paused = True
+            self.log.write_log("任务调度器已暂停（维护模式）", 'info')
+
+    def resume(self):
+        """恢复调度"""
+        if self.paused:
+            self.paused = False
+            self.log.write_log("任务调度器已恢复", 'info')
+
     def stop(self):
         """停止调度器"""
         self.running = False
@@ -105,7 +118,11 @@ class TaskScheduler:
                     
                     if not self.running:
                         break
-                    
+
+                    # 维护模式（如数据库迁移）期间跳过本轮，不访问数据库
+                    if self.paused:
+                        continue
+
                     # 检查数据库中的任务状态变化（启用/禁用）
                     self._sync_tasks_from_db()
                     
@@ -430,6 +447,11 @@ class TaskScheduler:
         task_name = task_info['task_name']
         automate_type = task_info['automate_type']
         config = task_info['config']
+
+        # 维护模式期间不启动新任务（兜底，正常路径已在轮询处拦截）
+        if self.paused:
+            self.log.write_log(f"调度器处于维护模式，跳过任务: {task_name} (ID: {task_id})", 'info')
+            return
 
         self.log.write_log(f"开始执行任务: {task_name} (ID: {task_id})", 'info')
 
