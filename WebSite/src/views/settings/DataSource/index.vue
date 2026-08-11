@@ -154,6 +154,7 @@
             <el-option label="悠悠有品" value="youpin" />
             <el-option label="CsFloat" value="csfloat" />
             <el-option label="C5 GAME" value="c5game" />
+            <el-option label="IGXE" value="igxe" />
             <el-option label="CSQAQ" value="csqaq" />
           </el-select>
         </el-form-item>
@@ -219,6 +220,18 @@
         <C5GameForm
           v-else-if="editForm.type === 'c5game'"
           ref="c5gameFormRef"
+          :form="editForm"
+          :is-edit-mode="true"
+          :proxy-address="proxyAddress"
+          @update:form="Object.assign(editForm, $event)"
+          @update:proxyAddress="proxyAddress = $event"
+          @token-success="handleEditSubmit"
+        />
+
+        <!-- IGXE特有配置 -->
+        <IGXEForm
+          v-else-if="editForm.type === 'igxe'"
+          ref="igxeFormRef"
           :form="editForm"
           :is-edit-mode="true"
           :proxy-address="proxyAddress"
@@ -306,10 +319,19 @@
             >
               首次数据获取
             </el-button>
-            <el-button 
-              v-if="editForm.type === 'c5game'" 
-              type="warning" 
+            <el-button
+              v-if="editForm.type === 'c5game'"
+              type="warning"
               @click="openFirstFetchDialog('c5game')"
+              :loading="collectingSourceIds.has(editingSourceId)"
+              :disabled="!editForm.enabled"
+            >
+              首次数据获取
+            </el-button>
+            <el-button
+              v-if="editForm.type === 'igxe'"
+              type="warning"
+              @click="openFirstFetchDialog('igxe')"
               :loading="collectingSourceIds.has(editingSourceId)"
               :disabled="!editForm.enabled"
             >
@@ -404,9 +426,18 @@
               <span>C5 GAME</span>
               <span v-if="isTypeDisabled('c5game')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
             </el-option>
-            <el-option 
+            <el-option
+              v-if="!isIndependentDataSourceMode"
+              label="IGXE"
+              value="igxe"
+              :disabled="isTypeDisabled('igxe')"
+            >
+              <span>IGXE</span>
+              <span v-if="isTypeDisabled('igxe')" style="color: var(--text-secondary); font-size: 12px; margin-left: 10px;">(已存在)</span>
+            </el-option>
+            <el-option
               v-if="isIndependentDataSourceMode"
-              label="CSQAQ" 
+              label="CSQAQ"
               value="csqaq"
               :disabled="isIndependentTypeDisabled('csqaq')"
             >
@@ -970,6 +1001,18 @@
           @update:proxyAddress="proxyAddress = $event"
           @token-success="handleSubmit"
         />
+
+        <!-- IGXE特有配置 -->
+        <IGXEForm
+          v-else-if="inputForm.type === 'igxe'"
+          ref="igxeFormRef"
+          :form="inputForm"
+          :is-edit-mode="false"
+          :proxy-address="proxyAddress"
+          @update:form="Object.assign(inputForm, $event)"
+          @update:proxyAddress="proxyAddress = $event"
+          @token-success="handleSubmit"
+        />
         
         <!-- CsFloat特有配置 (旧代码保留，待删除) -->
         <template v-if="false && inputForm.type === 'csfloat'">
@@ -1080,7 +1123,7 @@
         />
         
         <!-- 通用配置 -->
-        <template v-else-if="inputForm.type && inputForm.type !== 'youpin' && inputForm.type !== 'steam' && inputForm.type !== 'perfectworld' && inputForm.type !== 'csfloat' && inputForm.type !== 'c5game' && inputForm.type !== 'csqaq' && inputForm.type !== 'steamdt'">
+        <template v-else-if="inputForm.type && inputForm.type !== 'youpin' && inputForm.type !== 'steam' && inputForm.type !== 'perfectworld' && inputForm.type !== 'csfloat' && inputForm.type !== 'c5game' && inputForm.type !== 'igxe' && inputForm.type !== 'csqaq' && inputForm.type !== 'steamdt'">
           <el-form-item label="API地址">
             <el-input 
               v-model="inputForm.apiUrl" 
@@ -1340,7 +1383,7 @@
           </el-collapse>
         </template>
         
-        <el-form-item v-if="['youpin', 'buff', 'steam', 'csfloat', 'c5game'].includes(inputForm.type)" label="数据源状态">
+        <el-form-item v-if="['youpin', 'buff', 'steam', 'csfloat', 'c5game', 'igxe'].includes(inputForm.type)" label="数据源状态">
           <el-switch v-model="inputForm.enabled" />
         </el-form-item>
       </el-form>
@@ -1459,6 +1502,7 @@ import BuffForm from './TransactionSource/BuffForm/index.vue'
 import PerfectWorldForm from './TransactionSource/PerfectWorldForm/index.vue'
 import CsfloatForm from './TransactionSource/CsfloatForm/index.vue'
 import C5GameForm from './TransactionSource/C5GameForm/index.vue'
+import IGXEForm from './TransactionSource/IGXEForm/index.vue'
 import CsqaqForm from './QuerySorurce/CsqaqForm/index.vue'
 import SteamdtForm from './QuerySorurce/SteamdtForm/index.vue'
 
@@ -1477,6 +1521,7 @@ export default {
     PerfectWorldForm,
     CsfloatForm,
     C5GameForm,
+    IGXEForm,
     CsqaqForm,
     SteamdtForm
   },
@@ -1488,7 +1533,7 @@ export default {
     const firstFetchLimitMode = ref(null) // null / 'select' / 'count' / 'date'
     const firstFetchLimitCount = ref(1000)
     const firstFetchLimitDate = ref('')
-    const firstFetchCurrentType = ref('') // 'buff' / 'youpin' / 'csfloat' / 'steam' / 'c5game'
+    const firstFetchCurrentType = ref('') // 'buff' / 'youpin' / 'csfloat' / 'steam' / 'c5game' / 'igxe'
 
     const openFirstFetchDialog = (type) => {
       firstFetchCurrentType.value = type
@@ -1505,6 +1550,7 @@ export default {
       else if (firstFetchCurrentType.value === 'youpin') dsData.handleEditCollectAll()
       else if (firstFetchCurrentType.value === 'csfloat') dsData.handleEditCsfloatCollectAll()
       else if (firstFetchCurrentType.value === 'c5game') dsData.handleEditC5gameCollectAll()
+      else if (firstFetchCurrentType.value === 'igxe') dsData.handleEditIgxeCollectAll()
     }
 
     const handleFirstFetchLimitConfirm = () => {
@@ -1535,6 +1581,11 @@ export default {
         if (mode === 'count') params.limitCount = firstFetchLimitCount.value
         if (mode === 'date') params.limitDate = firstFetchLimitDate.value
         dsData.handleEditC5gameCollectAll(params)
+      } else if (firstFetchCurrentType.value === 'igxe') {
+        const params = { limitType: mode }
+        if (mode === 'count') params.limitCount = firstFetchLimitCount.value
+        if (mode === 'date') params.limitDate = firstFetchLimitDate.value
+        dsData.handleEditIgxeCollectAll(params)
       }
     }
 
