@@ -23,20 +23,17 @@
           </div>
         </div>
 
-        <!-- BUFF (预留) -->
+        <!-- BUFF -->
         <div
-          class="platform-card disabled"
-          :title="`BUFF ${isRentMode ? '出租' : '出售'}功能开发中...`"
+          class="platform-card clickable"
+          @click="handleCardClick('buff')"
         >
           <div class="platform-icon buff-icon">
             <span>B</span>
           </div>
           <div class="platform-info">
             <div class="platform-name">BUFF</div>
-            <div class="platform-desc">开发中，敬请期待...</div>
-          </div>
-          <div class="platform-badge">
-            <el-tag type="info" size="small">开发中</el-tag>
+            <div class="platform-desc" v-if="isRentMode">需填写日租金、押金与最长租期</div>
           </div>
         </div>
       </div>

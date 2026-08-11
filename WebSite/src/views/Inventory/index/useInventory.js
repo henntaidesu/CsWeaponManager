@@ -1250,6 +1250,10 @@ export function useInventory() {
     itemForms.value = selectedItems.value.map(() => ({
       price: '',
       remark: '',
+      // BUFF 出租用：日租金 / 押金 / 最长租期，出售时忽略
+      rentUnitPrice: '',
+      securityPrice: '',
+      rentOutDay: '',
       uploadStatus: null,  // 上架状态：null=未上架, 'uploading'=上架中, 'success'=成功, 'failed'=失败
       uploadMessage: ''     // 上架消息
     }))
@@ -1403,8 +1407,11 @@ export function useInventory() {
       // 异步查询悠悠底价
       fetchAllYYYPRealtimePrices()
     } else if (platform === 'buff') {
-      // BUFF 出售功能待开发
-      ElMessage.info('BUFF出售功能开发中，敬请期待...')
+      // BUFF 出售：复用同一个弹窗，只填价格
+      sellRentDialogTitle.value = 'BUFF 出售物品'
+      sellRentDialogType.value = 'sell'
+      initItemForms()
+      sellRentDialogVisible.value = true
     }
   }
 
@@ -1531,8 +1538,12 @@ export function useInventory() {
         loading.close()
       }
     } else if (platform === 'buff') {
-      // BUFF 出租功能待开发
-      ElMessage.info('BUFF出租功能开发中，敬请期待...')
+      // BUFF 出租不需要像悠悠有品那样先拉 init 配置，只要日租金/押金/最长租期三个值，
+      // 直接复用出售那个弹窗，按 sellRentDialogType='rent' 渲染出租字段
+      sellRentDialogTitle.value = 'BUFF 出租物品'
+      sellRentDialogType.value = 'rent'
+      initItemForms()
+      sellRentDialogVisible.value = true
     }
   }
 
@@ -1689,7 +1700,14 @@ export function useInventory() {
             assetid: item.assetid,
             name: getCardTitle(item),
             price: groupForm.price,
-            remark: groupForm.remark || ''
+            remark: groupForm.remark || '',
+            // BUFF 上架需要的定位字段
+            classid: item.classid,
+            instanceid: item.instanceid,
+            steam_hash_name: item.steam_hash_name,
+            rentUnitPrice: groupForm.rentUnitPrice,
+            securityPrice: groupForm.securityPrice,
+            rentOutDay: groupForm.rentOutDay
           })
         })
       } else {
@@ -1707,7 +1725,14 @@ export function useInventory() {
           assetid: item.assetid,
           name: getCardTitle(item),
           price: itemForms.value[index].price,
-          remark: itemForms.value[index].remark || ''
+          remark: itemForms.value[index].remark || '',
+          // BUFF 上架需要的定位字段
+          classid: item.classid,
+          instanceid: item.instanceid,
+          steam_hash_name: item.steam_hash_name,
+          rentUnitPrice: itemForms.value[index].rentUnitPrice,
+          securityPrice: itemForms.value[index].securityPrice,
+          rentOutDay: itemForms.value[index].rentOutDay
         }))
       }
       
@@ -1807,11 +1832,63 @@ export function useInventory() {
         // 刷新库存数据
         await loadInventoryData()
         
+      } else if (platform === 'buff') {
+        // BUFF 的创建接口原生支持批量，出售与出租共用，靠 listingType 区分，
+        // 所以一次请求提交全部饰品，不像悠悠有品那样逐件发。
+        const listingType = sellRentDialogType.value === 'rent' ? 'rent' : 'sell'
+
+        itemForms.value.forEach(f => {
+          f.uploadStatus = 'uploading'
+          f.uploadMessage = '上架中...'
+        })
+
+        try {
+          const response = await axios.post(apiUrls.buffCreateListing(), {
+            steamID: selectedSteamId.value,
+            listingType,
+            items: itemsData.map(it => ({
+              assetid: it.assetid,
+              classid: it.classid,
+              instanceid: it.instanceid,
+              steam_hash_name: it.steam_hash_name,
+              price: it.price,
+              rent_unit_price: it.rentUnitPrice,
+              security_price: it.securityPrice,
+              rent_out_day: it.rentOutDay,
+              desc: it.remark
+            }))
+          })
+
+          if (response.data.success) {
+            ElMessage.success(response.data.message || `已提交 ${itemsData.length} 件饰品上架`)
+            itemForms.value.forEach(f => {
+              f.uploadStatus = 'success'
+              f.uploadMessage = '上架成功'
+            })
+            await loadInventoryData()
+          } else {
+            const errorMsg = response.data.message || '上架失败'
+            ElMessage.error(errorMsg)
+            itemForms.value.forEach(f => {
+              f.uploadStatus = 'failed'
+              f.uploadMessage = errorMsg
+            })
+          }
+        } catch (error) {
+          const errorMsg = error.response?.data?.message || error.message || '网络错误'
+          console.error('BUFF上架失败:', error)
+          ElMessage.error(`上架失败: ${errorMsg}`)
+          itemForms.value.forEach(f => {
+            f.uploadStatus = 'failed'
+            f.uploadMessage = errorMsg
+          })
+        }
+
       } else {
         // 其他平台暂未实现
         ElMessage.warning(`${platformName}${action}功能暂未实现`)
       }
-      
+
     } catch (error) {
       if (error !== false) {
         console.error('操作失败:', error)

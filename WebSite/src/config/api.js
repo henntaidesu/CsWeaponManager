@@ -299,6 +299,10 @@ export const API_CONFIG = {
     // BUFF商品搜索（V2 API）
     BUFF_GET_COMMODITIES: '/spiderApiV2/src/web_site/buff/units/item_search/on_sale/getCommoditiesByGoodsId',  // 获取BUFF商品在售列表
 
+    // BUFF上架（V2 API）出售与出租共用同一接口，靠 listingType 区分
+    BUFF_CREATE_LISTING: '/spiderApiV2/src/web_site/buff/units/on_sale/sell/createListing',  // 上架出售/出租
+    BUFF_PREVIEW_LISTING: '/spiderApiV2/src/web_site/buff/units/on_sale/sell/previewListing',  // 上架预览（需 goods_id）
+
     // CSFloat 数据同步（V2 API）
     CSFLOAT_SYNC_NEW_DATA: '/spiderApiV2/src/web_site/csfloat/units/settings/data_source/syncNewData',  // CSFloat增量采集
     CSFLOAT_SYNC_HISTORY_DATA: '/spiderApiV2/src/web_site/csfloat/units/settings/data_source/syncHistoryData',  // CSFloat全量采集
@@ -1062,6 +1066,8 @@ export const apiUrls = {
 
   buffSyncTemplates: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_SYNC_TEMPLATES),
   buffGetCommodities: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_GET_COMMODITIES),
+  buffCreateListing: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_CREATE_LISTING),
+  buffPreviewListing: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_PREVIEW_LISTING),
 
   steamSyncNewData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_SYNC_NEW_DATA),
   steamSyncHistoryData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_SYNC_HISTORY_DATA),
