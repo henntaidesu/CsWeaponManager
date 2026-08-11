@@ -157,6 +157,7 @@ def _translate_sql(sql: str, has_params: bool) -> str:
     # MySQL 方言函数改写（在字符级扫描前，按整体正则替换）
     sql = _GROUP_CONCAT_RE.sub(r"GROUP_CONCAT(\1 SEPARATOR \2)", sql)
     sql = re.sub(r"datetime\(\s*'now'\s*\)", "NOW()", sql, flags=re.IGNORECASE)
+    sql = re.sub(r"\blast_insert_rowid\s*\(\s*\)", "LAST_INSERT_ID()", sql, flags=re.IGNORECASE)
 
     def keep(text: str) -> str:
         """原样保留的片段：仅转义字面量 %"""
@@ -492,6 +493,14 @@ class DatabaseManager:
             # 宽松模式：贴近 SQLite 的弱类型行为，避免严格模式下的写入报错
             sql_mode='NO_ENGINE_SUBSTITUTION',
         )
+        # SQLite 的 GROUP_CONCAT 没有长度上限，MySQL 默认只有 1024 字节且是「静默截断」，
+        # 库存/配件页把 sticker、pendant 等 JSON 聚合起来很容易超过，必须放宽
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SET SESSION group_concat_max_len = 16777216")
+        except Exception as e:
+            print(f"设置 group_concat_max_len 失败: {e}")
+
         self._local.mysql_conn = conn
         self._local.mysql_gen = self._backend_generation
         return conn

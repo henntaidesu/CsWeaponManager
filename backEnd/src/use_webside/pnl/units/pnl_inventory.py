@@ -28,7 +28,7 @@ def _account_list(db):
             UNION
             SELECT data_user FROM steam_stockComponents
             WHERE data_user IS NOT NULL AND data_user != ''
-        )
+        ) AS u
         """,
         ()
     )

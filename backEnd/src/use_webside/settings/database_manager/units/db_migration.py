@@ -216,7 +216,7 @@ def _find_pk_conflicts(src_conn, models):
             group = ', '.join(f"IFNULL([{p}],'')" for p in pk)
             cursor.execute(
                 f"SELECT COUNT(*), IFNULL(SUM(n), 0) FROM "
-                f"(SELECT {group}, COUNT(*) n FROM [{table_name}] GROUP BY {group} HAVING n > 1)")
+                f"(SELECT {group}, COUNT(*) n FROM [{table_name}] GROUP BY {group} HAVING n > 1) AS d")
             groups, rows = cursor.fetchone()
         except Exception as e:
             Log().write_log(f"检查表 {table_name} 主键冲突失败: {e}", 'ERROR')

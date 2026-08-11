@@ -40,7 +40,7 @@ def _fetch_buys(db: DatabaseManager, data_user: Optional[str], steam_hash_name: 
            COALESCE((
                SELECT SUM(p.quantity) FROM pnl_pairing p
                WHERE p.buy_id = b.ID AND p.buy_from = b.[from]
-                 AND (p.buy_id_sub IS b.ID_sub OR (p.buy_id_sub IS NULL AND b.ID_sub IS NULL))
+                 AND (p.buy_id_sub = b.ID_sub OR (p.buy_id_sub IS NULL AND b.ID_sub IS NULL))
            ), 0) AS used
     FROM buy b
     WHERE b.status = ?
@@ -82,7 +82,7 @@ def _fetch_sells(db: DatabaseManager, data_user: Optional[str], steam_hash_name:
            EXISTS(
                SELECT 1 FROM pnl_pairing p
                WHERE p.sell_id = s.ID
-                 AND (p.sell_id_sub IS s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL))
+                 AND (p.sell_id_sub = s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL))
            ) AS already_paired
     FROM sell s
     WHERE s.status = ?

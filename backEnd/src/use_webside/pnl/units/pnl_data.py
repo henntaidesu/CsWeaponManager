@@ -31,7 +31,7 @@ class PnlData:
                 return jsonify({'success': False, 'message': 'start_date / end_date 必填'}), 400
 
             sql = """
-            SELECT DATE(sell_order_time) AS d,
+            SELECT SUBSTR(sell_order_time, 1, 10) AS d,
                    SUM(CASE WHEN is_excluded = 0 THEN profit ELSE 0 END) AS profit,
                    SUM(CASE WHEN is_excluded = 0 THEN 1 ELSE 0 END) AS pair_count,
                    SUM(CASE WHEN is_excluded = 0 THEN quantity ELSE 0 END) AS paired_quantity,
@@ -44,7 +44,7 @@ class PnlData:
             if data_user:
                 sql += " AND data_user = ?"
                 params.append(data_user)
-            sql += " GROUP BY DATE(sell_order_time) ORDER BY d"
+            sql += " GROUP BY SUBSTR(sell_order_time, 1, 10) ORDER BY d"
 
             db = DatabaseManager()
             rows = db.execute_query(sql, tuple(params))
@@ -116,7 +116,7 @@ class PnlData:
             # 未匹配数:已完成且没有任何配对的 sell 记录(按出售时间 order_time 落在区间内)
             um_clauses = [
                 "s.status = ?",
-                "NOT EXISTS (SELECT 1 FROM pnl_pairing p WHERE p.sell_id = s.ID AND (p.sell_id_sub IS s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL)))",
+                "NOT EXISTS (SELECT 1 FROM pnl_pairing p WHERE p.sell_id = s.ID AND (p.sell_id_sub = s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL)))",
             ]
             um_params = [COMPLETED_STATUS]
             if data_user:
@@ -178,11 +178,11 @@ class PnlData:
             FROM pnl_pairing p
             LEFT JOIN sell s
               ON s.ID = p.sell_id
-             AND (s.ID_sub IS p.sell_id_sub OR (s.ID_sub IS NULL AND p.sell_id_sub IS NULL))
+             AND (s.ID_sub = p.sell_id_sub OR (s.ID_sub IS NULL AND p.sell_id_sub IS NULL))
             LEFT JOIN buy b
               ON b.ID = p.buy_id
              AND b.[from] = p.buy_from
-             AND (b.ID_sub IS p.buy_id_sub OR (b.ID_sub IS NULL AND p.buy_id_sub IS NULL))
+             AND (b.ID_sub = p.buy_id_sub OR (b.ID_sub IS NULL AND p.buy_id_sub IS NULL))
             WHERE DATE(p.sell_order_time) = ?
             """
             params = [date]
@@ -236,7 +236,7 @@ class PnlData:
 
             clauses = ["s.status = ?"]
             params: list = [COMPLETED_STATUS]
-            clauses.append("NOT EXISTS (SELECT 1 FROM pnl_pairing p WHERE p.sell_id = s.ID AND (p.sell_id_sub IS s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL)))")
+            clauses.append("NOT EXISTS (SELECT 1 FROM pnl_pairing p WHERE p.sell_id = s.ID AND (p.sell_id_sub = s.ID_sub OR (p.sell_id_sub IS NULL AND s.ID_sub IS NULL)))")
             if data_user:
                 clauses.append("s.data_user = ?")
                 params.append(data_user)
@@ -341,7 +341,7 @@ class PnlData:
                    COALESCE((
                        SELECT SUM(p.quantity) FROM pnl_pairing p
                        WHERE p.buy_id = b.ID AND p.buy_from = b.[from]
-                         AND (p.buy_id_sub IS b.ID_sub OR (p.buy_id_sub IS NULL AND b.ID_sub IS NULL))
+                         AND (p.buy_id_sub = b.ID_sub OR (p.buy_id_sub IS NULL AND b.ID_sub IS NULL))
                    ), 0) AS used
             FROM buy b
             {where}
@@ -382,7 +382,7 @@ class PnlData:
             data_user = data.get('data_user')
 
             sql = """
-            SELECT MIN(DATE(sell_order_time)), MAX(DATE(sell_order_time))
+            SELECT MIN(sell_order_time), MAX(sell_order_time)
             FROM pnl_pairing
             WHERE sell_order_time IS NOT NULL
             """
@@ -415,7 +415,7 @@ class PnlData:
                 SELECT data_user FROM buy WHERE data_user IS NOT NULL AND data_user != ''
                 UNION
                 SELECT data_user FROM sell WHERE data_user IS NOT NULL AND data_user != ''
-            )
+            ) AS u
             ORDER BY data_user
             """
             db = DatabaseManager()

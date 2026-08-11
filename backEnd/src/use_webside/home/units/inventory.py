@@ -44,7 +44,7 @@ class HomeInventory:
                     WHEN weapon_type = '未知物品' THEN 1
                     ELSE 0
                 END,
-                CAST(buy_price AS REAL) DESC NULLS LAST
+                CAST(buy_price AS REAL) DESC
             LIMIT ? OFFSET ?
             """
 

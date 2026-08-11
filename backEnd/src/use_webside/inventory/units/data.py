@@ -239,8 +239,8 @@ class InventoryData:
                     WHEN si.weapon_type = '未知物品' THEN 1
                     ELSE 0
                 END,
-                CAST(si.buy_price AS REAL) DESC NULLS LAST,
-                si.ROWID
+                CAST(si.buy_price AS REAL) DESC,
+                si.assetid
             LIMIT ? OFFSET ?
             """
             query_params = list(params) + [limit, offset]

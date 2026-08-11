@@ -312,11 +312,9 @@ class InventoryHandler:
             buy_price = data.get('buy_price')
             from src.db_manager.database import DatabaseManager
             db = DatabaseManager()
-            conn = db.get_connection()
-            cursor = conn.cursor()
-            cursor.execute('UPDATE steam_inventory SET buy_price = ? WHERE data_user = ? AND assetid = ?', (buy_price, steam_id, assetid))
-            conn.commit()
-            affected = cursor.rowcount
+            affected = db.execute_update(
+                'UPDATE [steam_inventory] SET [buy_price] = ? WHERE [data_user] = ? AND [assetid] = ?',
+                (buy_price, steam_id, assetid))
             if affected > 0:
                 return jsonify({'success': True, 'message': '更新成功', 'affected': affected}), 200
             return jsonify({'success': False, 'error': '未找到匹配的记录'}), 404

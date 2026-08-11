@@ -106,8 +106,8 @@ class StockComponentsData:
                     WHEN weapon_type = '未知物品' THEN 1
                     ELSE 0
                 END,
-                CAST(buy_price AS REAL) DESC NULLS LAST,
-                ROWID
+                CAST(buy_price AS REAL) DESC,
+                assetid
             LIMIT ? OFFSET ?
             """
             params.extend([limit, offset])
