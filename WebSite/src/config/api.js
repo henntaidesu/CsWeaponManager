@@ -324,6 +324,10 @@ export const API_CONFIG = {
     IGXE_SYNC_NEW_DATA: '/spiderApiV2/src/web_site/igxe/units/settings/data_source/syncNewData',  // IGXE增量采集
     IGXE_SYNC_HISTORY_DATA: '/spiderApiV2/src/web_site/igxe/units/settings/data_source/syncHistoryData',  // IGXE全量采集
 
+    // IGXE 消息同步（V2 API）
+    IGXE_SYNC_NEW_MESSAGES: '/spiderApiV2/src/web_site/igxe/units/settings/igxe_message_box/syncNewMessages',  // 同步新消息（增量）
+    IGXE_SYNC_HISTORY_MESSAGES: '/spiderApiV2/src/web_site/igxe/units/settings/igxe_message_box/syncHistoryMessages',  // 同步历史消息（全量）
+
     // 完美世界 库存组件（V2 API）
     PW_GET_INVENTORY_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/get_component/getInventoryComponent',  // 获取库存组件数据
     PW_DEPOSIT_TO_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/move_component/depositToComponent',  // 存入/取出物品到组件
@@ -1252,6 +1256,10 @@ export const apiUrls = {
   igxeSyncNewData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_NEW_DATA),
 
   igxeSyncHistoryData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_HISTORY_DATA),
+
+  igxeSyncNewMessages: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_NEW_MESSAGES),
+
+  igxeSyncHistoryMessages: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_HISTORY_MESSAGES),
 
   pwGetInventoryComponent: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.PW_GET_INVENTORY_COMPONENT),
 
