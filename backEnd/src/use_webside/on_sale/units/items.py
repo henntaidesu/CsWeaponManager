@@ -15,6 +15,94 @@ SPIDER_API_ADDRESS = "http://127.0.0.1:9002"
 class OnSaleItems:
 
     @staticmethod
+    def _get_buff_steam_id(account_id):
+        """从 config 表取 BUFF 账号的 steamID"""
+        db = DatabaseManager()
+        rows = db.execute_query(
+            "SELECT steamID FROM config WHERE key1 = ? AND key2 = ? AND dataID = ?",
+            ('buff', 'config', account_id)
+        )
+        return rows[0][0] if rows else None
+
+    @staticmethod
+    def _get_buff_on_sale_items(account_id, trade_type):
+        """BUFF 在售列表：调 Spider 拿挂单，再从本地库补购入价"""
+        if trade_type != 'sale':
+            return jsonify({
+                'success': False,
+                'message': f'BUFF 暂不支持 {trade_type} 类型'
+            }), 400
+
+        steam_id = OnSaleItems._get_buff_steam_id(account_id)
+        if not steam_id:
+            return jsonify({'success': False, 'message': '未找到BUFF账号配置'}), 404
+
+        spider_response = requests.post(
+            f"{SPIDER_API_ADDRESS}/spiderApiV2/src/web_site/buff/units/on_sale/sell/getOnSaleList",
+            json={'steamID': steam_id, 'page': 1, 'pageSize': 40},
+            timeout=30
+        )
+        if spider_response.status_code != 200:
+            return jsonify({
+                'success': False,
+                'message': f'Spider服务请求失败: HTTP {spider_response.status_code}'
+            }), 500
+
+        spider_data = spider_response.json()
+        if not spider_data.get('success'):
+            return jsonify({
+                'success': False,
+                'message': spider_data.get('message', '获取BUFF在售列表失败')
+            }), 500
+
+        db = DatabaseManager()
+        items = []
+        for it in spider_data.get('data', []):
+            asset_id = it.get('steam_asset_id')
+            buy_price = None
+            if asset_id:
+                try:
+                    rows = db.execute_query(
+                        "SELECT buy_price FROM steam_inventory WHERE assetid = ? LIMIT 1",
+                        (str(asset_id),)
+                    )
+                    if rows:
+                        buy_price = rows[0][0]
+                except Exception as e:
+                    print(f"查询购入价格失败 - assetid: {asset_id}, 错误: {str(e)}")
+
+            try:
+                sale_price = float(it.get('sale_price') or 0)
+            except (TypeError, ValueError):
+                sale_price = 0.0
+
+            items.append({
+                'id': it.get('id'),
+                'item_name': it.get('item_name'),
+                'steam_hash_name': it.get('steam_hash_name'),
+                'weapon_float': it.get('weapon_float'),
+                'sale_price': sale_price,
+                'buy_price': buy_price,
+                'platform': 'buff',
+                'account_id': int(account_id),
+                'trade_type': trade_type,
+                'sticker': it.get('sticker'),
+                'pendant': it.get('pendant'),
+                'rename': it.get('rename'),
+                'steam_asset_id': asset_id,
+                'img_url': it.get('img_url'),
+                'status': it.get('state'),
+                'paintseed': it.get('paintseed'),
+                'goods_id': it.get('goods_id'),
+            })
+
+        return jsonify({
+            'success': True,
+            'data': items,
+            'total': spider_data.get('total', len(items))
+        }), 200
+
+    @staticmethod
     def get_on_sale_items():
         """获取在售商品列表"""
         try:
@@ -29,11 +117,14 @@ class OnSaleItems:
                     'message': '缺少必要参数: platform 和 account_id'
                 }), 400
 
-            if platform != 'yyyp':
+            if platform not in ('yyyp', 'buff'):
                 return jsonify({
                     'success': False,
                     'message': f'暂不支持 {platform} 平台'
                 }), 400
+
+            if platform == 'buff':
+                return OnSaleItems._get_buff_on_sale_items(account_id, trade_type)
 
             db = DatabaseManager()
 
@@ -178,6 +269,80 @@ class OnSaleItems:
             }), 500
 
     @staticmethod
+    def _call_buff_spider(endpoint, payload, action):
+        """统一调 BUFF Spider 的写操作，把 Spider 的失败原文透出去"""
+        try:
+            resp = requests.post(
+                f"{SPIDER_API_ADDRESS}/spiderApiV2/src/web_site/buff/units/on_sale/sell/{endpoint}",
+                json=payload,
+                timeout=30
+            )
+            body = resp.json()
+            if resp.status_code == 200 and body.get('success'):
+                return jsonify({'success': True, 'message': body.get('message', f'{action}成功')}), 200
+            return jsonify({
+                'success': False,
+                'message': body.get('message', f'{action}失败')
+            }), resp.status_code if resp.status_code != 200 else 400
+        except requests.exceptions.Timeout:
+            return jsonify({'success': False, 'message': f'{action}请求超时'}), 500
+        except requests.exceptions.RequestException as e:
+            return jsonify({'success': False, 'message': f'Spider服务请求失败: {str(e)}'}), 500
+
+    @staticmethod
+    def _buff_cancel(item_id, account_id):
+        """BUFF 下架"""
+        steam_id = OnSaleItems._get_buff_steam_id(account_id)
+        if not steam_id:
+            return jsonify({'success': False, 'message': '未找到BUFF账号配置'}), 404
+        return OnSaleItems._call_buff_spider(
+            'cancelListing',
+            {'steamID': steam_id, 'sellOrderIds': [str(item_id)]},
+            '下架'
+        )
+
+    @staticmethod
+    def update_sale_price():
+        """改价：按 platform 分流，目前仅 BUFF 已接入"""
+        try:
+            data = request.get_json() or {}
+            item_id = data.get('id')
+            new_price = data.get('new_price')
+            account_id = data.get('account_id')
+            platform = data.get('platform', '')
+
+            if not item_id or new_price in (None, ''):
+                return jsonify({'success': False, 'message': '缺少必要参数: id 或 new_price'}), 400
+
+            if platform != 'buff':
+                return jsonify({
+                    'success': False,
+                    'message': f'{platform or "该"} 平台的改价功能尚未接入，请前往对应平台APP操作'
+                }), 400
+
+            steam_id = OnSaleItems._get_buff_steam_id(account_id)
+            if not steam_id:
+                return jsonify({'success': False, 'message': '未找到BUFF账号配置'}), 404
+
+            return OnSaleItems._call_buff_spider(
+                'changePrice',
+                {
+                    'steamID': steam_id,
+                    'items': [{
+                        'sell_order_id': str(item_id),
+                        'assetid': str(data.get('steam_asset_id') or ''),
+                        'price': new_price,
+                        'listing_type': 'sell',
+                    }]
+                },
+                '改价'
+            )
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return jsonify({'success': False, 'message': f'改价失败: {str(e)}'}), 500
+
+    @staticmethod
     def remove_from_sale():
         """下架商品"""
         try:
@@ -198,6 +363,9 @@ class OnSaleItems:
                     'success': False,
                     'message': '缺少必要参数: id'
                 }), 400
+
+            if platform == 'buff':
+                return OnSaleItems._buff_cancel(item_id, account_id)
 
             # 下面整段只实现了悠悠有品的下架（读 youpin 配置、调 youping 的 offShelf）。
             # 其他平台若放行，会把该平台的订单号发到悠悠有品去下架，属于静默错走，必须拦住。

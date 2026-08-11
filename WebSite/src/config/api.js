@@ -551,6 +551,7 @@ export const API_CONFIG = {
     ON_SALE_ITEMS: '/backENDV2/src/use_webside/on_sale/units/items/getOnSaleItems',  // 获取在售商品列表
 
     ON_SALE_REMOVE: '/backENDV2/src/use_webside/on_sale/units/items/removeFromSale',  // 下架商品
+    ON_SALE_UPDATE_PRICE: '/backENDV2/src/use_webside/on_sale/units/items/updateSalePrice',  // 在售改价（按 platform 分流）
 
 
 
@@ -1341,6 +1342,7 @@ export const apiUrls = {
   getOnSaleItems: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_ITEMS),
 
   removeFromSale: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_REMOVE),
+  updateSalePrice: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_UPDATE_PRICE),
 
 
 
