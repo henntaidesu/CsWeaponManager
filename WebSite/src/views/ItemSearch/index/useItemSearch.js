@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted, computed, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import { CaretRight, CaretBottom, Refresh, Check, Loading } from '@element-plus/icons-vue'
 import { API_CONFIG, apiUrls } from '@/config/api.js'
 import { applyDeviceClass, watchDeviceType } from '@/utils/deviceDetect.js'
@@ -399,11 +399,87 @@ export function useItemSearch() {
     showBuffTable.value = !showBuffTable.value
   }
   
-  // 购买BUFF商品（暂未对接）
-  const handleBuyBuffCommodity = (commodity) => {
-    console.log('购买BUFF商品:', commodity)
-    ElMessage.info(`购买功能开发中... 订单ID: ${commodity.id}`)
-    // TODO: 对接BUFF购买接口
+  // 购买BUFF商品：先预览拿真实价格与可用支付方式，用户确认后再下单
+  const buffBuying = ref(false)
+
+  const handleBuyBuffCommodity = async (commodity) => {
+    if (!selectedSteamId.value) {
+      ElMessage.warning('请先选择BUFF账号')
+      return
+    }
+    if (buffBuying.value) return
+
+    buffBuying.value = true
+    const loading = ElLoading.service({
+      lock: true,
+      text: '正在获取支付方式...',
+      background: 'rgba(0, 0, 0, 0.7)'
+    })
+
+    try {
+      // 1. 预览：校验挂单仍有效，拿到真实价格与支付方式
+      const previewResp = await axios.post(apiUrls.buffPreviewBuy(), {
+        steamID: selectedSteamId.value,
+        sellOrderId: commodity.id,
+        price: commodity.price
+      })
+      loading.close()
+
+      if (!previewResp.data.success) {
+        ElMessage.error(previewResp.data.message || '获取支付方式失败')
+        return
+      }
+
+      const preview = previewResp.data.data || {}
+      const payMethods = (preview.pay_methods || []).filter(m => m.enabled !== false && m.id)
+      if (!payMethods.length) {
+        ElMessage.error('没有可用的支付方式，请前往BUFF APP处理')
+        return
+      }
+
+      const actualPrice = preview.discounted_price || preview.original_price || commodity.price
+
+      // 2. 让用户挑支付方式并确认价格，不自动选
+      const { value: payMethod } = await ElMessageBox.prompt(
+        `实付 ¥${actualPrice}\n请输入支付方式编号：\n` +
+          payMethods.map((m, i) => `${i + 1}. ${m.text || m.id}`).join('\n'),
+        '确认购买',
+        {
+          confirmButtonText: '确认购买',
+          cancelButtonText: '取消',
+          inputValue: '1',
+          inputValidator: (v) => {
+            const idx = Number(v)
+            return (Number.isInteger(idx) && idx >= 1 && idx <= payMethods.length) || '请输入有效编号'
+          }
+        }
+      )
+
+      // 3. 下单。expectedPrice 用预览返回的价，服务端会再核对一次
+      const buyLoading = ElLoading.service({ lock: true, text: '正在下单...' })
+      try {
+        const resp = await axios.post(apiUrls.buffBuyCommodity(), {
+          steamID: selectedSteamId.value,
+          sellOrderId: commodity.id,
+          expectedPrice: actualPrice,
+          payMethod: payMethods[Number(payMethod) - 1].id
+        })
+        if (resp.data.success) {
+          ElMessage.success(resp.data.message || '购买已提交')
+        } else {
+          ElMessage.error(resp.data.message || '购买失败')
+        }
+      } finally {
+        buyLoading.close()
+      }
+    } catch (error) {
+      loading.close()
+      if (error === 'cancel' || error === 'close') return
+      console.error('BUFF购买失败:', error)
+      ElMessage.error(error.response?.data?.message || `购买失败: ${error.message || '网络错误'}`)
+    } finally {
+      buffBuying.value = false
+    }
   }
 
   // 获取稀有度类型（根据CS:GO品质颜色）
