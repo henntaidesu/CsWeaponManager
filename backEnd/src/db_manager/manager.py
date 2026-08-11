@@ -12,6 +12,7 @@ from .index.model import ConfigModel, FundsModel, BuyModel, SellModel, LeaseMode
 from .youpin.model import YyypBuyModel, YyypSellModel, YyypLentModel, YyypMessageboxModel
 from .BUFF.model import BuffLentModel, BuffMessageboxModel
 from .csfloat.model import CsFloatBuyModel, CsFloatSellModel
+from .igxe.model import IgxeMessageboxModel
 from .steam.model import SteamMarketModel, SteamInventoryHistoryModel, SteamInventoryHistoryIndexModel, SteamInventoryModel, SteamStockComponentsModel, UserInventoryMiningModel
 
 
@@ -61,6 +62,9 @@ class DBManager:
             # CSFloat 表
             CsFloatBuyModel,
             CsFloatSellModel,
+
+            # IGXE 表
+            IgxeMessageboxModel,
         ]
     
     def initialize_database(self) -> bool:

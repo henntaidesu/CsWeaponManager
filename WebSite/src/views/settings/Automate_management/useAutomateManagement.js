@@ -51,6 +51,7 @@ export function useAutomateManagement() {
     { automateType: 'auto_refresh_auth', taskType: '', typeLabel: '更新steam认证', methodLabel: '更新Steam认证', source: 'steam' },
     { automateType: 'auto_fetch', taskType: 'collect_buff', typeLabel: '获取平台交易记录', methodLabel: 'BUFF数据采集', source: 'buff' },
     { automateType: 'auto_fetch', taskType: 'collect_youpin', typeLabel: '获取平台交易记录', methodLabel: '悠悠有品数据采集', source: 'youpin' },
+    { automateType: 'auto_fetch', taskType: 'collect_igxe', typeLabel: '获取平台交易记录', methodLabel: 'IGXE数据采集', source: 'igxe' },
     { automateType: 'auto_platform_price', taskType: 'platform_youpin_price', typeLabel: '更新饰品平台映射价格', methodLabel: '更新悠悠有品饰品价格', source: 'youpin' },
     { automateType: 'auto_platform_price', taskType: 'platform_buff_price', typeLabel: '更新饰品平台映射价格', methodLabel: '更新BUFF饰品价格', source: 'buff' },
     { automateType: 'auto_search_weapon', taskType: 'search_weapon_rename', typeLabel: '自动搜素饰品', methodLabel: '自动搜素饰品改名', source: 'rename' },
@@ -282,7 +283,8 @@ export function useAutomateManagement() {
   // 自动获取数据的任务选项
   const fetchTasks = [
     { label: 'BUFF数据采集', value: 'collect_buff' },
-    { label: '悠悠有品数据采集', value: 'collect_youpin' }
+    { label: '悠悠有品数据采集', value: 'collect_youpin' },
+    { label: 'IGXE数据采集', value: 'collect_igxe' }
   ]
   
   // 更新饰品平台映射价格任务
@@ -457,6 +459,10 @@ export function useAutomateManagement() {
     } else if (automateForm.value.selectedTask === 'collect_youpin') {
       const filtered = dataSources.value.filter(s => s.type === 'youpin' && s.enabled)
       console.log('过滤后的悠悠有品数据源:', filtered)
+      return filtered
+    } else if (automateForm.value.selectedTask === 'collect_igxe') {
+      const filtered = dataSources.value.filter(s => s.type === 'igxe' && s.enabled)
+      console.log('过滤后的IGXE数据源:', filtered)
       return filtered
     } else if (automateForm.value.selectedTask === 'platform_buff_price') {
       const filtered = dataSources.value.filter(s => s.type === 'buff' && s.enabled)
@@ -731,6 +737,8 @@ export function useAutomateManagement() {
           result = await collectBuffData(selectedSource)
         } else if (taskType === 'collect_youpin') {
           result = await collectYoupinData(selectedSource)
+        } else if (taskType === 'collect_igxe') {
+          result = await collectIgxeData(selectedSource)
         }
       } else if (automateType === 'auto_search_weapon') {
         const selectedConfig = currentSearchConfigList.value.find(
@@ -881,6 +889,27 @@ export function useAutomateManagement() {
     }
   }
   
+  // 采集IGXE数据
+  const collectIgxeData = async (dataSource) => {
+    try {
+      const response = await axios.post(
+        apiUrls.igxeSyncNewData(),
+        { steamID: dataSource.steamID || '' }
+      )
+
+      if (response.status === 200) {
+        ElMessage.success(`${dataSource.dataName} IGXE数据采集完成`)
+        return { success: true, message: 'IGXE数据采集完成' }
+      } else {
+        ElMessage.error('IGXE数据采集失败')
+        return { success: false, message: 'IGXE数据采集失败' }
+      }
+    } catch (error) {
+      ElMessage.error('采集失败: ' + error.message)
+      throw error
+    }
+  }
+
   // 采集悠悠有品数据
   const collectYoupinData = async (dataSource) => {
     try {
@@ -1620,6 +1649,8 @@ export function useAutomateManagement() {
               singleResult = await collectBuffData(dataSource)
             } else if (taskType === 'collect_youpin') {
               singleResult = await collectYoupinData(dataSource)
+            } else if (taskType === 'collect_igxe') {
+              singleResult = await collectIgxeData(dataSource)
             }
             if (singleResult) {
               results.push({ source: dataSource.dataName, ...singleResult })

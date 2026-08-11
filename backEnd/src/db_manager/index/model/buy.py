@@ -150,6 +150,12 @@ class BuyModel(BaseModel):
                 'type': 'TEXT',
                 'not_null': False,
                 'default': None
+            },
+            'assetid': {
+                'type': 'TEXT',
+                'not_null': False,
+                'default': None,
+                'comment': 'Steam 资产号'
             }
         }
     

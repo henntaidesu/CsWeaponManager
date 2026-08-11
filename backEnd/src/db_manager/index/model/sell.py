@@ -146,6 +146,12 @@ class SellModel(BaseModel):
                 'type': 'TEXT',
                 'primary_key': True,
                 'not_null': False,
+            },
+            'assetid': {
+                'type': 'TEXT',
+                'not_null': False,
+                'default': None,
+                'comment': 'Steam 资产号'
             }
         }
     

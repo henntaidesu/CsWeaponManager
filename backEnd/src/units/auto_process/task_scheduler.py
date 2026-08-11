@@ -652,11 +652,21 @@ class TaskScheduler:
                 url = f"{spider_base_url}/spiderApiV2/src/web_site/youping/units/settings/data_source/syncNewData"
                 data = {'steamId': steam_id}
                 self.log.write_log(f"请求悠悠有品采集 - URL: {url}, 数据: {data}", 'info')
-                
+
                 response = requests.post(url, json=data, timeout=600)
-                
+
                 self.log.write_log(f"悠悠有品数据采集完成: {data_name}, 状态: {response.status_code}, 响应: {response.text[:200]}", 'info')
-                
+
+            elif selected_task == 'collect_igxe' and data_type == 'igxe':
+                # 采集IGXE数据（只需要传递steamID，Spider 会据此取完整配置）
+                url = f"{spider_base_url}/spiderApiV2/src/web_site/igxe/units/settings/data_source/syncNewData"
+                data = {'steamID': steam_id}
+                self.log.write_log(f"请求IGXE采集 - URL: {url}, 数据: {data}", 'info')
+
+                response = requests.post(url, json=data, timeout=600)
+
+                self.log.write_log(f"IGXE数据采集完成: {data_name}, 状态: {response.status_code}, 响应: {response.text[:200]}", 'info')
+
         except requests.exceptions.Timeout:
             self.log.write_log(f"数据采集超时", 'error')
         except requests.exceptions.RequestException as e:

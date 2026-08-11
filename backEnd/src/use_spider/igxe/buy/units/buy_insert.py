@@ -52,6 +52,7 @@ class BuyInsert:
             # 以下来自订单详情 user/order/info
             buy_record.buy_number = data.get("buy_number")
             buy_record.trade_type = data.get("trade_type")
+            buy_record.assetid = data.get("assetid")
             setattr(buy_record, "from", "igxe")
 
             saved = buy_record.save()

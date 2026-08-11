@@ -50,6 +50,7 @@ class SellInsert:
             sell_record.rename = data.get("rename")
             sell_record.steam_hash_name = data.get("market_hash_name") or data.get("img_url")
             sell_record.steam_id = data.get("buyer_id")
+            sell_record.assetid = data.get("assetid")
             setattr(sell_record, "from", "igxe")
 
             saved = sell_record.save()
