@@ -399,3 +399,14 @@
   font-weight: 600;
 }
 
+
+.db-check-detail {
+  margin: 0;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 320px;
+  overflow-y: auto;
+}

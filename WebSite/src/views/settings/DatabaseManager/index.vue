@@ -127,11 +127,21 @@
                   </el-button>
                 </div>
                 <el-alert
+                  v-if="dbCheckResult"
+                  :type="dbCheckResult.type"
+                  :closable="true"
+                  show-icon
+                  style="margin-top: 12px;"
+                  @close="dbCheckResult = null"
+                >
+                  <pre class="db-check-detail">{{ dbCheckResult.text }}</pre>
+                </el-alert>
+                <el-alert
                   type="info"
                   :closable="false"
                   show-icon
                   style="margin-top: 12px;"
-                  title="说明：连接参数保存在基础 SQLite 的 config 表中。「保存并切换」仅切换后端不迁移数据；「迁移」会复制全部数据到目标库并设为默认。"
+                  title="说明：连接参数保存在基础 SQLite 的 config 表中。「保存并切换」仅切换后端不迁移数据；「迁移」会复制全部数据到目标库并设为默认。迁移到 MySQL 成功后，本地 SQLite 只保留 config 配置表，其余数据会被清空并回收磁盘空间。"
                 />
               </div>
             </el-card>
@@ -705,7 +715,7 @@ const {
   // SQL 执行
   sqlStatement, sqlResult, sqlResultColumns, sqlError, sqlExecutionTime, sqlExecuting, sqlMessage, sqlExecutionDetails, sqlTotalStatements, sqlFileExecuting,
   // 数据库后端配置 / 迁移
-  dbType, activeBackend, mysqlForm, mysqlHasPassword, dbConfigLoading, testingMysql, savingDbConfig, migratingToMysql, migratingToSqlite,
+  dbType, activeBackend, mysqlForm, mysqlHasPassword, dbConfigLoading, testingMysql, savingDbConfig, migratingToMysql, migratingToSqlite, dbCheckResult,
   loadDbConfig, testMysqlConnection, saveDbConfig, migrateToMysql, migrateToSqlite,
   // 计算属性
   filteredTables, filteredTableData, paginatedData,
