@@ -61,8 +61,8 @@ export default {
       { value: 'sale', label: '出售', icon: '💰' },
       { value: 'lease', label: '租赁', icon: '🔄' },
       { value: 'sublease', label: '转租', icon: '🔁' },
-      { value: 'presale', label: '预售', icon: '⏰', disabled: true },
-      { value: 'transfer', label: '过户', icon: '📝', disabled: true },
+      { value: 'presale', label: '预售', icon: '⏰' },
+      { value: 'transfer', label: '过户', icon: '📝' },
       { value: 'purchase_request', label: '求购', icon: '🛒' },
       { value: 'offer', label: '报价', icon: '💬' },
       { value: 'favorite', label: '关注', icon: '⭐' },
@@ -550,6 +550,67 @@ export default {
             })
             // 缓存预售数量
             cacheTradeTypeCount('presale', onSaleData.value.length)
+            ElMessage.success('加载成功')
+          } else {
+            ElMessage.error(response.data?.message || '加载失败')
+          }
+        } else if (selectedTradeType.value === 'transfer') {
+          // 过户类型：租赁过户商品与出售商品同源，由 Spider 按 isLeaseTransfer 过滤后返回
+          response = await axios.post(apiUrls.yyypGetTransferList(), {
+            steamId: accountList.value.find(acc => acc.id === selectedAccount.value)?.steam_id || '',
+            page: 1,
+            pageSize: 1000
+          })
+
+          if (response.data && response.data.success) {
+            const transferData = response.data.data?.commodityInfoList || []
+            onSaleData.value = transferData.map(item => {
+              // 解析印花数据
+              let stickerData = null
+              if (item.stickers && item.stickers.length > 0) {
+                stickerData = JSON.stringify(item.stickers.map(sticker => ({
+                  name: sticker.name,
+                  image: sticker.imageUrl,
+                  abrade: sticker.abradeDesc,
+                  rawIndex: sticker.rawIndex
+                })))
+              }
+
+              // 解析挂件数据（如果有）
+              let pendantData = null
+              if (item.pendant) {
+                pendantData = JSON.stringify({
+                  name: item.pendant.name || '',
+                  image: item.pendant.imageUrl || '',
+                  pattern: item.pendant.pattern || ''
+                })
+              }
+
+              return {
+                id: item.id,
+                item_name: item.name,
+                steam_hash_name: item.commodityHashName,
+                sale_price: parseFloat(item.sellAmount || 0),
+                buy_price: null,
+                weapon_float: item.abrade,
+                weapon_type: item.typeName || '',
+                float_range: item.exteriorName || '',
+                sticker: stickerData,
+                pendant: pendantData,
+                rename: item.haveNameTag ? '已改名' : null,
+                on_sale_time: item.onShelfTime || null,
+                platform: 'yyyp',
+                trade_type: 'transfer',
+                account_id: selectedAccount.value,
+                // 过户特有字段
+                lease_transfer_date: item.leaseTransferDate,  // 过户日期
+                reference_price: item.referencePrice,
+                sell_amount_desc: item.sellAmountDesc,
+                paintseed: item.paintseed
+              }
+            })
+            // 缓存过户数量
+            cacheTradeTypeCount('transfer', onSaleData.value.length)
             ElMessage.success('加载成功')
           } else {
             ElMessage.error(response.data?.message || '加载失败')

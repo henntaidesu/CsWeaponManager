@@ -54,12 +54,13 @@ class OnSaleItems:
             steam_id = config_result[0][0]
 
             # 根据交易类型选择Spider API端点
+            # 路径需与 Spider 的蓝图注册一致：/spiderApiV2 + /src + /web_site/youping
             spider_endpoint_map = {
-                'sale': '/spiderApiV2/youping/units/on_sale/sell/getSellList',
-                'lease': '/spiderApiV2/youping/units/on_sale/lent/getLeaseList',
-                'sublease': '/spiderApiV2/youping/units/on_sale/sublease/getSubleaseList',
-                'presale': '/spiderApiV2/youping/units/on_sale/presale/getPresaleList',
-                'transfer': '/spiderApiV2/youping/units/on_sale/transfer/getTransferList'
+                'sale': '/spiderApiV2/src/web_site/youping/units/on_sale/sell/getSellList',
+                'lease': '/spiderApiV2/src/web_site/youping/units/on_sale/lent/getLeaseList',
+                'sublease': '/spiderApiV2/src/web_site/youping/units/on_sale/sublease/getSubleaseList',
+                'presale': '/spiderApiV2/src/web_site/youping/units/on_sale/presale/getPresaleList',
+                'transfer': '/spiderApiV2/src/web_site/youping/units/on_sale/transfer/getTransferList'
             }
 
             spider_endpoint = spider_endpoint_map.get(trade_type)
