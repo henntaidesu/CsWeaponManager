@@ -212,7 +212,9 @@ export function useOnSaleBuff() {
       const response = await axios.post(apiUrls.updateSalePrice(), {
         id: selectedItem.value.id,
         new_price: price,  // 直接传递原始字符串
-        account_id: selectedAccount.value
+        account_id: selectedAccount.value,
+        steam_asset_id: selectedItem.value.steam_asset_id,
+        platform: 'buff'  // 必传：后端据此分流，缺省会拒绝
       })
 
       if (response.data && response.data.success) {
@@ -224,7 +226,7 @@ export function useOnSaleBuff() {
       }
     } catch (error) {
       console.error('改价失败:', error)
-      ElMessage.error('改价失败: ' + error.message)
+      ElMessage.error(error.response?.data?.message || '改价失败: ' + error.message)
     } finally {
       updating.value = false
     }
@@ -246,7 +248,8 @@ export function useOnSaleBuff() {
       loading.value = true
       const response = await axios.post(apiUrls.removeFromSale(), {
         id: item.id,
-        account_id: selectedAccount.value
+        account_id: selectedAccount.value,
+        platform: 'buff'  // 必传：后端据此拒绝把 BUFF 订单发往悠悠有品的下架接口
       })
 
       if (response.data && response.data.success) {

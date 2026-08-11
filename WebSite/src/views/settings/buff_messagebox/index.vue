@@ -41,6 +41,30 @@
             />
             <el-button type="success" @click="handleTimeSearch" :loading="loading">按时间搜索</el-button>
           </div>
+          <div class="flex flex-wrap gap-4 items-center" style="margin-top: 12px;">
+            <el-select
+              v-model="selectedAccount"
+              placeholder="选择BUFF账号"
+              class="type-select"
+              :disabled="syncing"
+            >
+              <el-option
+                v-for="acc in accountList"
+                :key="acc.steam_id"
+                :label="`${acc.name} (${acc.steam_id})`"
+                :value="acc.steam_id"
+              />
+            </el-select>
+            <el-button type="primary" @click="handleSyncNew" :loading="syncing" :disabled="!selectedAccount">
+              同步新消息
+            </el-button>
+            <el-button type="warning" @click="handleSyncHistory" :loading="syncing" :disabled="!selectedAccount">
+              同步历史消息
+            </el-button>
+            <span v-if="!accountList.length" style="color: var(--text-secondary); font-size: 12px;">
+              未配置BUFF数据源，请先到「数据源」添加账号
+            </span>
+          </div>
         </div>
       </div>
     </div>

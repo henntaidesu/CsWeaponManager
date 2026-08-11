@@ -17,3 +17,4 @@ on_sale_blueprint.route('/on_sale/units/accounts/getBuffAccounts', methods=['GET
 # 商品操作路由
 on_sale_blueprint.route('/on_sale/units/items/getOnSaleItems', methods=['POST'])(OnSaleItems.get_on_sale_items)
 on_sale_blueprint.route('/on_sale/units/items/removeFromSale', methods=['POST'])(OnSaleItems.remove_from_sale)
+on_sale_blueprint.route('/on_sale/units/items/updateSalePrice', methods=['POST'])(OnSaleItems.update_sale_price)

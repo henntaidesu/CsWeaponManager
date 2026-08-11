@@ -992,15 +992,39 @@
               <div class="item-right">
                 <el-form :model="itemForms[index]" :rules="itemFormRules" :ref="el => itemFormRefs[index] = el" class="inline-form">
                   <div>
-                    <el-form-item prop="price">
-                      <el-input 
-                        v-model="itemForms[index].price" 
+                    <el-form-item prop="price" v-if="sellRentDialogType !== 'rent'">
+                      <el-input
+                        v-model="itemForms[index].price"
                         placeholder="价格"
                         @input="validateItemPrice(index)"
                         size="small"
                         :disabled="itemForms[index].uploadStatus === 'uploading' || itemForms[index].uploadStatus === 'success'"
                       />
                     </el-form-item>
+                    <!-- BUFF 出租：日租金 / 押金 / 最长租期 -->
+                    <template v-if="sellRentDialogType === 'rent'">
+                      <el-input
+                        v-model="itemForms[index].rentUnitPrice"
+                        placeholder="日租金"
+                        size="small"
+                        style="width: 90px; margin-right: 6px;"
+                        :disabled="itemForms[index].uploadStatus === 'uploading' || itemForms[index].uploadStatus === 'success'"
+                      />
+                      <el-input
+                        v-model="itemForms[index].securityPrice"
+                        placeholder="押金"
+                        size="small"
+                        style="width: 90px; margin-right: 6px;"
+                        :disabled="itemForms[index].uploadStatus === 'uploading' || itemForms[index].uploadStatus === 'success'"
+                      />
+                      <el-input
+                        v-model="itemForms[index].rentOutDay"
+                        placeholder="最长租期(天)"
+                        size="small"
+                        style="width: 110px; margin-right: 6px;"
+                        :disabled="itemForms[index].uploadStatus === 'uploading' || itemForms[index].uploadStatus === 'success'"
+                      />
+                    </template>
                     <el-button 
                       size="small" 
                       @click="openRemarkDialog(index)"

@@ -9,6 +9,7 @@ from flask import Blueprint
 from .buy.API import buy_spider_blueprint
 from .sell.API import sell_spider_blueprint
 from .rental.API import rental_spider_blueprint
+from .lent.API import lent_spider_blueprint
 from .message.API import message_spider_blueprint
 from .select_weapon.API import select_weapon_spider_blueprint
 
@@ -16,5 +17,6 @@ buff_spider_blueprint = Blueprint('buff_spider', __name__)
 buff_spider_blueprint.register_blueprint(buy_spider_blueprint)
 buff_spider_blueprint.register_blueprint(sell_spider_blueprint)
 buff_spider_blueprint.register_blueprint(rental_spider_blueprint)
+buff_spider_blueprint.register_blueprint(lent_spider_blueprint)
 buff_spider_blueprint.register_blueprint(message_spider_blueprint)
 buff_spider_blueprint.register_blueprint(select_weapon_spider_blueprint)

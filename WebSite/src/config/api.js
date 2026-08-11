@@ -299,6 +299,19 @@ export const API_CONFIG = {
     // BUFF商品搜索（V2 API）
     BUFF_GET_COMMODITIES: '/spiderApiV2/src/web_site/buff/units/item_search/on_sale/getCommoditiesByGoodsId',  // 获取BUFF商品在售列表
 
+    // BUFF上架（V2 API）出售与出租共用同一接口，靠 listingType 区分
+    BUFF_CREATE_LISTING: '/spiderApiV2/src/web_site/buff/units/on_sale/sell/createListing',  // 上架出售/出租
+    BUFF_PREVIEW_LISTING: '/spiderApiV2/src/web_site/buff/units/on_sale/sell/previewListing',  // 上架预览（需 goods_id）
+
+    // BUFF购买（V2 API）购买前必须先预览，服务端会核对价格
+    BUFF_PREVIEW_BUY: '/spiderApiV2/src/web_site/buff/units/item_search/on_sale/previewBuy',  // 购买预览
+    BUFF_BUY_COMMODITY: '/spiderApiV2/src/web_site/buff/units/item_search/on_sale/buyCommodity',  // 购买
+
+    // BUFF求购与余额（V2 API）BUFF 是统一余额，无「转入求购账户」这一步
+    BUFF_GET_BALANCE: '/spiderApiV2/src/web_site/buff/units/purchase/getBalance',  // 账户余额
+    BUFF_PREVIEW_BUY_ORDER: '/spiderApiV2/src/web_site/buff/units/purchase/previewBuyOrder',  // 求购预览
+    BUFF_CREATE_BUY_ORDER: '/spiderApiV2/src/web_site/buff/units/purchase/createBuyOrder',  // 创建求购
+
     // CSFloat 数据同步（V2 API）
     CSFLOAT_SYNC_NEW_DATA: '/spiderApiV2/src/web_site/csfloat/units/settings/data_source/syncNewData',  // CSFloat增量采集
     CSFLOAT_SYNC_HISTORY_DATA: '/spiderApiV2/src/web_site/csfloat/units/settings/data_source/syncHistoryData',  // CSFloat全量采集
@@ -561,6 +574,7 @@ export const API_CONFIG = {
     ON_SALE_ITEMS: '/backENDV2/src/use_webside/on_sale/units/items/getOnSaleItems',  // 获取在售商品列表
 
     ON_SALE_REMOVE: '/backENDV2/src/use_webside/on_sale/units/items/removeFromSale',  // 下架商品
+    ON_SALE_UPDATE_PRICE: '/backENDV2/src/use_webside/on_sale/units/items/updateSalePrice',  // 在售改价（按 platform 分流）
 
 
 
@@ -1081,6 +1095,13 @@ export const apiUrls = {
 
   buffSyncTemplates: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_SYNC_TEMPLATES),
   buffGetCommodities: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_GET_COMMODITIES),
+  buffCreateListing: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_CREATE_LISTING),
+  buffPreviewListing: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_PREVIEW_LISTING),
+  buffPreviewBuy: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_PREVIEW_BUY),
+  buffBuyCommodity: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_BUY_COMMODITY),
+  buffGetBalance: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_GET_BALANCE),
+  buffPreviewBuyOrder: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_PREVIEW_BUY_ORDER),
+  buffCreateBuyOrder: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.BUFF_CREATE_BUY_ORDER),
 
   steamSyncNewData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_SYNC_NEW_DATA),
   steamSyncHistoryData: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_SYNC_HISTORY_DATA),
@@ -1366,6 +1387,7 @@ export const apiUrls = {
   getOnSaleItems: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_ITEMS),
 
   removeFromSale: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_REMOVE),
+  updateSalePrice: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_UPDATE_PRICE),
 
 
 

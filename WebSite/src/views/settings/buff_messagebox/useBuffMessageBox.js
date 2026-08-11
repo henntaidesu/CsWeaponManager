@@ -14,6 +14,10 @@ export function useBuffMessageBox() {
   const totalItems = ref(0)
   const messageData = ref([])
   const messageTypes = ref([])
+  // 同步相关
+  const accountList = ref([])
+  const selectedAccount = ref('')
+  const syncing = ref(false)
 
   const fetchMessageTypes = async () => {
     try {
@@ -53,6 +57,52 @@ export function useBuffMessageBox() {
       loading.value = false
     }
   }
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await axios.get(apiUrls.getBuffAccounts())
+      if (response.data.success) {
+        accountList.value = response.data.data || []
+        if (accountList.value.length && !selectedAccount.value) {
+          selectedAccount.value = accountList.value[0].steam_id
+        }
+      }
+    } catch (error) {
+      console.error('获取BUFF账号列表失败:', error)
+      accountList.value = []
+    }
+  }
+
+  // 同步消息：mode='new' 增量，mode='history' 全量
+  const syncMessages = async (mode) => {
+    if (!selectedAccount.value) {
+      ElMessage.warning('请先选择BUFF账号')
+      return
+    }
+    syncing.value = true
+    try {
+      const url = mode === 'history'
+        ? apiUrls.buffSyncHistoryMessages()
+        : apiUrls.buffSyncNewMessages()
+      const response = await axios.post(url, { steamID: selectedAccount.value })
+      if (response.data.success) {
+        ElMessage.success(response.data.message || '同步完成')
+        currentPage.value = 1
+        await fetchMessages()
+        await fetchMessageTypes()
+      } else {
+        ElMessage.error(response.data.message || '同步失败')
+      }
+    } catch (error) {
+      console.error('同步BUFF消息失败:', error)
+      ElMessage.error(error.response?.data?.message || '同步失败，请检查Spider服务是否运行')
+    } finally {
+      syncing.value = false
+    }
+  }
+
+  const handleSyncNew = () => syncMessages('new')
+  const handleSyncHistory = () => syncMessages('history')
 
   const handleSearch = async () => {
     // 仅做前端过滤显示（后端未提供搜索接口）
@@ -126,10 +176,16 @@ export function useBuffMessageBox() {
   onMounted(() => {
     fetchMessages()
     fetchMessageTypes()
+    fetchAccounts()
   })
 
   return {
     loading,
+    accountList,
+    selectedAccount,
+    syncing,
+    handleSyncNew,
+    handleSyncHistory,
     searchText,
     messageTypeFilter,
     dateRange,
