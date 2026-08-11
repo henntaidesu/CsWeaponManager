@@ -3,6 +3,7 @@ import axios from 'axios'
 import { API_CONFIG, apiUrls } from '@/config/api.js'
 import * as echarts from 'echarts'
 import { getDeviceType, applyDeviceClass, watchDeviceType } from '@/utils/deviceDetect.js'
+import { buffNetPrice } from '@/utils/platformFee.js'
 
 
 export function useHome() {
@@ -228,7 +229,7 @@ export function useHome() {
             const price = parseFloat(item.buff_price)
             if (!isNaN(price)) {
               buff_total += price
-              buff_total_after_fee += price * 0.975
+              buff_total_after_fee += buffNetPrice(price)
             }
           }
           if (item.steam_price) {
@@ -361,7 +362,7 @@ export function useHome() {
           if (item.buff_price) {
             const price = parseFloat(item.buff_price)
             if (!isNaN(price)) {
-              buff_total += price * 0.975 // BUFF 手续费
+              buff_total += buffNetPrice(price) // 扣 BUFF 手续费后的实收
             }
           }
           if (item.steam_price) {

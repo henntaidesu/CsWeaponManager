@@ -6,6 +6,7 @@ import { API_CONFIG, apiUrls } from '@/config/api.js'
 import PlatformSelectDialog from '../PlatformSelectDialog/index.vue'
 import RentFormYYYP from '../RentFormYYYP/index.vue'
 import { applyDeviceClass, watchDeviceType } from '@/utils/deviceDetect.js'
+import { buffNetPrice } from '@/utils/platformFee.js'
 
 export function useInventory() {
   const loading = ref(false)
@@ -2507,7 +2508,7 @@ export function useInventory() {
     const ps = statsData.value.price_stats || {}
     const priced_count = buff.priced_count || 0
     const buff_total = typeof buff.total_price === 'number' ? buff.total_price : Number(buff.total_price || 0)
-    const buff_total_after_fee = buff_total * 0.975
+    const buff_total_after_fee = buffNetPrice(buff_total)
     const buy_total = typeof ps.total_price === 'number' ? ps.total_price : Number(ps.total_price || 0)
     const diff = (buff_total_after_fee - buy_total).toFixed(2)
 
