@@ -633,6 +633,10 @@ export const API_CONFIG = {
     // 悠悠有品预售相关（新API V2）
     YYYP_GET_PRESALE_LIST: '/spiderApiV2/src/web_site/youping/units/on_sale/presale/getPresaleList',  // 获取预售列表
     YYYP_GET_TRANSFER_LIST: '/spiderApiV2/src/web_site/youping/units/on_sale/transfer/getTransferList',  // 获取过户（租赁过户）列表
+    YYYP_CANCEL_TRANSFER: '/spiderApiV2/src/web_site/youping/units/on_sale/transfer/cancelTransfer',  // 取消过户（过户商品的下架动作）
+    YYYP_PRESALE_OFF_SHELF_INIT: '/spiderApiV2/src/web_site/youping/units/on_sale/presale/offShelfInit',  // 预售下架预检查（返回定金提示）
+    YYYP_PRESALE_OFF_SHELF: '/spiderApiV2/src/web_site/youping/units/on_sale/presale/offShelf',  // 预售下架
+    YYYP_PRESALE_CHANGE_PRICE_PRE_CHECK: '/spiderApiV2/src/web_site/youping/units/on_sale/presale/changePricePreCheck',  // 预售改价预检查
     YYYP_GET_PRESALE_DETAIL: '/spiderApiV2/src/web_site/youping/units/item_search/presale/getPresaleDetail',  // 获取预售详情
     YYYP_BUY_PRESALE_COMMODITY: '/spiderApiV2/src/web_site/youping/units/item_search/presale/buyPresaleCommodity',  // 购买预售商品
 
@@ -1375,6 +1379,10 @@ export const apiUrls = {
   yyypGetSubleaseList: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_GET_SUBLEASE_LIST),
   yyypGetPresaleList: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_GET_PRESALE_LIST),
   yyypGetTransferList: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_GET_TRANSFER_LIST),
+  yyypCancelTransfer: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_CANCEL_TRANSFER),
+  yyypPresaleOffShelfInit: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_PRESALE_OFF_SHELF_INIT),
+  yyypPresaleOffShelf: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_PRESALE_OFF_SHELF),
+  yyypPresaleChangePricePreCheck: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_PRESALE_CHANGE_PRICE_PRE_CHECK),
   yyypGetSellList: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_GET_SELL_LIST),
   getRentedOutList: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_GET_RENTED_OUT_LIST),
   yyypGetMySellOrders: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.YYYP_GET_MY_SELL_ORDERS),  // 获取我的出售订单

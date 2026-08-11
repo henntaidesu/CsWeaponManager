@@ -975,6 +975,18 @@ export default {
 
       updating.value = true
       try {
+        // 预售商品改价前，悠悠要求先过一道预检查
+        if (selectedItem.value.trade_type === 'presale') {
+          const preCheck = await axios.post(apiUrls.yyypPresaleChangePricePreCheck(), {
+            steamId: steamId.value,
+            commodityIdList: [selectedItem.value.id]
+          })
+          if (!preCheck.data?.success) {
+            ElMessage.error(preCheck.data?.message || '预售改价预检查未通过')
+            return
+          }
+        }
+
         // 使用批量改价API（传递单个商品）
         const response = await axios.post(apiUrls.yyypBatchChangePrice(), {
           steamId: steamId.value,
@@ -1330,16 +1342,35 @@ export default {
 
     // 下架商品
     const handleRemoveFromSale = async (item) => {
-      const actionText = item.trade_type === 'sublease' ? '取消转租' : '下架'
+      const actionText = item.trade_type === 'sublease'
+        ? '取消转租'
+        : item.trade_type === 'transfer' ? '取消过户' : '下架'
+      const steamId = accountList.value.find(acc => acc.id === selectedAccount.value)?.steam_id || ''
 
       try {
+        // 预售下架会扣定金，先取悠悠的定金提示让用户确认（与 APP 一致）
+        let confirmMessage = `确定要${actionText} "${getCardTitle(item)}" 吗？`
+        if (item.trade_type === 'presale') {
+          const initRes = await axios.post(apiUrls.yyypPresaleOffShelfInit(), {
+            steamId,
+            commodityIds: [item.id]
+          })
+          if (!initRes.data?.success) {
+            ElMessage.error(initRes.data?.message || '预售下架预检查失败')
+            return
+          }
+          const tip = initRes.data.data?.tipContent || initRes.data.data?.earnestMoneyTip
+          if (tip) confirmMessage = `${confirmMessage}\n\n${tip}`
+        }
+
         await ElMessageBox.confirm(
-          `确定要${actionText} "${getCardTitle(item)}" 吗？`,
+          confirmMessage,
           `确认${actionText}`,
           {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            type: 'warning'
+            type: 'warning',
+            customStyle: { whiteSpace: 'pre-line' }
           }
         )
 
@@ -1349,14 +1380,24 @@ export default {
         let response
         if (item.trade_type === 'sublease') {
           // 转租类型：调用取消转租API
-          const steamId = accountList.value.find(acc => acc.id === selectedAccount.value)?.steam_id || ''
           response = await axios.post(apiUrls.yyypCancelSublease(), {
             steamId: steamId,
             orderNoList: [item.order_no || item.id]  // 传递订单号数组
           })
-        } else if (item.trade_type === 'lease' || item.trade_type === 'sale' || item.trade_type === 'transfer' || item.trade_type === 'presale') {
-          // 租赁/出售/过户/预售类型：直接调用 Spider 下架API
-          const steamId = accountList.value.find(acc => acc.id === selectedAccount.value)?.steam_id || ''
+        } else if (item.trade_type === 'transfer') {
+          // 过户类型：卖家侧动作是"业主取消过户"，不是通用下架
+          response = await axios.post(apiUrls.yyypCancelTransfer(), {
+            steamId: steamId,
+            items: [{ commodityId: item.id, orderId: item.order_id || item.order_no }]
+          })
+        } else if (item.trade_type === 'presale') {
+          // 预售类型：走 commodity-agg 下的预售专用下架接口
+          response = await axios.post(apiUrls.yyypPresaleOffShelf(), {
+            steamId: steamId,
+            commodityIds: [item.id]
+          })
+        } else if (item.trade_type === 'lease' || item.trade_type === 'sale') {
+          // 租赁/出售类型：直接调用 Spider 下架API
           response = await axios.post(apiUrls.yyypOffShelf(), {
             steamId: steamId,
             ids: [item.id]
@@ -1569,6 +1610,18 @@ export default {
           }
         })
 
+        // 预售商品改价前，悠悠要求先过一道预检查
+        if (selectedItems.value[0]?.trade_type === 'presale') {
+          const preCheck = await axios.post(apiUrls.yyypPresaleChangePricePreCheck(), {
+            steamId: steamId.value,
+            commodityIdList: priceUpdates.map(p => p.id)
+          })
+          if (!preCheck.data?.success) {
+            ElMessage.error(preCheck.data?.message || '预售改价预检查未通过')
+            return
+          }
+        }
+
         // 调用批量改价API
         const response = await axios.post(
           apiUrls.yyypBatchChangePrice(),
@@ -1680,16 +1733,35 @@ export default {
 
       // 判断选中物品的交易类型
       const firstItem = selectedItems.value[0]
-      const actionText = firstItem.trade_type === 'sublease' ? '取消转租' : '下架'
+      const actionText = firstItem.trade_type === 'sublease'
+        ? '取消转租'
+        : firstItem.trade_type === 'transfer' ? '取消过户' : '下架'
+      const steamId = accountList.value.find(acc => acc.id === selectedAccount.value)?.steam_id || ''
 
       try {
+        // 预售下架会扣定金，先取悠悠的定金提示让用户确认（与 APP 一致）
+        let confirmMessage = `确定要批量${actionText} ${selectedItems.value.length} 件物品吗？`
+        if (firstItem.trade_type === 'presale') {
+          const initRes = await axios.post(apiUrls.yyypPresaleOffShelfInit(), {
+            steamId,
+            commodityIds: selectedItems.value.map(item => item.id)
+          })
+          if (!initRes.data?.success) {
+            ElMessage.error(initRes.data?.message || '预售下架预检查失败')
+            return
+          }
+          const tip = initRes.data.data?.tipContent || initRes.data.data?.earnestMoneyTip
+          if (tip) confirmMessage = `${confirmMessage}\n\n${tip}`
+        }
+
         await ElMessageBox.confirm(
-          `确定要批量${actionText} ${selectedItems.value.length} 件物品吗？`,
+          confirmMessage,
           `批量${actionText}确认`,
           {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            type: 'warning'
+            type: 'warning',
+            customStyle: { whiteSpace: 'pre-line' }
           }
         )
 
@@ -1697,7 +1769,6 @@ export default {
 
         // 根据交易类型选择不同的API
         let response
-        const steamId = accountList.value.find(acc => acc.id === selectedAccount.value)?.steam_id || ''
 
         if (firstItem.trade_type === 'sublease') {
           // 批量取消转租
@@ -1706,8 +1777,23 @@ export default {
             steamId: steamId,
             orderNoList: orderNoList
           })
-        } else if (firstItem.trade_type === 'lease' || firstItem.trade_type === 'sale' || firstItem.trade_type === 'transfer' || firstItem.trade_type === 'presale') {
-          // 批量下架租赁/出售/过户/预售物品
+        } else if (firstItem.trade_type === 'transfer') {
+          // 批量取消过户：卖家侧动作是"业主取消过户"，不是通用下架
+          response = await axios.post(apiUrls.yyypCancelTransfer(), {
+            steamId: steamId,
+            items: selectedItems.value.map(item => ({
+              commodityId: item.id,
+              orderId: item.order_id || item.order_no
+            }))
+          })
+        } else if (firstItem.trade_type === 'presale') {
+          // 批量预售下架：走 commodity-agg 下的预售专用接口
+          response = await axios.post(apiUrls.yyypPresaleOffShelf(), {
+            steamId: steamId,
+            commodityIds: selectedItems.value.map(item => item.id)
+          })
+        } else if (firstItem.trade_type === 'lease' || firstItem.trade_type === 'sale') {
+          // 批量下架租赁/出售物品
           const ids = selectedItems.value.map(item => item.id)
           response = await axios.post(apiUrls.yyypOffShelf(), {
             steamId: steamId,
