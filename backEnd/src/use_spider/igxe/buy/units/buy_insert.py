@@ -49,6 +49,9 @@ class BuyInsert:
             buy_record.rename = data.get("rename")
             buy_record.steam_hash_name = data.get("market_hash_name") or data.get("img_url")
             buy_record.steam_id = data.get("seller_id")
+            # 以下来自订单详情 user/order/info
+            buy_record.buy_number = data.get("buy_number")
+            buy_record.trade_type = data.get("trade_type")
             setattr(buy_record, "from", "igxe")
 
             saved = buy_record.save()

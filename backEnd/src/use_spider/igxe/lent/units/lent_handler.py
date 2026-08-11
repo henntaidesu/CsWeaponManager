@@ -143,10 +143,14 @@ class LentHandler:
             if not records:
                 return jsonify({"success": False, "error": "未找到对应的IGXE租出订单"}), 404
 
+            # 详情可能带回归还时间，有值才覆盖，避免把已有值清空
+            rent_end_time = data.get('rent_end_time')
             for record in records:
                 record.status = data.get('state')
                 record.status_sub = data.get('state_sub')
                 record.last_status = data.get('state_sub')
+                if rent_end_time:
+                    record.lean_end_time = rent_end_time
                 record.save()
 
             return jsonify({"success": True, "message": "更新成功"}), 200
