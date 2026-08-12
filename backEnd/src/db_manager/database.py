@@ -140,6 +140,16 @@ _GROUP_CONCAT_RE = re.compile(
     r"GROUP_CONCAT\s*\(\s*([^,()]+?)\s*,\s*('(?:[^']|'')*')\s*\)",
     re.IGNORECASE)
 
+# CAST(expr AS REAL) -> (expr + 0.0)
+# REAL 不是 MySQL 8.0.17 之前的合法 CAST 目标类型，会直接报 1064。
+# 改写成 +0.0 的算术转换：各版本都合法，结果是 DOUBLE，
+# 与 SQLite 返回 float 的行为一致（NULL 仍为 NULL，非数字文本按 0 处理）。
+# 只匹配括号内无嵌套括号的简单表达式（全仓 57 处都是列引用），
+# 万一将来出现嵌套写法，这里不匹配即可，不会改坏语句。
+_CAST_REAL_RE = re.compile(
+    r"CAST\s*\(\s*([^()]+?)\s+AS\s+REAL\s*\)",
+    re.IGNORECASE)
+
 
 def _translate_sql(sql: str, has_params: bool) -> str:
     """
@@ -156,6 +166,7 @@ def _translate_sql(sql: str, has_params: bool) -> str:
     """
     # MySQL 方言函数改写（在字符级扫描前，按整体正则替换）
     sql = _GROUP_CONCAT_RE.sub(r"GROUP_CONCAT(\1 SEPARATOR \2)", sql)
+    sql = _CAST_REAL_RE.sub(r"(\1 + 0.0)", sql)
     sql = re.sub(r"datetime\(\s*'now'\s*\)", "NOW()", sql, flags=re.IGNORECASE)
     sql = re.sub(r"\blast_insert_rowid\s*\(\s*\)", "LAST_INSERT_ID()", sql, flags=re.IGNORECASE)
 
