@@ -26,7 +26,7 @@ class LentStats:
                 COUNT(CASE WHEN status = '租赁中' THEN 1 END) as renting_count,
                 COUNT(CASE WHEN status = '已完成' THEN 1 END) as completed_count,
                 COUNT(CASE WHEN status = '已取消' THEN 1 END) as cancelled_count
-            FROM yyyp_lent
+            FROM lent
             {where_clause}
             """
 
@@ -152,7 +152,7 @@ class LentStats:
                 COUNT(CASE WHEN status = '租赁中' THEN 1 END) as renting_count,
                 COUNT(CASE WHEN status = '已完成' THEN 1 END) as completed_count,
                 COUNT(CASE WHEN status = '已取消' THEN 1 END) as cancelled_count
-            FROM yyyp_lent
+            FROM lent
             {where_clause}
             """
 

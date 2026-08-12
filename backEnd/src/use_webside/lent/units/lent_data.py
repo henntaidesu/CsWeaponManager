@@ -163,7 +163,7 @@ class LentData:
 
     @staticmethod
     def get_lent_data_filtered():
-        """组合查询接口：支持所有过滤条件的分页数据获取（查询 yyyp_lent 表）"""
+        """组合查询接口：支持所有过滤条件的分页数据获取（查询统一 lent 表）"""
         try:
             data = request.get_json() or {}
             filters = data.get('filters', {})
@@ -172,12 +172,13 @@ class LentData:
 
             where_clause, params = LentData._build_filter_clauses(filters)
 
-            # 统一 20 列格式，yyyp_lent 无 steam_hash_name/sticker/pendant/rename 用 NULL 占位
+            # 统一 20 列格式。此前误查 yyyp_lent（悠悠专用表），导致其它平台
+            # （如 IGXE）的记录永远筛不出来；lent 是含全部平台的统一表。
             sql = f"""
             SELECT ID, weapon_name, weapon_type, item_name, weapon_float, float_range,
                    price, lenter_name, status, last_status, "from", lean_start_time, lean_end_time,
-                   total_Lease_Days, max_Lease_Days, NULL, NULL, NULL, NULL, data_user
-            FROM yyyp_lent
+                   total_Lease_Days, max_Lease_Days, steam_hash_name, sticker, pendant, rename, data_user
+            FROM lent
             {where_clause}
             ORDER BY lean_start_time DESC
             LIMIT {max_limit} OFFSET {min_offset}
