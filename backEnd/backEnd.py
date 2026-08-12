@@ -11,7 +11,7 @@ from src.API import backendV2_blueprint
 from src.web_server import run_web_server
 
 # 当前版本号
-CURRENT_VERSION = '2.7.1'
+CURRENT_VERSION = '2.8.0'
 
 # 后端 API 应用 (端口 9001)
 app = Flask(__name__)
