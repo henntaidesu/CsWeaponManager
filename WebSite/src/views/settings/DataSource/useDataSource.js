@@ -1149,7 +1149,6 @@ export function useDataSource() {
           }, 1000)
         } else if (response.data.code === 202) {
           // 数据正在收集中
-          console.log('悠悠有品 Token 收集中...')
         }
       } catch (error) {
         console.error('获取悠悠有品数据失败:', error)
@@ -1246,7 +1245,6 @@ export function useDataSource() {
           }, 1000)
         } else if (response.data.code === 202) {
           // 数据正在收集中
-          console.log('完美世界APP Token 收集中...')
         }
       } catch (error) {
         console.error('获取完美世界APP数据失败:', error)
@@ -1312,9 +1310,6 @@ export function useDataSource() {
         const url = apiUrls.getAppTokenGetCsfloatData()
         const response = await axios.get(url)
         
-        console.log('[CsFloat轮询] API响应:', response.data)
-        console.log('[CsFloat轮询] code:', response.data.code)
-        console.log('[CsFloat轮询] data:', response.data.data)
         
         if (response.data.code === 200) {
           // 数据收集完成
@@ -1365,7 +1360,6 @@ export function useDataSource() {
           }, 1000)
         } else if (response.data.code === 202) {
           // 数据正在收集中
-          console.log('CsFloat Token 收集中...')
         }
       } catch (error) {
         console.error('获取CsFloat数据失败:', error)
@@ -1567,7 +1561,6 @@ export function useDataSource() {
         steamId: source.config?.yyyp_steamId || source.steamID || ''
       }
       
-      console.log('发送给悠悠有品爬虫的数据:', spiderData)
 
       // 调用爬虫API
       const response = await axios.post(apiUrls.youpinSyncNewData(), spiderData)
@@ -1575,7 +1568,6 @@ export function useDataSource() {
       // 后端成功返回 200 状态码和 "获取完成" 消息
       if (response.status === 200) {
         ElMessage.success(`${source.dataName} 悠悠有品爬虫采集完成！`)
-        console.log('悠悠有品爬虫采集响应:', response.data)
         
         // 更新数据源的最后更新时间
         const now = new Date()
@@ -1629,7 +1621,6 @@ export function useDataSource() {
         steamID: source.steamID || ''
       }
       
-      console.log('发送给BUFF爬虫的数据:', spiderData)
       
       // 调用爬虫API
       const response = await axios.post(apiUrls.buffSyncNewData(), spiderData)
@@ -1637,7 +1628,6 @@ export function useDataSource() {
       // 后端成功返回 200 状态码和 "获取完成" 消息
       if (response.status === 200) {
         ElMessage.success(`${source.dataName} BUFF爬虫采集完成！`)
-        console.log('BUFF爬虫采集响应:', response.data)
         
         // 更新数据源的最后更新时间
         const now = new Date()
@@ -1697,7 +1687,6 @@ export function useDataSource() {
       ElMessage.info(`开始采集CsFloat数据: ${source.dataName}`)
 
       const spiderData = { steamId }
-      console.log('发送给CsFloat爬虫的数据:', spiderData)
 
       const response = await axios.post(apiUrls.csfloatSyncNewData(), spiderData)
 
@@ -1895,9 +1884,6 @@ export function useDataSource() {
         steamId: source.config?.steamID || '',
       }
       
-      console.log('Steam数据源完整信息:', source)
-      console.log('Steam配置对象:', source.config)
-      console.log('发送给Steam爬虫的数据:', spiderData)
       
       // 验证必要参数
       if (!spiderData.steamId) {
@@ -1913,7 +1899,6 @@ export function useDataSource() {
       if (response.status === 200) {
         const message = response.data?.message || 'Steam增量采集完成'
         ElMessage.success(`${source.dataName} - ${message}`)
-        console.log('Steam增量采集响应:', response.data)
         
         // 更新数据源的最后更新时间
         const now = new Date()
@@ -2101,12 +2086,6 @@ export function useDataSource() {
     // 填充编辑表单，显示所有现有配置
     const config = source.config || {}
     
-    console.log('开始编辑数据源:', {
-      source: source,
-      config: config,
-      type: source.type,
-      configKeys: Object.keys(config)
-    })
 
     // 基础信息
     editForm.value.name = source.dataName
@@ -2140,22 +2119,8 @@ export function useDataSource() {
       editForm.value.yyypPhone = config.yyyp_phone || ''
       editForm.value.yyypSmsCode = ''  // 验证码不保存，每次都需要重新获取
       
-      console.log('悠悠有品配置解析结果:', {
-        phone: editForm.value.phone,
-        sessionid: editForm.value.sessionid,
-        yyypSessionId: editForm.value.yyypSessionId,
-        yyypDeviceId: editForm.value.yyypDeviceId,
-        token: editForm.value.token,
-        deviceName: editForm.value.deviceName,
-        appVersion: editForm.value.appVersion,
-        sleepTime: editForm.value.sleepTime,
-        appType: editForm.value.appType,
-        userId: editForm.value.userId,
-        yyypLoginMethod: editForm.value.yyypLoginMethod
-      })
     } else if (source.type === 'buff') {
       // BUFF配置
-      console.log('BUFF配置解析:', config)
       editForm.value.buffAppVersion = config.app_version || ''
       editForm.value.buffAppVersionCode = config.app_version_code || ''
       editForm.value.buffBrand = config.brand || ''
@@ -2188,11 +2153,6 @@ export function useDataSource() {
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'steam') {
       // Steam配置
-      console.log('Steam配置解析:', {
-        cookies: config.cookies,
-        steamID: config.steamID,
-        steamCookieMethod: config.steamCookieMethod
-      })
       const baseCookies = config.baseCookies || config.baseCookie || config.cookie || ''
       const inventoryCookies = config.inventoryCookies || config.cookies || config.cookie || ''
       editForm.value.steamBaseCookies = baseCookies
@@ -2207,13 +2167,6 @@ export function useDataSource() {
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'steam_login') {
       // Steam登录配置（兼容旧数据，使用与steam相同的逻辑）
-      console.log('Steam登录配置解析:', {
-        cookies: config.cookies,
-        steamID: config.steamID,
-        steamCookieMethod: config.steamCookieMethod,
-        steamUsername: config.steamUsername,
-        updateFreq: config.updateFreq
-      })
       const baseCookies = config.baseCookies || config.baseCookie || config.cookie || ''
       const inventoryCookies = config.inventoryCookies || config.cookies || config.cookie || ''
       editForm.value.steamBaseCookies = baseCookies
@@ -2236,16 +2189,6 @@ export function useDataSource() {
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'perfectworld') {
       // 完美世界APP配置
-      console.log('完美世界APP配置解析:', {
-        appversion: config.appversion,
-        device: config.device,
-        gameType: config.gameType,
-        platform: config.platform,
-        token: config.token,
-        tdSign: config.tdSign,
-        steamID: config.steamID,
-        updateFreq: config.updateFreq
-      })
       editForm.value.appversion = config.appversion || ''
       editForm.value.device = config.device || ''
       editForm.value.gameType = config.gameType || ''
@@ -2256,7 +2199,6 @@ export function useDataSource() {
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'csfloat') {
       // CsFloat配置
-      console.log('CsFloat配置解析:', config)
       editForm.value.csfloatUserAgent = config['User-Agent'] || config.userAgent || ''
       editForm.value.csfloatReferer = config.Referer || config.referer || ''
       editForm.value.csfloatAccept = config.Accept || config.accept || ''
@@ -2268,7 +2210,6 @@ export function useDataSource() {
       editForm.value.csfloatSteamID = config.steamID || ''
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'c5game') {
-      console.log('C5 GAME配置解析:', config)
       editForm.value.steamID = config.steamID || source.steamID || ''
       editForm.value.c5gameAccessToken = config.x_access_token || ''
       editForm.value.c5gameDeviceId = config.x_device_id || ''
@@ -2294,7 +2235,6 @@ export function useDataSource() {
       editForm.value.c5gameAutoLoginPassword = config.auto_login_password || ''
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'igxe') {
-      console.log('IGXE配置解析:', config)
       editForm.value.steamID = config.steamID || source.steamID || ''
       editForm.value.igxeToken = config.token || ''
       editForm.value.igxeVersions = config.versions != null && config.versions !== '' ? String(config.versions) : ''
@@ -2307,11 +2247,9 @@ export function useDataSource() {
       editForm.value.updateFreq = config.updateFreq || source.updateFreq || '15min'
     } else if (source.type === 'csqaq') {
       // CSQAQ配置
-      console.log('CSQAQ配置解析:', config)
       editForm.value.csqaqApiToken = config.ApiToken || ''
     } else if (source.type === 'steamdt') {
       // SteamDT配置
-      console.log('SteamDT配置解析:', config)
       editForm.value.steamdtApiKey = config.API_KEY || ''
       editForm.value.steamdtCallbackDomain = config.CallbackDomain || ''
     } else {
@@ -2321,7 +2259,6 @@ export function useDataSource() {
       editForm.value.sleepTime = parseInt(config.sleep_time || '6000')
     }
     
-    console.log('编辑表单数据:', editForm.value)
     
     // 打开编辑对话框
     editDialogVisible.value = true
@@ -2610,13 +2547,11 @@ export function useDataSource() {
         limit_date: limitDate,
       }
 
-      console.log('发送给悠悠有品数据获取爬虫的数据:', spiderData)
 
       const response = await axios.post(apiUrls.youpinSyncHistoryData(), spiderData)
 
       if (response.status === 200) {
         ElMessage.success(`${editForm.value.name} 悠悠有品数据获取完成！`)
-        console.log('悠悠有品数据获取响应:', response.data)
       } else {
         ElMessage.error(`悠悠有品数据获取失败: ${response.data}`)
       }
@@ -2687,13 +2622,11 @@ export function useDataSource() {
         limit_date: limitDate,
       }
 
-      console.log('发送给BUFF数据获取爬虫的数据:', spiderData)
 
       const response = await axios.post(apiUrls.buffSyncHistoryData(), spiderData)
 
       if (response.status === 200) {
         ElMessage.success(`${editForm.value.name} BUFF数据获取完成！`)
-        console.log('BUFF数据获取响应:', response.data)
       } else {
         ElMessage.error(`BUFF数据获取失败: ${response.data}`)
       }
@@ -3000,13 +2933,11 @@ export function useDataSource() {
         limit_date: limitDate,
       }
 
-      console.log('发送给Steam数据获取爬虫的数据:', spiderData)
 
       const response = await axios.post(apiUrls.steamSyncHistoryData(), spiderData)
 
       if (response.status === 200) {
         ElMessage.success(`${editForm.value.name} Steam数据获取完成！`)
-        console.log('Steam数据获取响应:', response.data)
       } else {
         ElMessage.error(`Steam数据获取失败: ${response.data}`)
       }
@@ -3107,8 +3038,6 @@ export function useDataSource() {
 
     // BUFF类型的字段校验 - 简化验证，只检查必要字段
     if (editForm.value.type === 'buff') {
-      console.log('[BUFF编辑验证] cookie:', editForm.value.cookie)
-      console.log('[BUFF编辑验证] buffAppVersion:', editForm.value.buffAppVersion)
       
       if (!editForm.value.cookie && !editForm.value.buffAppVersion) {
         ElMessage.error('请先获取BUFF令牌或填写必要信息')
@@ -4025,7 +3954,6 @@ export function useDataSource() {
     
     // 每30分钟自动刷新数据源列表
     autoRefreshTimer.value = setInterval(() => {
-      console.log('自动刷新数据源列表（每30分钟）')
       loadDataSources()
     }, 1800000) // 30分钟 = 1800秒 = 1800000毫秒
   }

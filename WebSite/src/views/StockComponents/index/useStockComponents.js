@@ -291,12 +291,10 @@ export function useStockComponents() {
           classid: COMPONENT_CLASSID
         }
       })
-      console.log('完美世界配置列表响应:', response.data)
       if (response.data.success) {
         steamIdList.value = response.data.data
         if (steamIdList.value.length > 0) {
           selectedSteamId.value = steamIdList.value[0].steamID
-          console.log('默认选择Steam ID:', selectedSteamId.value)
         } else {
           ElMessage.warning('没有找到完美世界账号配置')
         }
@@ -308,7 +306,6 @@ export function useStockComponents() {
   }
 
   const handleSteamIdChange = () => {
-    console.log('Steam ID已切换:', selectedSteamId.value)
     selectedComponent.value = ''
     weaponTypeFilter.value = ''
     loadInventoryComponents()
@@ -385,7 +382,6 @@ export function useStockComponents() {
   }
 
   const handleFilterChange = () => {
-    console.log('筛选条件已变更')
     currentPage.value = 1
     currentOffset.value = 0
 
@@ -406,7 +402,6 @@ export function useStockComponents() {
     }
     
     try {
-      console.log('正在加载库存组件列表，Steam ID:', selectedSteamId.value, 'ClassID:', COMPONENT_CLASSID)
       
       // 从 steam_inventory 表获取组件列表用于下拉框
       const response = await axios.get(apiUrls.stockComponentsInventory(selectedSteamId.value), {
@@ -417,11 +412,9 @@ export function useStockComponents() {
         }
       })
       
-      console.log('库存组件列表响应:', response.data)
       
       if (response.data.success) {
         inventoryComponents.value = response.data.data || []
-        console.log(`加载成功，共 ${inventoryComponents.value.length} 个组件`)
       } else {
         console.error('加载库存组件失败:', response.data.error)
         inventoryComponents.value = []
@@ -435,7 +428,6 @@ export function useStockComponents() {
   }
 
   const handleComponentSelect = async () => {
-    console.log('选择的组件 assetid:', selectedComponent.value)
 
     // 切换组件时清空之前的选择
     clearSelection()
@@ -495,7 +487,6 @@ export function useStockComponents() {
         ? currentPage.value
         : Math.floor(currentOffset.value / pageSize.value) + 1
 
-      console.log('正在加载组件数据，Steam ID:', selectedSteamId.value, 'Page:', currentPageNum, 'PageSize:', pageSize.value, 'Mode:', displayMode.value)
 
       const params = {
         search: searchText.value,
@@ -525,7 +516,6 @@ export function useStockComponents() {
         params: params
       })
 
-      console.log('组件数据响应:', response.data)
 
       if (response.data.success) {
         const newData = response.data.data || []
@@ -552,7 +542,6 @@ export function useStockComponents() {
           ElMessage.success(`加载成功，共 ${totalItems.value} 条记录`)
         }
 
-        console.log('数据已加载，当前:', componentData.value.length, '条，总计:', totalItems.value, '模式:', displayMode.value)
 
         // 在卡片模式下，数据加载完成后设置观察器
         if (displayMode.value === 'card') {
@@ -617,13 +606,11 @@ export function useStockComponents() {
         params.float_range = weaponNameFilter.value
       }
 
-      console.log('加载分组数据 - 请求参数:', params)
 
       const response = await axios.get(apiUrls.stockComponentsGrouped(selectedSteamId.value), {
         params: params
       })
 
-      console.log('分组数据响应:', response.data)
 
       if (response.data.success) {
         const newData = (response.data.data || []).map(item => ({
@@ -664,7 +651,6 @@ export function useStockComponents() {
           ElMessage.success(`组合加载成功，共 ${totalItems.value} 条记录`)
         }
 
-        console.log('组合数据已加载，当前:', groupedData.value.length, '条，总计:', totalItems.value, '模式:', displayMode.value)
 
         // 在卡片模式下，数据加载完成后设置观察器
         if (displayMode.value === 'card') {
@@ -718,8 +704,6 @@ export function useStockComponents() {
         axios.get(apiUrls.stockComponentsCount(selectedSteamId.value))
       ])
       
-      console.log('统计数据响应:', statsResponse.data)
-      console.log('组件数量响应:', countResponse.data)
       
       if (statsResponse.data.success) {
         const stats = statsResponse.data.data
@@ -1019,14 +1003,12 @@ export function useStockComponents() {
     
     updateLoading.value = true
     try {
-      console.log('更新组件 - steamId:', selectedSteamId.value, 'assetid:', [selectedComponent.value])
       
       const response = await axios.post(apiUrls.pwGetInventoryComponent(), {
         steamId: selectedSteamId.value,
         assetid: [selectedComponent.value]  // 传递数组
       })
       
-      console.log('更新组件响应:', response.data)
       
       if (response.data.success) {
         const itemCount = response.data.total_items || 0
@@ -1151,7 +1133,6 @@ export function useStockComponents() {
     
     updateAllLoading.value = true
     try {
-      console.log('批量更新组件 - steamId:', selectedSteamId.value, '组件数量:', assetidList.length)
       
       ElMessage.info(`开始更新 ${assetidList.length} 个组件，请稍候...`)
       
@@ -1160,7 +1141,6 @@ export function useStockComponents() {
         assetid: assetidList
       })
       
-      console.log('批量更新组件响应:', response.data)
       
       const successCount = response.data.success_count || 0
       const failedCount = response.data.failed_count || 0
@@ -1218,7 +1198,6 @@ export function useStockComponents() {
     
     updateAbnormalLoading.value = true
     try {
-      console.log('更新异常组件 - steamId:', selectedSteamId.value, '异常组件数量:', assetidList.length)
       
       ElMessage.info(`开始更新 ${assetidList.length} 个异常组件，请稍候...`)
       
@@ -1227,7 +1206,6 @@ export function useStockComponents() {
         assetid: assetidList
       })
       
-      console.log('更新异常组件响应:', response.data)
       
       const successCount = response.data.success_count || 0
       const failedCount = response.data.failed_count || 0
@@ -1259,13 +1237,11 @@ export function useStockComponents() {
     
     autoFillLoading.value = true
     try {
-      console.log('开始自动填充价格 - steamId:', selectedSteamId.value)
       
       ElMessage.info('正在自动获取购入价格，请稍候...')
       
       const response = await axios.post(apiUrls.stockComponentsAutoFillPrices(selectedSteamId.value))
       
-      console.log('自动填充价格响应:', response.data)
       
       if (response.data.success) {
         const data = response.data.data
@@ -1759,8 +1735,6 @@ export function useStockComponents() {
 
     const targetAssetId = popoverItem.value.assetid
 
-    console.log('跳转到组件 - targetAssetId:', targetAssetId)
-    console.log('物品信息:', popoverItem.value)
 
     // 检查 assetid 是否存在
     if (!targetAssetId) {
@@ -1770,11 +1744,9 @@ export function useStockComponents() {
       return
     }
 
-    console.log('当前库存组件列表:', inventoryComponents.value)
 
     // 如果库存组件列表为空，先加载
     if (inventoryComponents.value.length === 0) {
-      console.log('库存组件列表为空，正在加载...')
       await loadInventoryComponents()
     }
 
@@ -1784,11 +1756,9 @@ export function useStockComponents() {
     if (!component) {
       console.warn('组件未找到 - targetAssetId:', targetAssetId)
       console.warn('可用的组件列表:', inventoryComponents.value.map(c => c.assetid))
-      console.log('直接使用物品的assetid进行跳转')
     }
 
     // 直接跳转（无论组件是否在列表中）
-    console.log('跳转到组件:', targetAssetId)
 
     // 清空之前的数据
     componentData.value = []
@@ -1817,10 +1787,8 @@ export function useStockComponents() {
 
   onMounted(async () => {
     const deviceType = applyDeviceClass()
-    console.log('[StockComponents] 当前设备类型:', deviceType)
 
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[StockComponents] 设备类型已变更:', newDeviceType)
     })
 
     await loadSteamIdList()

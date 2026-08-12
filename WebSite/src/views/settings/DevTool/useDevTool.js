@@ -373,7 +373,6 @@ export function useDevTool() {
       const response = await axios.get(apiUrls.devToolsSteamAccounts())
       if (response.data.success && response.data.data.length > 0) {
         steamIdList.value = response.data.data
-        console.log('已加载 Steam ID 列表:', steamIdList.value)
         // 默认选择第一个
         if (steamIdList.value.length > 0) {
           const firstItem = steamIdList.value[0]
@@ -421,7 +420,6 @@ export function useDevTool() {
     ElMessage.info('开始同步饰品映射...')
     
     try {
-      console.log('开始同步悠悠有品饰品映射, Steam ID:', selectedSteamIdYoupin.value)
 
       const response = await axios.post(apiUrls.youpinSyncWeaponTemplates(), {
         steamId: selectedSteamIdYoupin.value,
@@ -430,7 +428,6 @@ export function useDevTool() {
 
       if (response.data.success) {
         ElMessage.success(`同步成功！${response.data.message}`)
-        console.log('同步结果:', response.data)
         lastSyncTime.value = new Date().toLocaleString('zh-CN')
       } else {
         ElMessage.error(`同步失败: ${response.data.message}`)
@@ -482,7 +479,6 @@ export function useDevTool() {
     ElMessage.info('开始同步BUFF饰品映射...')
 
     try {
-      console.log('开始同步BUFF饰品映射, Steam ID:', selectedSteamIdBuff.value)
 
       const response = await axios.post(apiUrls.buffSyncTemplates(), {
         steamId: selectedSteamIdBuff.value
@@ -490,7 +486,6 @@ export function useDevTool() {
 
       if (response.data.success) {
         ElMessage.success(`同步成功！${response.data.message}`)
-        console.log('同步结果:', response.data)
         lastSyncTime.value = new Date().toLocaleString('zh-CN')
       } else {
         ElMessage.error(`同步失败: ${response.data.message}`)
@@ -652,7 +647,6 @@ export function useDevTool() {
         }
         lastCsqaqTime.value = new Date().toLocaleString('zh-CN')
         ElMessage.success(`全量采集成功！${response.data.message}`)
-        console.log('CSQAQ全量采集结果:', response.data)
       } else {
         csqaqStatus.value = {
           status: 'error',

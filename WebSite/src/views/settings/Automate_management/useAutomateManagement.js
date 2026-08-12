@@ -449,31 +449,23 @@ export function useAutomateManagement() {
   
   // 过滤后的数据源 (根据选择的任务类型)
   const filteredDataSources = computed(() => {
-    console.log('过滤数据源 - 选中任务:', automateForm.value.selectedTask)
-    console.log('所有数据源:', dataSources.value)
     
     if (automateForm.value.selectedTask === 'collect_buff') {
       const filtered = dataSources.value.filter(s => s.type === 'buff' && s.enabled)
-      console.log('过滤后的BUFF数据源:', filtered)
       return filtered
     } else if (automateForm.value.selectedTask === 'collect_youpin') {
       const filtered = dataSources.value.filter(s => s.type === 'youpin' && s.enabled)
-      console.log('过滤后的悠悠有品数据源:', filtered)
       return filtered
     } else if (automateForm.value.selectedTask === 'collect_igxe') {
       const filtered = dataSources.value.filter(s => s.type === 'igxe' && s.enabled)
-      console.log('过滤后的IGXE数据源:', filtered)
       return filtered
     } else if (automateForm.value.selectedTask === 'platform_buff_price') {
       const filtered = dataSources.value.filter(s => s.type === 'buff' && s.enabled)
-      console.log('过滤后的BUFF价格数据源:', filtered)
       return filtered
     } else if (automateForm.value.selectedTask === 'platform_youpin_price') {
       const filtered = dataSources.value.filter(s => s.type === 'youpin' && s.enabled)
-      console.log('过滤后的悠悠有品价格数据源:', filtered)
       return filtered
     }
-    console.log('未选择任务,返回空数组')
     return []
   })
   
@@ -481,12 +473,10 @@ export function useAutomateManagement() {
   const loadSteamConfigs = async () => {
     try {
       const response = await axios.get(apiUrls.autoManagerSteamAccounts())
-      console.log('Steam配置API响应:', response.data)
       
       if (response.data && response.data.success && Array.isArray(response.data.data)) {
         // 保存完整的对象数组（包含 dataID, dataName, steamID, item_count）
         steamConfigList.value = response.data.data
-        console.log('已加载Steam配置列表:', steamConfigList.value)
       }
     } catch (error) {
       console.error('加载Steam配置列表失败:', error)
@@ -498,7 +488,6 @@ export function useAutomateManagement() {
   const loadYoupinConfigs = async () => {
     try {
       const response = await axios.get(apiUrls.dataSourceList())
-      console.log('数据源API响应:', response.data)
 
       if (response.data.success && Array.isArray(response.data.data)) {
         // 筛选 key1='youpin' 的配置
@@ -509,7 +498,6 @@ export function useAutomateManagement() {
             dataName: item.dataName,
             steamID: item.steamID
           }))
-        console.log('已加载悠悠有品配置列表:', youpinConfigList.value)
       }
     } catch (error) {
       console.error('加载悠悠有品配置列表失败:', error)
@@ -521,7 +509,6 @@ export function useAutomateManagement() {
   const loadBuffConfigs = async () => {
     try {
       const response = await axios.get(apiUrls.dataSourceList())
-      console.log('数据源API响应:', response.data)
 
       if (response.data.success && Array.isArray(response.data.data)) {
         // 筛选 key1='buff' 的配置
@@ -532,7 +519,6 @@ export function useAutomateManagement() {
             dataName: item.dataName,
             steamID: item.steamID
           }))
-        console.log('已加载BUFF配置列表:', buffConfigList.value)
       }
     } catch (error) {
       console.error('加载BUFF配置列表失败:', error)
@@ -586,12 +572,8 @@ export function useAutomateManagement() {
   const loadDataSources = async () => {
     try {
       const response = await axios.get(apiUrls.dataSourceList())
-      console.log('数据源API响应:', response.data)
       if (response.data.success && Array.isArray(response.data.data)) {
         dataSources.value = response.data.data
-        console.log('已加载数据源:', dataSources.value)
-        console.log('BUFF数据源:', dataSources.value.filter(s => s.type === 'buff'))
-        console.log('悠悠有品数据源:', dataSources.value.filter(s => s.type === 'youpin'))
       }
     } catch (error) {
       console.error('加载数据源列表失败:', error)
@@ -1560,7 +1542,6 @@ export function useAutomateManagement() {
         // 只在首次加载时显示成功消息
         if (runningTasks.value.length > 0 && !isEditing.value) {
           const executingCount = executingTaskIds.size
-          console.log(`已加载 ${runningTasks.value.length} 个任务，其中 ${enabledCount} 个已启用，${executingCount} 个正在执行`)
         }
       }
     } catch (error) {

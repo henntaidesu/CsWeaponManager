@@ -553,7 +553,6 @@ export function useInventoryMining() {
       await axios.post(apiUrls.steamCancelMining(), {
         steamId: currentMiningId.value
       })
-      console.log('[前端] 已发送取消请求到后端')
     } catch (error) {
       console.error('调用后端取消接口失败:', error)
     }

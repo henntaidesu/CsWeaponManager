@@ -225,7 +225,6 @@ export function useRentFormYYYP(props, { emit }) {
 
         // 调试日志
         if (canEnableZeroCD) {
-          console.log(`[0CD] 饰品 ${item.assetid} 支持0CD，默认开启`)
         }
       })
     }
@@ -234,11 +233,6 @@ export function useRentFormYYYP(props, { emit }) {
   watch(
     () => [props.initData, props.items],
     (newVal, oldVal) => {
-      console.log('[DEBUG] Watch triggered')
-      console.log('[DEBUG] New initData:', newVal[0])
-      console.log('[DEBUG] New items:', newVal[1])
-      console.log('[DEBUG] Old initData:', oldVal?.[0])
-      console.log('[DEBUG] Old items:', oldVal?.[1])
 
       initForms()
 
@@ -266,12 +260,6 @@ export function useRentFormYYYP(props, { emit }) {
     }
 
     // 调试：输出当前 itemFormMap 的状态
-    console.log('[DEBUG] handleSubmit - 当前 itemFormMap:', JSON.parse(JSON.stringify(itemFormMap)))
-    console.log('[DEBUG] handleSubmit - props.items:', props.items.map(item => ({
-      assetid: item.assetid,
-      name: item.name,
-      currentShortRentPrice: item.currentShortRentPrice
-    })))
 
     // 准备提交数据（全局配置 + 每个饰品的独立价格）
     const submitData = {
@@ -295,7 +283,6 @@ export function useRentFormYYYP(props, { emit }) {
       })
     }
 
-    console.log('[DEBUG] handleSubmit - 提交数据:', submitData)
     emit('submit', submitData)
   }
 

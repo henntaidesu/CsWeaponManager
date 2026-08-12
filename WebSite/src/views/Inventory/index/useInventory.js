@@ -393,13 +393,11 @@ export function useInventory() {
   const loadSteamIdList = async () => {
     try {
       const response = await axios.get(apiUrls.inventorySteamIds())
-      console.log('Steam ID列表响应:', response.data)
       if (response.data.success) {
         steamIdList.value = response.data.data
         if (steamIdList.value.length > 0) {
           // 默认选择第一个 - 使用新格式 steamID（大写）
           selectedSteamId.value = steamIdList.value[0].steamID
-          console.log('默认选择Steam ID:', selectedSteamId.value)
         } else {
           ElMessage.warning('没有找到库存数据，请先获取Steam库存')
         }
@@ -430,7 +428,6 @@ export function useInventory() {
     
     loading.value = true
     try {
-      console.log('正在加载库存数据，Steam ID:', selectedSteamId.value)
       // 加载卡片数据 - 使用分页
       const params = {
         weapon_type: weaponTypeFilter.value,
@@ -453,9 +450,7 @@ export function useInventory() {
       }
       
       const url = apiUrls.inventoryData(selectedSteamId.value)
-      console.log('请求URL:', url, '参数:', params)
       const response = await axios.get(url, { params })
-      console.log('数据响应:', response.data)
       if (response.data.success) {
         const newData = response.data.data || []
         
@@ -477,7 +472,6 @@ export function useInventory() {
           applySorting()
         }
         
-        console.log('数据已加载，当前:', inventoryData.value.length, '条，还有更多:', hasMore.value, '排序:', sortConfig.value)
       } else {
         ElMessage.error(response.data.error || '加载数据失败')
       }
@@ -510,7 +504,6 @@ export function useInventory() {
 
     loading.value = true
     try {
-      console.log('正在加载组合库存数据，Steam ID:', selectedSteamId.value)
       const params = {
         search: searchText.value,
         weapon_type: weaponTypeFilter.value,
@@ -525,7 +518,6 @@ export function useInventory() {
       }
 
       const response = await axios.get(apiUrls.inventoryGrouped(selectedSteamId.value), { params })
-      console.log('组合数据响应:', response.data)
 
       if (response.data.success) {
         const newData = (response.data.data || []).map(item => ({
@@ -569,7 +561,6 @@ export function useInventory() {
           applySorting()
         }
 
-        console.log('组合数据已加载，当前:', groupedData.value.length, '条，还有更多:', hasMore.value, '排序:', sortConfig.value)
       } else {
         ElMessage.error(response.data.error || '加载组合数据失败')
       }
@@ -701,7 +692,6 @@ export function useInventory() {
       }
 
       const response = await axios.get(apiUrls.inventoryStats(selectedSteamId.value), { params })
-      console.log('统计数据响应:', response.data)
       if (response.data.success) {
         statsData.value = response.data.data
       }
@@ -711,12 +701,10 @@ export function useInventory() {
   }
 
   const handleSteamIdChange = () => {
-    console.log('Steam ID已切换:', selectedSteamId.value)
     loadInventoryData(true) // 重置加载
   }
 
   const handleFilterChange = () => {
-    console.log('筛选条件已变更')
     loadInventoryData(true) // 重置加载数据和统计
   }
 
@@ -817,13 +805,6 @@ export function useInventory() {
     const itemsPerPage = getItemsPerPage()
     const totalPages = Math.ceil(allItems.length / itemsPerPage)
     
-    console.log('获取展开数据:', {
-      assetid: row.assetid,
-      currentPage,
-      itemsPerPage,
-      totalPages,
-      totalItems: allItems.length
-    })
     
     // 如果当前页码超出范围，重置为第1页
     if (currentPage > totalPages && totalPages > 0) {
@@ -839,7 +820,6 @@ export function useInventory() {
     const start = (currentPage - 1) * itemsPerPage
     const end = start + itemsPerPage
 
-    console.log('分页范围:', { start, end, 返回数量: allItems.slice(start, end).length })
     
     return allItems.slice(start, end)
   }
@@ -854,7 +834,6 @@ export function useInventory() {
 
   // 处理展开行的分页变化
   const handleExpandPageChange = (row, page) => {
-    console.log('分页变化:', row.assetid, '页码:', page)
     
     // 先更新页码
     expandedRowPages.value = {
@@ -868,7 +847,6 @@ export function useInventory() {
       const isExpanded = expandedRows.some(r => r.assetid === row.assetid)
       
       if (!isExpanded) {
-        console.log('行未展开，自动展开:', row.assetid)
         tableRef.value.toggleRowExpansion(row, true)
       }
     }
@@ -971,7 +949,6 @@ export function useInventory() {
 
   // Element Plus 表格的排序事件处理
   const handleSortChange = ({ prop, order }) => {
-    console.log('排序改变:', prop, order)
     
     if (!order) {
       // 取消排序
@@ -1344,13 +1321,11 @@ export function useInventory() {
       groupedByHashName.get(hashName).push(item)
     })
     
-    console.log(`[悠悠底价查询] 共 ${selectedItems.value.length} 件物品，去重后需查询 ${groupedByHashName.size} 个饰品`)
     
     // 逐个查询唯一的饰品（避免并发过多）
     let queryCount = 0
     for (const [hashName, items] of groupedByHashName.entries()) {
       queryCount++
-      console.log(`[悠悠底价查询] (${queryCount}/${groupedByHashName.size}) 查询: ${hashName} (${items.length}件)`)
       
       // 查询第一个物品（同一个hash_name的物品yyyp_id相同）
       const result = await fetchYYYPRealtimePrice(items[0])
@@ -1369,7 +1344,6 @@ export function useInventory() {
       }
     }
     
-    console.log(`[悠悠底价查询] 查询完成，共查询 ${groupedByHashName.size} 个饰品`)
     loadingYYYPPrices.value = false
   }
   
@@ -1438,8 +1412,6 @@ export function useInventory() {
           steamAssetId: parseInt(item.assetid || 0)
         }))
 
-        console.log('[出租] 开始并发请求 rentInit 和 getInventoryExtendInfo')
-        console.log('[出租] 选中饰品数量:', selectedItems.value.length)
 
         // 并发请求 - 使用 Promise.allSettled 确保即使扩展信息获取失败也能打开出租表单
         const [initResult, extendInfoResult] = await Promise.allSettled([
@@ -1476,7 +1448,6 @@ export function useInventory() {
             if (extendInfoResponse.data.success && extendInfoResponse.data.data) {
               // 将扩展信息附加到 rentInitData
               rentInitData.value.inventoryExtendInfo = extendInfoResponse.data.data
-              console.log('[出租] 库存扩展信息获取成功，饰品数量:', Object.keys(extendInfoResponse.data.data.normalLeaseCompensationMap || {}).length)
             } else {
               console.warn('[出租] 库存扩展信息获取失败:', extendInfoResponse.data.message)
             }
@@ -1487,7 +1458,6 @@ export function useInventory() {
           // 打开悠悠有品出租表单
           rentFormVisible.value = true
 
-          console.log('[出租] 获取配置成功')
         } else {
           // 显示详细的错误信息
           const errorMsg = initResponse.data.message || '获取出租配置失败'
@@ -1565,7 +1535,6 @@ export function useInventory() {
 
   // 处理出租表单提交
   const handleRentFormSubmit = async (formData) => {
-    console.log('[出租提交] 表单数据:', formData)
 
     // 显示加载提示（二次确认时会先关掉、确认后重新开）
     const showLoading = () => ElLoading.service({
@@ -1626,7 +1595,6 @@ export function useInventory() {
             }
           )
         } catch {
-          console.log('[出租提交] 用户取消了二次确认')
           return
         }
         loading = showLoading()
@@ -1663,7 +1631,6 @@ export function useInventory() {
         // 刷新库存列表
         await loadInventoryData()
 
-        console.log('[出租提交] 上架成功:', response.data)
       } else {
         ElMessage.error(response.data.message || '上架失败')
         console.error('[出租提交] 上架失败:', response.data.message)
@@ -1783,7 +1750,6 @@ export function useInventory() {
       
       // 只处理悠悠有品上架
       if (platform === 'yyyp' && action === '出售') {
-        console.log(`开始上架${itemsData.length}件物品到悠悠有品`)
         
         let successCount = 0
         let failCount = 0
@@ -1801,7 +1767,6 @@ export function useInventory() {
           }
           
           try {
-            console.log(`[${i + 1}/${itemsData.length}] 正在上架: ${item.name}`)
             
             const sellUrl = `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.ENDPOINTS.YOUPIN_SELL_INVENTORY_ITEM}`
             const buildSellPayload = (confirmed) => ({
@@ -1846,7 +1811,6 @@ export function useInventory() {
 
             if (response.data.success) {
               successCount++
-              console.log(`✓ 上架成功: ${item.name}`)
               
               // 更新状态为成功
               if (!isGroupedView.value) {
@@ -2027,18 +1991,15 @@ export function useInventory() {
       const parsed = typeof stickersData === 'string' ? JSON.parse(stickersData) : stickersData
       if (!Array.isArray(parsed) || parsed.length === 0) return
 
-      console.log('解析的印花数据:', parsed)
 
       const pricePromises = parsed.map(async (sticker) => {
         const steamHashName = sticker.steam_hash_name
         const name = sticker.name || '未知贴纸'
 
-        console.log('印花查询 - name:', name, 'steam_hash_name:', steamHashName)
         if (!steamHashName) return null
 
         try {
           const url = apiUrls.buyYyypPriceInfo(steamHashName)
-          console.log('请求URL:', url)
 
           const response = await fetch(url, {
             method: 'GET',
@@ -2048,7 +2009,6 @@ export function useInventory() {
             }
           })
 
-          console.log('响应状态:', response.status, response.statusText)
 
           if (!response.ok) {
             console.warn(`请求失败 (${steamHashName}): ${response.status} ${response.statusText}`)
@@ -2056,7 +2016,6 @@ export function useInventory() {
           }
 
           const result = await response.json()
-          console.log('响应数据:', result)
 
           if (result.success && result.data) {
             return {
@@ -2078,7 +2037,6 @@ export function useInventory() {
 
       const results = await Promise.all(pricePromises)
       stickersPriceInfo.value = results.filter(item => item !== null)
-      console.log('印花价格信息:', stickersPriceInfo.value)
     } catch (error) {
       console.error('解析印花价格信息失败:', error)
       stickersPriceInfo.value = []
@@ -2101,7 +2059,6 @@ export function useInventory() {
       if (!steamHashName) return
 
       const url = apiUrls.buyYyypPriceInfo(steamHashName)
-      console.log('挂件请求URL:', url, 'steam_hash_name:', steamHashName)
 
       const response = await fetch(url, {
         method: 'GET',
@@ -2117,7 +2074,6 @@ export function useInventory() {
       }
 
       const result = await response.json()
-      console.log('挂件响应数据:', result)
 
       if (result.success && result.data) {
         pendantPriceInfo.value = {
@@ -2129,7 +2085,6 @@ export function useInventory() {
           buff_on_sale_count: result.data.buff_on_sale_count,
           market_listing_item_name: result.data.market_listing_item_name
         }
-        console.log('挂件价格信息:', pendantPriceInfo.value)
       }
     } catch (error) {
       console.error('解析挂件价格信息失败:', error)
@@ -2191,7 +2146,6 @@ export function useInventory() {
 
     // 在新标签页打开商品搜索页面
     const searchUrl = `/item-search?keyword=${encodeURIComponent(steamHashName)}`
-    console.log('印花跳转:', steamHashName, 'URL:', searchUrl)
     window.open(searchUrl, '_blank')
   }
 
@@ -2221,7 +2175,6 @@ export function useInventory() {
 
     // 在新标签页打开商品搜索页面
     const searchUrl = `/item-search?keyword=${encodeURIComponent(steamHashName)}`
-    console.log('挂件跳转:', steamHashName, 'URL:', searchUrl)
     window.open(searchUrl, '_blank')
   }
 
@@ -2711,11 +2664,9 @@ export function useInventory() {
   onMounted(async () => {
     // 应用设备类型类到 body
     const deviceType = applyDeviceClass()
-    console.log('[Inventory] 当前设备类型:', deviceType)
 
     // 监听设备类型变化
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[Inventory] 设备类型已变更:', newDeviceType)
     })
 
     await loadSteamIdList()

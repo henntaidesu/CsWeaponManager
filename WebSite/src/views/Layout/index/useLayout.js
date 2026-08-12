@@ -98,10 +98,8 @@ export function useLayout() {
 
   onMounted(() => {
     const deviceType = applyDeviceClass()
-    console.log('[Layout] 当前设备类型:', deviceType)
 
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[Layout] 设备类型已变更:', newDeviceType)
     })
 
     // 检查登录状态
@@ -126,7 +124,6 @@ export function useLayout() {
 
   const handleSidebarClick = (event) => {
     // 点击侧边栏空白区域切换展开/收缩状态
-    console.log('Sidebar clicked:', event.target.className)
     isCollapsed.value = !isCollapsed.value
   }
 

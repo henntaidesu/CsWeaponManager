@@ -232,23 +232,14 @@ export function useLent() {
 
   // 检查是否有额外信息（印花、挂件、改名）
   const hasExtras = (item) => {
-    const result = !!(item.sticker || item.pendant || item.rename)
-    if (result) {
-      console.log('hasExtras - item:', item)
-      console.log('sticker:', item.sticker)
-      console.log('pendant:', item.pendant)
-      console.log('rename:', item.rename)
-    }
-    return result
+    return !!(item.sticker || item.pendant || item.rename)
   }
 
   // 解析印花数据
   const parseStickers = (stickerData) => {
-    console.log('parseStickers - 输入数据:', stickerData)
     if (!stickerData) return []
     try {
       const parsed = typeof stickerData === 'string' ? JSON.parse(stickerData) : stickerData
-      console.log('parseStickers - 解析后:', parsed)
       if (!Array.isArray(parsed)) return []
       
       const result = parsed.map(sticker => {
@@ -263,7 +254,6 @@ export function useLent() {
             .replace(/\*/g, '_')
             .replace(/™/g, '?')
           imageUrl = apiUrls.weaponImage(`Sticker___${imageName}.png`)
-          console.log('印花图片URL:', imageUrl)
         }
         
         return {
@@ -271,7 +261,6 @@ export function useLent() {
           image: imageUrl
         }
       })
-      console.log('parseStickers - 返回结果:', result)
       return result
     } catch (e) {
       console.error('解析印花数据失败:', e)
@@ -323,7 +312,6 @@ export function useLent() {
   const searchByName = async (itemName) => {
     loading.value = true
     try {
-      console.log('正在搜索出租武器(过滤接口):', itemName)
       const count = await fetchLentDataFiltered({
         min: 0,
         max: 10000,
@@ -539,7 +527,6 @@ export function useLent() {
   const loadLentData = async () => {
     // 如果是搜索模式且有搜索关键词，不需要重新加载数据
     if (isSearchMode.value && searchText.value.trim()) {
-      console.log('搜索模式下，使用现有搜索结果进行分页')
       return
     }
     
@@ -560,7 +547,6 @@ export function useLent() {
       const max = pageSize.value
       
 
-      console.log(`正在请求数据... 页码: ${currentPage.value}, 每页: ${pageSize.value}, min: ${min}, max: ${max}`)
       
       // 统一走筛选接口：平台/用户/武器类型/磨损等条件必须下发到后端，
       // 否则只会在当前页的若干行里做前端过滤，翻不到的记录会被漏掉
@@ -572,7 +558,6 @@ export function useLent() {
       }
 
       
-      console.log('转换后的数据:', lentData.value)
 
       // 并行刷新统计（内部会更新 totalItems）
       await loadFilteredStats()
@@ -718,7 +703,6 @@ export function useLent() {
   }
 
   const handleDateRangeChange = (value) => {
-    console.log('日期范围变更:', value)
   }
 
   // 高级搜索处理
@@ -760,7 +744,6 @@ export function useLent() {
     loading.value = true
     try {
       const [startDate, endDate] = dateRange.value
-      console.log('按时间搜索:', startDate, '至', endDate)
       
       const response = await fetch(apiUrls.lentSearchByTime(startDate, endDate), {
         method: 'GET',
@@ -781,7 +764,6 @@ export function useLent() {
       }
 
       const rawData = await response.json()
-      console.log('时间搜索结果:', rawData)
 
       if (!Array.isArray(rawData)) {
         throw new Error('搜索结果格式错误')
@@ -845,7 +827,6 @@ export function useLent() {
 
   const loadTimeRangeStats = async (startDate, endDate) => {
     try {
-      console.log('正在获取时间范围统计...', { startDate, endDate })
       
       const response = await fetch(apiUrls.lentStatsByTime(startDate, endDate), {
         method: 'GET',
@@ -866,7 +847,6 @@ export function useLent() {
       }
 
       const statsData = await response.json()
-      console.log('获取到的时间范围统计:', statsData)
       
       if (statsData) {
         allDataStats.value = {
@@ -879,7 +859,6 @@ export function useLent() {
           completedCount: statsData.completed_count || 0,
           cancelledCount: statsData.cancelled_count || 0
         }
-        console.log('设置时间范围统计为:', allDataStats.value)
       } else {
         console.error('时间范围统计API返回数据格式错误:', statsData)
       }
@@ -953,7 +932,6 @@ export function useLent() {
 
       const response = await fetch(apiUrls.lentStatusList())
       const result = await response.json()
-      console.log('租赁 status 列表原始返回:', result)
       if (result && result.success && Array.isArray(result.data)) {
         // 仅取 status 字段（若为字符串直接使用）
         const list = result.data
@@ -983,7 +961,6 @@ export function useLent() {
       const statusParam = statusFilter.value || 'all'
       const response = await fetch(apiUrls.lentStatusSubList(statusParam))
       const result = await response.json()
-      console.log('租赁 status_sub 列表原始返回:', statusParam, result)
       if (result && result.success && Array.isArray(result.data)) {
         const list = result.data
           .map(item => {
@@ -1413,11 +1390,9 @@ export function useLent() {
   onMounted(async () => {
     // 应用设备类型类到 body
     const deviceType = applyDeviceClass()
-    console.log('[Lent] 当前设备类型:', deviceType)
 
     // 监听设备类型变化
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[Lent] 设备类型已变更:', newDeviceType)
     })
 
     // 优化：先加载主数据，其他数据按需加载

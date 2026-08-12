@@ -411,10 +411,8 @@ export function useOnSaleBuff() {
 
   onMounted(() => {
     const deviceType = applyDeviceClass()
-    console.log('[OnSaleBuff] 当前设备类型:', deviceType)
 
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[OnSaleBuff] 设备类型已变更:', newDeviceType)
     })
 
     loadAccountList()

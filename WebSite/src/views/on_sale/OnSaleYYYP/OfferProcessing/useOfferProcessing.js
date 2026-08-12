@@ -278,7 +278,6 @@ export default {
           // 如果返回了token信息，保存并显示给用户
           if (response.data.data && response.data.data.token_info) {
             const tokenInfo = response.data.data.token_info
-            console.log('Token确认信息:', tokenInfo)
 
             // 将token信息存储到Map中，使用order_no作为key
             orderTokenInfo.value.set(item.order_no, {
@@ -321,7 +320,6 @@ export default {
         let failCount = 0
         const totalCount = sellOrders.value.length
 
-        console.log('开始批量处理，总数:', totalCount)
 
         // 清空之前的处理状态
         batchProcessStatus.value.clear()
@@ -345,7 +343,6 @@ export default {
 
           if (confirmButton) {
             try {
-              console.log(`[${currentNum}/${totalCount}] 开始处理:`, item.item_name)
 
               // 更新卡片状态为"处理中"
               batchProcessStatus.value.set(confirmButton.order_no, {
@@ -375,12 +372,10 @@ export default {
 
               if (response.data && response.data.success) {
                 successCount++
-                console.log(`[${currentNum}/${totalCount}] ✅ 处理成功:`, item.item_name)
 
                 // 如果返回了token信息，保存并显示
                 if (response.data.data && response.data.data.token_info) {
                   const tokenInfo = response.data.data.token_info
-                  console.log(`[${currentNum}/${totalCount}] Token信息:`, tokenInfo)
 
                   // 将token信息存储到Map中，使用order_no作为key
                   orderTokenInfo.value.set(confirmButton.order_no, {
@@ -408,7 +403,6 @@ export default {
                 })
               } else {
                 failCount++
-                console.log(`[${currentNum}/${totalCount}] ❌ 处理失败:`, item.item_name, response.data?.message)
 
                 // 更新卡片状态为"失败"
                 batchProcessStatus.value.set(confirmButton.order_no, {
@@ -445,7 +439,6 @@ export default {
               })
             }
           } else {
-            console.log(`[${currentNum}/${totalCount}] ⚠️ 跳过:`, item.item_name, '无可操作按钮')
 
             // 对于没有按钮的订单，也记录状态
             const orderNo = item.buttons?.[0]?.order_no || item.order_no || `skip_${index}`
@@ -473,7 +466,6 @@ export default {
 
         loading.value = false
 
-        console.log('【出售】批量处理完成，成功:', successCount, '失败:', failCount)
 
         // 显示最终统计结果
         if (successCount > 0) {
@@ -527,7 +519,6 @@ export default {
         let failCount = 0
         const totalCount = buyOrders.value.length
 
-        console.log('【收货】开始批量处理，总数:', totalCount)
 
         // 显示开始处理的通知
         ElNotification({
@@ -548,7 +539,6 @@ export default {
 
           if (confirmButton) {
             try {
-              console.log(`[${currentNum}/${totalCount}] 开始处理:`, item.item_name)
 
               // 设置处理中状态
               batchProcessStatus.value.set(confirmButton.order_no, {
@@ -578,12 +568,10 @@ export default {
 
               if (response.data && response.data.success) {
                 successCount++
-                console.log(`[${currentNum}/${totalCount}] ✅ 处理成功:`, item.item_name)
 
                 // 如果返回了token信息，保存并显示
                 if (response.data.data && response.data.data.token_info) {
                   const tokenInfo = response.data.data.token_info
-                  console.log(`[${currentNum}/${totalCount}] Token信息:`, tokenInfo)
 
                   // 将token信息存储到Map中，使用order_no作为key
                   orderTokenInfo.value.set(confirmButton.order_no, {
@@ -611,7 +599,6 @@ export default {
                 })
               } else {
                 failCount++
-                console.log(`[${currentNum}/${totalCount}] ❌ 处理失败:`, item.item_name, response.data?.message)
 
                 batchProcessStatus.value.set(confirmButton.order_no, {
                   status: 'failed',
@@ -646,7 +633,6 @@ export default {
               })
             }
           } else {
-            console.log(`[${currentNum}/${totalCount}] ⚠️ 跳过:`, item.item_name, '无可操作按钮')
 
             // 没有可操作的按钮，设置跳过状态
             if (item.order_no) {
@@ -674,7 +660,6 @@ export default {
 
         loading.value = false
 
-        console.log('【收货】批量处理完成，成功:', successCount, '失败:', failCount)
 
         // 显示最终统计结果
         if (successCount > 0) {

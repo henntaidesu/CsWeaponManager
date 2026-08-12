@@ -139,7 +139,6 @@ export function useSearchPendant() {
 
   const loadRecentSearchResults = async () => {
   try {
-    console.log('[挂件] 尝试加载历史结果...')
     // 获取搜索结果，根据选中的配置ID过滤
     const params = new URLSearchParams({
       dataType: 'pendant'
@@ -157,9 +156,7 @@ export function useSearchPendant() {
     if (result.success && Array.isArray(result.items) && result.items.length > 0) {
       const mappedItems = normalizeApiItems(result.items)
       rebuildCrawlResult(mappedItems)
-      console.log(`[挂件] 已加载 ${mappedItems.length} 条历史结果`)
     } else {
-      console.log('[挂件] 没有找到历史结果')
     }
   } catch (error) {
     console.error('[挂件] 加载历史数据失败:', error)
@@ -202,7 +199,6 @@ export function useSearchPendant() {
 
         if (progressResponse.ok) {
           const progressResult = await progressResponse.json()
-          console.log('[进度轮询] 收到进度数据:', progressResult)
 
           if (progressResult.success && progressResult.data) {
             const progressData = progressResult.data
@@ -347,7 +343,6 @@ export function useSearchPendant() {
   if (pollingTimer.value) {
     return
   }
-  console.log(`[挂件] 启动轮询，间隔 ${POLL_INTERVAL}ms`)
   pollingTimer.value = setInterval(pollSearchResults, POLL_INTERVAL)
   pollSearchResults()
   }
@@ -356,7 +351,6 @@ export function useSearchPendant() {
   if (pollingTimer.value) {
     clearInterval(pollingTimer.value)
     pollingTimer.value = null
-    console.log('[挂件] 已停止轮询')
   }
   }
 
@@ -670,11 +664,9 @@ const PLATFORM_ACCOUNT_SOURCE_MAP = {
 const filteredSteamIdList = computed(() => {
   const platformKey = normalizePlatformKey(crawlForm.value.platformType || '')
   if (!platformKey) {
-    console.log('[账号列表] 未选择平台，返回空账号列表')
     return []
   }
   const accounts = platformAccountLists.value[platformKey] || []
-  console.log(`[账号列表] 平台: ${platformKey}, 账号数量: ${accounts.length}`, accounts)
   return accounts
 })
 
@@ -711,7 +703,6 @@ const loadAccountsForPlatform = async (platformType) => {
         key2: sourceConfig.key2
       }
     })
-    console.log(`[平台账号] ${platformKey} 配置API响应:`, response.data)
     if (response.data.success && Array.isArray(response.data.data)) {
       const mappedList = response.data.data.map(item => {
         let parsedValue = {}
@@ -897,8 +888,6 @@ const handleSidebarAreaClick = (event) => {
 
 // 开始爬取（流式接收）
 const startCrawl = async () => {
-  console.log('[挂件搜索] startCrawl 被调用')
-  console.log('[挂件搜索] crawlForm:', JSON.stringify(crawlForm.value, null, 2))
 
   // 开始搜索时自动折叠工具与配置区域
   isConfigSectionsCollapsed.value = true
@@ -1035,13 +1024,11 @@ const startCrawl = async () => {
         }
 
         const url = `${apiUrls.searchWeaponByPriceRange()}?${params.toString()}`
-        console.log('[挂件搜索] 数据库筛选URL:', url)
 
         const filterResponse = await axios.get(url)
 
         if (filterResponse.data.success && filterResponse.data.data) {
           const weapons = filterResponse.data.data
-          console.log(`[挂件搜索] 从数据库筛选出 ${weapons.length} 个符合条件的饰品`)
 
           if (weapons.length === 0) {
             ElMessage.warning('数据库中没有符合条件的饰品')
@@ -1052,7 +1039,6 @@ const startCrawl = async () => {
           // 后端返回的数据格式已经是 [{id, name}]
           filteredWeaponIds = weapons.filter(w => w.id)  // 过滤掉没有ID的饰品
 
-          console.log(`[挂件搜索] 筛选后有效饰品数量: ${filteredWeaponIds.length}`)
 
           if (filteredWeaponIds.length === 0) {
             ElMessage.warning('筛选后没有有效的饰品ID')
@@ -1090,20 +1076,16 @@ const startCrawl = async () => {
     // 根据查询模式添加不同的参数
     if (crawlForm.value.searchMode === 'by_weapon_id') {
       spiderConfig.weapon_id = crawlForm.value.weaponId
-      console.log(`[挂件搜索] 使用饰品目录模式，饰品数量: ${crawlForm.value.weaponId.length}`)
     } else if (crawlForm.value.searchMode === 'by_price_range') {
       // 使用筛选后的饰品ID列表
       if (filteredWeaponIds && filteredWeaponIds.length > 0) {
         // 重要：将查询模式改为 by_weapon_id，这样Spider会使用我们提供的饰品ID列表
         spiderConfig.search_mode = 'by_weapon_id'
         spiderConfig.weapon_id = filteredWeaponIds
-        console.log(`[挂件搜索] 价格区间模式已筛选出 ${filteredWeaponIds.length} 个饰品，转换为按饰品目录模式`)
-        console.log(`[挂件搜索] 筛选后的饰品ID（前5个）:`, filteredWeaponIds.slice(0, 5))
       } else {
         // 如果没有筛选结果，仍然传递价格区间参数（后端兼容）
         spiderConfig.price_min = crawlForm.value.priceMin
         spiderConfig.price_max = crawlForm.value.priceMax
-        console.log(`[挂件搜索] 使用价格区间模式（未筛选），价格区间: ${spiderConfig.price_min} - ${spiderConfig.price_max}`)
       }
     }
 
@@ -1117,10 +1099,6 @@ const startCrawl = async () => {
       spider_config: spiderConfig
     }
 
-    console.log('[挂件搜索] 准备发送请求（数据库轮询模式）')
-    console.log('[挂件搜索] 请求URL:', `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.YOUPIN_AUTO_BUY_PENDANT_WEAPON}`)
-    console.log('[挂件搜索] 请求数据:', JSON.stringify(requestData, null, 2))
-    console.log('[挂件搜索] weapon_id数组长度:', spiderConfig.weapon_id ? spiderConfig.weapon_id.length : 0)
 
     // 使用普通POST接口启动任务
     const response = await fetch(
@@ -1134,14 +1112,12 @@ const startCrawl = async () => {
       }
     )
 
-    console.log('[挂件搜索] 收到响应:', response.status, response.statusText)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`)
     }
 
     const result = await response.json()
-    console.log('[挂件搜索] 响应结果:', result)
 
     if (!result.success) {
       throw new Error(result.message || '启动搜索失败')
@@ -1182,8 +1158,6 @@ const stopCrawl = async () => {
     ElMessage.info('正在停止搜索...')
 
     const url = `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.YOUPIN_STOP_PENDANT_SEARCH}`
-    console.log('[停止搜索] 请求URL:', url)
-    console.log('[停止搜索] config_id:', selectedConfigId.value)
 
     const response = await fetch(url, {
       method: 'POST',
@@ -1195,8 +1169,6 @@ const stopCrawl = async () => {
       })
     })
 
-    console.log('[停止搜索] HTTP状态:', response.status)
-    console.log('[停止搜索] Content-Type:', response.headers.get('content-type'))
 
     // 检查响应类型
     const contentType = response.headers.get('content-type')
@@ -1207,7 +1179,6 @@ const stopCrawl = async () => {
     }
 
     const result = await response.json()
-    console.log('[停止搜索] 响应结果:', result)
 
     if (!response.ok || !result?.success) {
       throw new Error(result?.message || `HTTP ${response.status}`)
@@ -1268,7 +1239,6 @@ const loadConfigList = async () => {
       }
     })
 
-    console.log('配置列表响应:', response.data)
 
     // 保存平台类型
     savedConfigs.value = (response.data.data || []).map(config => ({
@@ -1279,7 +1249,6 @@ const loadConfigList = async () => {
     // 按ID降序排序
     savedConfigs.value.sort((a, b) => b.id - a.id)
 
-    console.log('加载的配置列表:', savedConfigs.value)
 
     // 恢复所有配置的进度
     loadAllProgresses()
@@ -1290,8 +1259,6 @@ const loadConfigList = async () => {
 
 // 选择并加载配置
 const selectConfig = async (configId) => {
-  console.log('=== 开始加载配置 ===')
-  console.log('配置ID:', configId)
 
   if (!configId) {
     console.warn('配置ID为空')
@@ -1299,7 +1266,6 @@ const selectConfig = async (configId) => {
   }
 
   selectedConfigId.value = configId
-  console.log('已设置selectedConfigId:', selectedConfigId.value)
 
   // 选中配置后显示配置表单
   showConfigForm.value = true
@@ -1312,7 +1278,6 @@ const selectConfig = async (configId) => {
 
   try {
     const config = savedConfigs.value.find(c => c.id === configId)
-    console.log('找到的配置对象:', config)
     
     if (config && config.value) {
       const platformType = config.platformType || ''
@@ -1325,7 +1290,6 @@ const selectConfig = async (configId) => {
         valueObj = typeof config.value === 'string' 
           ? JSON.parse(config.value) 
           : config.value
-        console.log('解析后的配置值:', valueObj)
       } catch (parseError) {
         console.error('JSON解析失败:', parseError)
         ElMessage.error('配置数据格式错误')
@@ -1340,14 +1304,6 @@ const selectConfig = async (configId) => {
       const priceMax = valueObj.price_max !== undefined ? valueObj.price_max : null
       const steamId = valueObj.steam_id || ''
 
-      console.log('提取的数据:')
-      console.log('  - searchMode:', searchMode)
-      console.log('  - weaponType:', weaponType)
-      console.log('  - weaponId:', weaponId)
-      console.log('  - priceMin:', priceMin)
-      console.log('  - priceMax:', priceMax)
-      console.log('  - steamId:', steamId)
-      console.log('  - platformType:', config.platformType)
 
       // 移除已提取的字段，剩余的作为自定义配置
       const { weapon_id, steam_id, crawl_account_id, search_mode, weapon_type, price_min, price_max, ...restConfig } = valueObj
@@ -1365,7 +1321,6 @@ const selectConfig = async (configId) => {
         priceMax: priceMax
       }
       
-      console.log('准备填充的表单数据:', newFormData)
       
       // 加载配置数据到表单
       isProgrammaticPlatformChange.value = true
@@ -1375,12 +1330,6 @@ const selectConfig = async (configId) => {
       // 等待下一个tick确保数据已更新
       await new Promise(resolve => setTimeout(resolve, 50))
       
-      console.log('表单填充完成，当前表单值:')
-      console.log('  - configName:', crawlForm.value.configName)
-      console.log('  - steamId:', crawlForm.value.steamId)
-      console.log('  - platformType:', crawlForm.value.platformType)
-      console.log('  - weaponId:', crawlForm.value.weaponId)
-      console.log('=== 配置加载完成 ===')
 
       // 检查搜索状态，判断是否需要轮询
       // 首先尝试从后端获取实时状态
@@ -1402,14 +1351,11 @@ const selectConfig = async (configId) => {
             // 如果后端返回 processing、start 等状态，说明正在搜索
             if (progressType === 'processing' || progressType === 'start') {
               isSearching = true
-              console.log(`[配置加载] 后端返回状态: ${progressType}，判定为正在搜索`)
             } else {
-              console.log(`[配置加载] 后端返回状态: ${progressType}，判定为未在搜索`)
             }
           }
         }
       } catch (err) {
-        console.log('[配置加载] 获取后端状态失败，使用本地状态判断:', err.message)
       }
 
       // 如果后端没有返回搜索中状态，检查本地配置中的状态
@@ -1419,16 +1365,13 @@ const selectConfig = async (configId) => {
                      (lastSearchStatus.status === 'running' || lastSearchStatus.status === 'processing') &&
                      (Date.now() - lastSearchStatus.timestamp < 24 * 60 * 60 * 1000)  // 24小时内
         if (isSearching) {
-          console.log('[配置加载] 本地状态判定为正在搜索')
         }
       }
 
       if (isSearching) {
-        console.log('[配置加载] 检测到正在搜索中，启动轮询')
         isCrawling.value = true
         startPolling()
       } else {
-        console.log('[配置加载] 未检测到搜索任务，只请求一次列表')
         isCrawling.value = false
         // 只请求一次结果列表
         await pollSearchResults()
@@ -1494,7 +1437,6 @@ const autoSaveConfig = async () => {
   try {
     const customConfigResult = validateCustomConfig()
     if (!customConfigResult.valid) {
-      console.log('自定义配置错误，跳过自动保存:', customConfigResult.message)
       return
     }
 
@@ -1527,7 +1469,6 @@ const autoSaveConfig = async () => {
     const response = await axios.post(apiUrls.configUpdate(), configData)
     
     if (response.data.success) {
-      console.log('配置已自动保存')
     }
   } catch (error) {
     console.error('自动保存失败:', error)
@@ -1550,12 +1491,10 @@ watch(
 // 保存搜索状态到配置
 const saveSearchStatusToConfig = async (status, progressInfo) => {
   if (!selectedConfigId.value) {
-    console.log('[保存状态] 没有选中的配置ID，跳过保存')
     return
   }
 
   try {
-    console.log(`[保存状态] 开始保存状态: ${status}`, progressInfo)
 
     // 获取当前配置
     const config = savedConfigs.value.find(c => c.id === selectedConfigId.value)
@@ -1594,7 +1533,6 @@ const saveSearchStatusToConfig = async (status, progressInfo) => {
     const response = await axios.post(apiUrls.configUpdate(), configData)
 
     if (response.data.success) {
-      console.log('[保存状态] 状态保存成功')
       // 更新本地配置列表
       await loadConfigList()
     } else {
@@ -1788,7 +1726,6 @@ const loadWeaponNames = async (weaponType) => {
     
     if (response.data.success) {
       weaponNameList.value = response.data.data || []
-      console.log(`✅ 加载武器名称列表: ${weaponNameList.value.length} 个`, weaponType ? `(类型: ${weaponType})` : '(全部)')
     } else {
       ElMessage.error('获取武器名称失败')
     }
@@ -1897,12 +1834,6 @@ const loadWeaponData = async () => {
       const newData = response.data.data || []
       const total = response.data.total || 0
       
-      console.log('📦 加载数据响应', {
-        page: currentPage.value,
-        newDataLength: newData.length,
-        total,
-        pageSize: pageSize.value
-      })
       
       if (currentPage.value === 1) {
         weaponSearchResults.value = newData
@@ -1914,19 +1845,12 @@ const loadWeaponData = async () => {
         }
       } else {
         weaponSearchResults.value.push(...newData)
-        console.log(`📥 追加 ${newData.length} 条数据，总计 ${weaponSearchResults.value.length} 条`)
       }
       
       // 判断是否还有更多数据
       const hasMoreData = newData.length >= pageSize.value
       hasMore.value = hasMoreData
       
-      console.log('📊 加载状态', {
-        hasMore: hasMore.value,
-        currentTotal: weaponSearchResults.value.length,
-        newDataLength: newData.length,
-        pageSize: pageSize.value
-      })
       
     } else {
       ElMessage.error(response.data.message || '搜索失败')
@@ -1951,11 +1875,6 @@ const loadMoreWeapons = async () => {
   const oldScrollHeight = document.documentElement.scrollHeight
   const oldScrollTop = window.pageYOffset || document.documentElement.scrollTop
   
-  console.log('🔄 开始加载更多', {
-    currentPage: currentPage.value,
-    oldScrollHeight,
-    oldScrollTop
-  })
   
   currentPage.value++
   await loadWeaponData()
@@ -1979,14 +1898,6 @@ const loadMoreWeapons = async () => {
         behavior: 'auto'  // 使用 auto 立即跳转，不使用平滑滚动
       })
       
-      console.log('📍 调整滚动位置', {
-        oldScrollHeight,
-        newScrollHeight,
-        addedHeight,
-        oldScrollTop,
-        targetScrollTop,
-        distanceToBottom: newScrollHeight - targetScrollTop - clientHeight
-      })
     }
   }
 }
@@ -1996,13 +1907,11 @@ let scrollTimer = null
 const handlePageScroll = () => {
   // 如果没有搜索结果，不处理滚动
   if (weaponSearchResults.value.length === 0) {
-    console.log('❌ 跳过滚动检查：没有搜索结果')
     return
   }
   
   // 只有在爬取配置区域是展开状态时，才触发自动加载
   if (isConfigSectionsCollapsed.value) {
-    console.log('❌ 跳过滚动检查：配置区域已收起')
     return
   }
   
@@ -2017,28 +1926,11 @@ const handlePageScroll = () => {
     const clientHeight = window.innerHeight
     const distanceToBottom = scrollHeight - scrollTop - clientHeight
     
-    console.log('📏 滚动位置检查', {
-      scrollTop: Math.round(scrollTop),
-      scrollHeight,
-      clientHeight,
-      distanceToBottom: Math.round(distanceToBottom),
-      hasMore: hasMore.value,
-      isLoadingMore: isLoadingMore.value,
-      isConfigSectionsCollapsed: isConfigSectionsCollapsed.value,
-      currentPage: currentPage.value,
-      resultsCount: weaponSearchResults.value.length
-    })
     
     // 滚动到底部触发加载更多（距离底部200px时触发）
     if (distanceToBottom < 200 && hasMore.value && !isLoadingMore.value) {
-      console.log('✅ 触发加载更多数据')
       loadMoreWeapons()
     } else {
-      console.log('⏸️ 未触发加载', {
-        '距离是否<200': distanceToBottom < 200,
-        '有更多数据': hasMore.value,
-        '未在加载中': !isLoadingMore.value
-      })
     }
   }, 100) // 100ms 防抖延迟
 }
@@ -2294,7 +2186,6 @@ const openYYYPBuyDialog = async (item) => {
 
     if (response.data.success) {
       yyypBuyDetail.value = response.data.data
-      console.log(`[${platformType}] 商品详情:`, yyypBuyDetail.value)
     } else {
       throw new Error(response.data.message || '获取商品详情失败')
     }
@@ -2403,7 +2294,6 @@ const confirmYYYPBuy = async () => {
       }
 
       ElMessage.success('购买成功！')
-      console.log('购买结果:', response.data.data)
       yyypBuyDialogVisible.value = false
     } else {
       throw new Error(response.data.message || '购买失败')
@@ -2476,10 +2366,6 @@ const cancelYYYPOrder = async () => {
 
 // 购买饰品
 const handleBuyWeapon = async (item) => {
-  console.log('[购买] ========== 使用 悠悠有品 购买流程 ==========')
-  console.log('[购买] 打开购买确认对话框')
-  console.log('[购买] 商品ID:', item.id)
-  console.log('[购买] ================================================')
 
   // 设置购买中状态
   buyingItems.value[item.id] = true
@@ -2607,7 +2493,6 @@ const loadProgressFromStorage = async (configId) => {
     // 查找配置
     const config = savedConfigs.value.find(c => c.id === configId)
     if (!config) {
-      console.log(`[进度恢复] 配置${configId}不存在`)
       return
     }
 
@@ -2641,9 +2526,7 @@ const loadProgressFromStorage = async (configId) => {
               timestamp: Date.now(),
               isCrawling: d.type === 'processing'
             }
-            console.log(`[进度恢复] 从后端进度接口恢复配置${configId}进度，类型: ${d.type}`)
           } else {
-            console.log(`[进度恢复] 后端未返回配置${configId}的进度数据`)
           }
         } else {
           console.error(`[进度恢复] 后端进度接口请求失败: HTTP ${resp.status}`)
@@ -2654,7 +2537,6 @@ const loadProgressFromStorage = async (configId) => {
 
       // 如果依然没有进度数据，则直接返回
       if (!progressData) {
-        console.log(`[进度恢复] 配置${configId}没有找到进度数据`)
         return
       }
     }
@@ -2676,10 +2558,8 @@ const loadProgressFromStorage = async (configId) => {
           isCompleted: true,
           timestamp: progressData.timestamp
         })
-        console.log(`[进度恢复] 配置${configId}任务已完成，显示100%`)
       } else {
         // 任务未完成，保留进度显示（通过轮询数据库继续更新）
-        console.log(`[进度恢复] 配置${configId}任务未完成，保留进度显示`)
         updateProgress(configId, {
           total: progressData.total,
           current: progressData.current,
@@ -2696,7 +2576,6 @@ const loadProgressFromStorage = async (configId) => {
       }
     } else {
       // 过期，清除
-      console.log(`[进度恢复] 配置${configId}进度数据已过期`)
       clearProgress(configId)
       clearProgressFromStorage(configId)
     }
@@ -2707,7 +2586,6 @@ const loadProgressFromStorage = async (configId) => {
 
 // 恢复所有配置的进度
 const loadAllProgresses = () => {
-  console.log('[进度恢复] 开始恢复所有配置的进度')
   savedConfigs.value.forEach(config => {
     if (config.id) {
       // 异步恢复，每个配置单独处理
@@ -2752,7 +2630,6 @@ const clearProgressFromStorage = async (configId) => {
       })
 
       if (response.ok) {
-        console.log(`[进度清除] 配置${configId}进度数据已清除`)
       } else {
         console.error('[进度清除] 后端清除失败:', response.status, response.statusText)
       }

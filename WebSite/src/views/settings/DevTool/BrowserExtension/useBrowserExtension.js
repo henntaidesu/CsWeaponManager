@@ -17,13 +17,11 @@ export function useBrowserExtension() {
   const checkExtensionStatus = () => {
     if (window.SteamDTInterceptor && window.SteamDTInterceptor.isInstalled()) {
       extensionInstalled.value = true
-      console.log('[BrowserExtension] 扩展已安装')
 
       // 尝试获取最后更新时间
       loadExtensionData()
     } else {
       extensionInstalled.value = false
-      console.log('[BrowserExtension] 扩展未安装')
     }
   }
 
@@ -137,7 +135,6 @@ export function useBrowserExtension() {
 
     try {
       const data = await window.SteamDTInterceptor.getData()
-      console.log('[BrowserExtension] 扩展测试数据:', data)
 
       if (data.marketIndex) {
         ElMessage.success('测试成功!已拦截到大盘指数数据')

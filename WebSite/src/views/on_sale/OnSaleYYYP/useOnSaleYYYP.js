@@ -1072,7 +1072,6 @@ export default {
           if (compensationResponse.data && compensationResponse.data.success) {
             const compensationData = compensationResponse.data.data
             rentInitData.value.compensationRichContent = compensationData.compensationRichContent
-            console.log('[租赁改价] 赔付文本获取成功:', compensationData.compensationRichContent)
           } else {
             console.warn('[租赁改价] 赔付文本获取失败:', compensationResponse.data?.message)
           }
@@ -1150,7 +1149,6 @@ export default {
             if (compensationData.commodityCompensationMap && compensationData.commodityCompensationMap[commodityId]) {
               subleaseInitData.value.compensationRichContent = compensationData.commodityCompensationMap[commodityId].compensationRichContent
             }
-            console.log('[转租改价] 赔付文本获取成功:', compensationData.commodityCompensationMap)
           } else {
             console.warn('[转租改价] 赔付文本获取失败:', compensationResponse.data?.message)
           }
@@ -1159,7 +1157,6 @@ export default {
           if (agreementResponse.data && agreementResponse.data.success) {
             const agreementData = agreementResponse.data.data
             subleaseInitData.value.agreementList = agreementData
-            console.log('[转租改价] 转租协议获取成功:', agreementData)
           } else {
             console.warn('[转租改价] 转租协议获取失败:', agreementResponse.data?.message)
           }
@@ -1168,7 +1165,6 @@ export default {
           if (detailResponse.data && detailResponse.data.success) {
             const detailData = detailResponse.data.data
             subleaseInitData.value.subleaseDetail = detailData
-            console.log('[转租改价] 转租详情获取成功:', detailData)
           } else {
             console.warn('[转租改价] 转租详情获取失败:', detailResponse.data?.message)
           }
@@ -1188,9 +1184,6 @@ export default {
 
     // 提交租赁改价（此处省略了具体实现，太长了）
     const confirmRentPriceUpdate = async (submitData) => {
-      console.log('[租赁改价] 提交数据:', submitData)
-      console.log('[租赁改价] 选中项:', selectedItem.value)
-      console.log('[租赁改价] 批量选中项:', selectedItems.value)
 
       try {
         loading.value = true
@@ -1240,7 +1233,6 @@ export default {
 
         // 单个和批量都使用同一个API
         const apiUrl = apiUrls.yyypChangeRentPrice()
-        console.log(`[租赁改价] 调用API: ${apiUrl}`, requestData)
 
         // 发送改价请求
         const response = await axios.post(apiUrl, requestData)
@@ -1265,9 +1257,6 @@ export default {
 
     // 提交转租改价
     const confirmSubleasePriceUpdate = async (submitData) => {
-      console.log('[转租改价] 提交数据:', submitData)
-      console.log('[转租改价] 选中项:', selectedItem.value)
-      console.log('[转租改价] 批量选中项:', selectedItems.value)
 
       try {
         loading.value = true
@@ -1317,7 +1306,6 @@ export default {
 
         // 使用转租改价API
         const apiUrl = apiUrls.yyypChangeSubleasePrice()
-        console.log(`[转租改价] 调用API: ${apiUrl}`, requestData)
 
         // 发送改价请求
         const response = await axios.post(apiUrl, requestData)
@@ -1532,7 +1520,6 @@ export default {
             if (agreementResponse.data && agreementResponse.data.success) {
               const agreementData = agreementResponse.data.data
               subleaseInitData.value.agreementList = agreementData
-              console.log('[批量转租改价] 转租协议获取成功:', agreementData)
             } else {
               console.warn('[批量转租改价] 转租协议获取失败:', agreementResponse.data?.message)
             }
@@ -1542,7 +1529,6 @@ export default {
               const compensationData = compensationResponse.data.data
               subleaseInitData.value.commodityCompensationMap = compensationData.commodityCompensationMap
               subleaseInitData.value.leasingModelConfigMap = compensationData.leasingModelConfigMap
-              console.log('[批量转租改价] 赔付文本获取成功:', compensationData.commodityCompensationMap)
             } else {
               console.warn('[批量转租改价] 赔付文本获取失败:', compensationResponse.data?.message)
             }
@@ -2035,10 +2021,8 @@ export default {
 
     onMounted(() => {
       const deviceType = applyDeviceClass()
-      console.log('[OnSaleYYYP] 当前设备类型:', deviceType)
 
       unwatchDevice = watchDeviceType((newDeviceType) => {
-        console.log('[OnSaleYYYP] 设备类型已变更:', newDeviceType)
       })
 
       loadAccountList()

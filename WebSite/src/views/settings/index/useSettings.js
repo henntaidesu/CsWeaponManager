@@ -36,10 +36,8 @@ export function useSettings() {
 
   onMounted(() => {
     const deviceType = applyDeviceClass()
-    console.log('[Settings] 当前设备类型:', deviceType)
 
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[Settings] 设备类型已变更:', newDeviceType)
     })
 
     checkMainSidebarState()

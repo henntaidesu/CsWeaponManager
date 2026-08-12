@@ -423,7 +423,6 @@ export function useYYYPCommodityList(props, emit) {
 
       if (response.data.success) {
         presaleDetail.value = response.data.data
-        console.log('预售详情:', presaleDetail.value)
       } else {
         throw new Error(response.data.message || '获取预售详情失败')
       }

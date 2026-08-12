@@ -31,20 +31,15 @@ const lastPollingTime = ref(0) // 最后轮询时间
 
 // 将 weapons 转换为扁平列表，与 SearchPendant 保持一致
 const allCrawlItems = computed(() => {
-  console.log('[allCrawlItems] 🔄 计算开始，crawlResult.value:', crawlResult.value)
   
   if (!crawlResult.value || !crawlResult.value.weapons) {
-    console.log('[allCrawlItems] 📊 crawlResult 为空或无 weapons 数据')
     return []
   }
 
-  console.log(`[allCrawlItems] 🔄 开始计算，weapons 数量: ${crawlResult.value.weapons.length}`)
-  console.log('[allCrawlItems] weapons 数据:', crawlResult.value.weapons)
 
   const items = []
   crawlResult.value.weapons.forEach(weapon => {
     if (weapon.items && weapon.items.length > 0) {
-      console.log(`[allCrawlItems] 📦 处理武器: ${weapon.weapon_name}, items: ${weapon.items.length}`)
       weapon.items.forEach(item => {
         // 计算手续费（通常为价格的 2.5%）
         const commissionRate = 0.025 // 2.5% 手续费率
@@ -75,11 +70,7 @@ const allCrawlItems = computed(() => {
     return spreadA - spreadB  // 从小到大
   })
 
-  console.log(`[allCrawlItems] ✅ 计算完成，总计 ${items.length} 件商品`)
   if (items.length > 0) {
-    console.log(`[allCrawlItems] 第一条商品数据:`, items[0])
-    console.log(`[allCrawlItems] 第一条weapon_name:`, items[0].weapon_name)
-    console.log(`[allCrawlItems] 第一条iconUrl:`, items[0].iconUrl)
   }
 
   return items
@@ -102,7 +93,6 @@ const saveCrawlResultToStorage = (result) => {
         configName: crawlForm.value.configName || '未命名配置'
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
-      console.log('✅ 爬虫结果已保存到本地存储')
     }
   } catch (error) {
     console.error('保存爬虫结果失败:', error)
@@ -116,9 +106,6 @@ const loadCrawlResultFromStorage = () => {
     if (savedData) {
       const parsed = JSON.parse(savedData)
       crawlResult.value = parsed.result
-      console.log('✅ 已恢复历史爬虫结果')
-      console.log(`📅 保存时间: ${new Date(parsed.timestamp).toLocaleString()}`)
-      console.log(`📝 配置名称: ${parsed.configName}`)
       
       // 显示提示信息
       ElMessage.info(`已恢复上次查询结果 (${new Date(parsed.timestamp).toLocaleString()})`)
@@ -352,7 +339,6 @@ const loadReferencePrices = async (items = []) => {
       }
 
       applyReferencePricesToItems(targetItems)
-      console.log(`[参考价] 已更新 ${Object.keys(normalizedPriceMap).length} 个商品的参考价`)
     }
   } catch (error) {
     console.error('[参考价] 查询失败:', error)
@@ -446,11 +432,9 @@ const normalizePlatformKey = (value) => {
 const filteredSteamIdList = computed(() => {
   const platformKey = normalizePlatformKey(crawlForm.value.platformType || '')
   if (!platformKey) {
-    console.log('[账号列表] 未选择平台，返回空账号列表')
     return []
   }
   const accounts = platformAccountLists.value[platformKey] || []
-  console.log(`[账号列表] 平台: ${platformKey}, 账号数量: ${accounts.length}`, accounts)
   return accounts
 })
 
@@ -604,7 +588,6 @@ const loadAccountsForPlatform = async (platformType) => {
         key2: sourceConfig.key2
       }
     })
-    console.log(`[平台账号] ${platformKey} 配置API响应:`, response.data)
     if (response.data.success && Array.isArray(response.data.data)) {
       const mappedList = response.data.data.map(item => {
         let parsedValue = {}
@@ -680,7 +663,6 @@ const clearAllWeaponIds = () => {
 // 加载数据库中最近的搜索结果（页面加载时）
 const loadRecentSearchResults = async () => {
   try {
-    console.log('[页面加载] 尝试加载历史搜索结果...')
     
     // 获取搜索结果，根据选中的配置ID过滤
     const params = new URLSearchParams({
@@ -694,23 +676,15 @@ const loadRecentSearchResults = async () => {
     const response = await fetch(url)
     
     if (!response.ok) {
-      console.log('[页面加载] 无法获取历史数据')
       return
     }
 
     const result = await response.json()
-    console.log('[页面加载] API返回:', result)
     
     if (result.success && result.items && result.items.length > 0) {
-      console.log(`[页面加载] 加载到 ${result.items.length} 条历史数据`)
-      console.log('[页面加载] 第一条数据示例:', result.items[0])
       
       // 后端已通过 to_dict() 返回驼峰命名，直接使用
       const historyItems = result.items.map(item => {
-        console.log('[数据映射] 原始item (驼峰命名):', item)
-        console.log('[数据映射] item.weaponName:', item.weaponName)
-        console.log('[数据映射] item.weaponId:', item.weaponId)
-        console.log('[数据映射] item 的所有键:', Object.keys(item))
         // 后端返回的已经是驼峰命名，直接使用
         const mappedItem = {
           id: item.id,  // 数据库主键，用于后端查询商品详情
@@ -738,7 +712,6 @@ const loadRecentSearchResults = async () => {
           configId: item.configId,  // 配置ID
           referencePrice: null // 参考价，稍后通过查询填充
         }
-        console.log('[数据映射] 映射后item:', mappedItem)
         return mappedItem
       })
       
@@ -766,14 +739,8 @@ const loadRecentSearchResults = async () => {
       // 查询参考价
       await loadReferencePrices(historyItems)
       
-      console.log(`[页面加载] 已加载 ${result.items.length} 条历史搜索结果`)
-      console.log(`[页面加载] 第一条原始数据:`, result.items[0])
-      console.log(`[页面加载] 第一条转换后数据:`, historyItems[0])
-      console.log(`[页面加载] 分组后的weapons:`, weapons)
-      console.log(`[页面加载] crawlResult.value:`, crawlResult.value)
       await nextTick()
     } else {
-      console.log('[页面加载] 没有找到历史数据')
     }
   } catch (error) {
     console.error('[页面加载] 加载历史数据失败:', error)
@@ -784,7 +751,6 @@ const loadRecentSearchResults = async () => {
 const pollSearchResults = async () => {
   // 如果搜索已完成，停止轮询
   if (!isCrawling.value && pollingTimer.value) {
-    console.log('[轮询] 搜索已完成，停止轮询')
     stopPolling()
     return
   }
@@ -810,7 +776,6 @@ const pollSearchResults = async () => {
     }
 
     const result = await response.json()
-    console.log('[轮询] API返回:', result)
     
     // 如果没有查询到数据，直接返回，不进行其他操作
     if (!result.success || !result.items || result.items.length === 0) {
@@ -818,9 +783,6 @@ const pollSearchResults = async () => {
     }
     
     if (result.items.length > 0) {
-      console.log(`[轮询] 获取到 ${result.items.length} 条数据`)
-      console.log('[轮询] 第一条数据示例 (驼峰命名):', result.items[0])
-      console.log('[轮询] 第一条weaponName:', result.items[0].weaponName)
       
       // 如果正在搜索，重置无数据计数
       if (isCrawling.value) {
@@ -911,7 +873,6 @@ const startPolling = () => {
     return // 已经在轮询中
   }
   
-  console.log(`[轮询] 启动持续轮询，间隔 ${POLL_INTERVAL}ms (${POLL_INTERVAL/1000}秒)`)
   pollingTimer.value = setInterval(pollSearchResults, POLL_INTERVAL)
   
   // 立即执行一次
@@ -921,7 +882,6 @@ const startPolling = () => {
 // 停止轮询
 const stopPolling = () => {
   if (pollingTimer.value) {
-    console.log('[轮询] 停止轮询')
     clearInterval(pollingTimer.value)
     pollingTimer.value = null
   }
@@ -1014,7 +974,6 @@ const startCrawl = async () => {
   crawlResult.value = { weapons: [] }
   lastItemId.value = 0 // 重置lastItemId
   noDataCount.value = 0 // 重置无数据计数
-  console.log('[前端] 正在启动查询任务...')
 
   try {
     // 构建请求
@@ -1046,12 +1005,10 @@ const startCrawl = async () => {
       spider_config: spiderConfig
     }
     
-    console.log('[前端] 发送搜索请求:', requestData)
 
     // 启动轮询（只有在开始搜索时才启动）
     startPolling()
     pollSearchResults()
-    console.log('[前端] 轮询已启动，将持续获取搜索结果...')
 
     // 发起搜索请求（后台执行）
     fetch(
@@ -1074,9 +1031,6 @@ const startCrawl = async () => {
         throw new Error(errMsg)
       }
 
-      console.log('[前端] 搜索任务响应:', result)
-      console.log('[前端] 搜索任务已启动')
-      console.log('[前端] 后台搜索任务已启动，开始轮询数据...')
     }).catch(error => {
       console.error('[前端] 启动搜索任务失败:', error)
       console.error(`[前端] 启动搜索任务失败: ${error.message}`)
@@ -1088,11 +1042,9 @@ const startCrawl = async () => {
     // 设置最大搜索时间（5分钟后自动停止搜索状态和轮询）
     setTimeout(() => {
       if (isCrawling.value) {
-        console.log('[前端] 搜索超时，结束搜索状态')
         isCrawling.value = false
         stopPolling() // 停止轮询
         const totalItems = crawlResult.value?.weapons?.[0]?.items?.length || 0
-        console.log(`[前端] 搜索超时结束，共找到 ${totalItems} 个商品`)
         ElMessage.warning(`搜索已超时结束，找到 ${totalItems} 个商品`)
         
         if (crawlResult.value) {
@@ -1171,7 +1123,6 @@ const loadConfigList = async () => {
       }
     })
     
-    console.log('配置列表响应:', response.data)
     
     // 根据 key2 字段判断平台类型
     savedConfigs.value = (response.data.data || []).map(config => ({
@@ -1182,7 +1133,6 @@ const loadConfigList = async () => {
     // 按ID降序排序
     savedConfigs.value.sort((a, b) => b.id - a.id)
     
-    console.log('加载的配置列表:', savedConfigs.value)
   } catch (error) {
     console.error('加载配置列表失败:', error)
     // ElMessage.error('加载配置列表失败')
@@ -1191,8 +1141,6 @@ const loadConfigList = async () => {
 
 // 选择并加载配置
 const selectConfig = async (configId) => {
-  console.log('=== 开始加载配置 ===')
-  console.log('配置ID:', configId)
   
   if (!configId) {
     console.warn('配置ID为空')
@@ -1200,7 +1148,6 @@ const selectConfig = async (configId) => {
   }
 
   selectedConfigId.value = configId
-  console.log('已设置selectedConfigId:', selectedConfigId.value)
   
   // 切换配置时，先清空当前结果，避免显示混合数据
   crawlResult.value = { weapons: [] }
@@ -1209,7 +1156,6 @@ const selectConfig = async (configId) => {
   try {
     isApplyingConfigState.value = true
     const config = savedConfigs.value.find(c => c.id === configId)
-    console.log('找到的配置对象:', config)
     
     if (config && config.value) {
       await loadAccountsForPlatform(config.platformType || crawlForm.value.platformType)
@@ -1219,7 +1165,6 @@ const selectConfig = async (configId) => {
         valueObj = typeof config.value === 'string' 
           ? JSON.parse(config.value) 
           : config.value
-        console.log('解析后的配置值:', valueObj)
       } catch (parseError) {
         console.error('JSON解析失败:', parseError)
         ElMessage.error('配置数据格式错误')
@@ -1230,10 +1175,6 @@ const selectConfig = async (configId) => {
       const weaponId = valueObj.weapon_id || []
       const steamId = valueObj.steam_id || ''
       
-      console.log('提取的数据:')
-      console.log('  - weaponId:', weaponId)
-      console.log('  - steamId:', steamId)
-      console.log('  - platformType:', config.platformType)
       
       // 移除 weapon_id 和 steam_id，剩余的作为自定义配置
       const { weapon_id, steam_id, crawl_account_id, ...restConfig } = valueObj
@@ -1247,7 +1188,6 @@ const selectConfig = async (configId) => {
         weaponId: Array.isArray(weaponId) ? weaponId : []
       }
       
-      console.log('准备填充的表单数据:', newFormData)
       
       // 加载配置数据到表单
       isProgrammaticPlatformChange.value = true
@@ -1257,13 +1197,6 @@ const selectConfig = async (configId) => {
       // 等待下一个tick确保数据已更新
       await new Promise(resolve => setTimeout(resolve, 50))
       
-      console.log('表单填充完成，当前表单值:')
-      console.log('  - configName:', crawlForm.value.configName)
-      console.log('  - steamId:', crawlForm.value.steamId)
-      console.log('  - platformType:', crawlForm.value.platformType)
-      console.log('  - weaponId:', crawlForm.value.weaponId)
-      console.log('  - 自定义配置:', restConfig)
-      console.log('=== 配置加载完成 ===')
       
       // 选择配置后，启动轮询并立即刷新结果列表（显示该配置的数据）
       startPolling()
@@ -1578,7 +1511,6 @@ const loadWeaponNames = async (weaponType) => {
     
     if (response.data.success) {
       weaponNameList.value = response.data.data || []
-      console.log(`✅ 加载武器名称列表: ${weaponNameList.value.length} 个`, weaponType ? `(类型: ${weaponType})` : '(全部)')
     } else {
       ElMessage.error('获取武器名称失败')
     }
@@ -1900,14 +1832,6 @@ const removeWeaponId = (idToRemove) => {
 // 购买饰品
 const handleBuyWeapon = async (item) => {
   // 输出完整的 item 数据用于调试
-  console.log('========== 购买商品 ==========')
-  console.log('购买商品 (完整数据):', JSON.parse(JSON.stringify(item)))
-  console.log('商品ID:', item.id)
-  console.log('商品所有字段:', Object.keys(item))
-  console.log('steam_hash_name:', item.steam_hash_name || item.steamHashName || '无')
-  console.log('listing_id:', item.listing_id || item.listingId || '无')
-  console.log('当前表单平台类型:', crawlForm.value.platformType)
-  console.log('================================')
   
   // 检查购买账号
   if (!crawlForm.value.steamId) {
@@ -1922,7 +1846,6 @@ const handleBuyWeapon = async (item) => {
     const selectedConfig = savedConfigs.value.find(c => c.id === selectedConfigId.value)
     if (selectedConfig) {
       configPlatformType = (selectedConfig.platformType || selectedConfig.key2 || '').toLowerCase().trim()
-      console.log('[购买] 从配置中获取平台类型:', configPlatformType)
     }
   }
   
@@ -1946,24 +1869,11 @@ const handleBuyWeapon = async (item) => {
   // 2. 如果 item 有 listing_id 和 assetId，说明来自 Steam 市场搜索
   if (isSteamPlatform) {
     isSteam = true
-    console.log('[购买] 根据配置判断为 Steam 平台')
   } else if (hasListingId && hasAssetId) {
     isSteam = true
-    console.log('[购买] 根据 item 字段判断为 Steam 市场物品')
   }
 
   // 调试日志：确认平台类型
-  console.log('[购买] ========== 平台类型判断 ==========')
-  console.log('[购买] 选中的配置ID:', selectedConfigId.value)
-  console.log('[购买] 配置中的平台类型:', configPlatformType || '无')
-  console.log('[购买] 表单中的平台类型:', formPlatformType || '无')
-  console.log('[购买] 是 Steam 平台:', isSteamPlatform)
-  console.log('[购买] Item commodityId:', item.id)
-  console.log('[购买] Item listing_id:', item.listing_id || item.listingId || '无')
-  console.log('[购买] Item assetId:', item.assetId || '无')
-  console.log('[购买] Item steam_hash_name:', item.steam_hash_name || item.steamHashName || '无')
-  console.log('[购买] 最终判断使用 Steam 购买:', isSteam)
-  console.log('[购买] ======================================')
   
   // 开始购买流程
   const loadingMessage = ElMessage({
@@ -1975,22 +1885,12 @@ const handleBuyWeapon = async (item) => {
   try {
     // 使用之前判断的结果（isSteam），确保一致性
     // 如果之前判断是 Steam，这里也应该是 Steam
-    console.log('[购买] ========== 开始购买流程 ==========')
-    console.log('[购买] 最终判断结果 isSteam:', isSteam)
-    console.log('[购买] 将进入:', isSteam ? 'Steam 购买分支' : 'youping 购买分支')
-    console.log('[购买] ======================================')
     
     if (isSteam) {
       // Steam市场购买流程
-      console.log('[购买] ✅ 进入 Steam 市场购买流程')
       const marketHashName = item.steam_hash_name || item.steamHashName || ''
       const listingId = item.listing_id || item.listingId || ''
       
-      console.log('[购买] Steam 物品信息:', {
-        marketHashName: marketHashName || '无',
-        listingId: listingId || '无',
-        price: item.price
-      })
       
       if (!marketHashName && !listingId) {
         loadingMessage.close()
@@ -2015,8 +1915,6 @@ const handleBuyWeapon = async (item) => {
         max_price: item.price ? item.price * 1.2 : undefined  // 允许20%的价格波动
       }
       
-      console.log('[购买] Steam市场购买请求数据:', requestData)
-      console.log('[购买] 调用接口:', `${API_CONFIG.SPIDER_BASE_URL}${API_CONFIG.ENDPOINTS.STEAM_BUY_MARKET_ITEM}`)
       
       let confirmationTipTimer = null
       let confirmationTipMessage = null
@@ -2053,7 +1951,6 @@ const handleBuyWeapon = async (item) => {
         stopConfirmationTip()
       }
       
-      console.log('Steam市场购买响应:', response.data)
       
       loadingMessage.close()
       
@@ -2070,7 +1967,6 @@ const handleBuyWeapon = async (item) => {
               status: 'buyed'
             }
           )
-          console.log('数据库状态已更新为 buyed')
         } catch (updateError) {
           console.error('更新数据库状态失败:', updateError)
           // 不影响购买成功的提示
@@ -2105,10 +2001,6 @@ const handleBuyWeapon = async (item) => {
       }
     } else {
       // 悠悠有品购买流程 - 打开购买确认对话框
-      console.log('[购买] ========== 使用 悠悠有品 购买流程 ==========')
-      console.log('[购买] 打开购买确认对话框')
-      console.log('[购买] 商品ID:', item.id)
-      console.log('[购买] ================================================')
 
       // 关闭loading消息
       loadingMessage.close()
@@ -2122,7 +2014,6 @@ const handleBuyWeapon = async (item) => {
       // 购买流程由对话框接管，直接返回
       return
       
-      console.log('购买响应:', response.data)
       
       loadingMessage.close()
       
@@ -2149,7 +2040,6 @@ const handleBuyWeapon = async (item) => {
                 status: 'buyed'
               }
             )
-            console.log('数据库状态已更新为 buyed')
           } catch (updateError) {
             console.error('更新数据库状态失败:', updateError)
             // 不影响购买成功的提示
@@ -2278,7 +2168,6 @@ const openYYYPBuyDialog = async (item) => {
 
     if (response.data.success) {
       yyypBuyDetail.value = response.data.data
-      console.log(`[${platformType}] 商品详情:`, yyypBuyDetail.value)
     } else {
       throw new Error(response.data.message || '获取商品详情失败')
     }
@@ -2387,7 +2276,6 @@ const confirmYYYPBuy = async () => {
       }
 
       ElMessage.success('购买成功！')
-      console.log('购买结果:', response.data.data)
       yyypBuyDialogVisible.value = false
     } else {
       throw new Error(response.data.message || '购买失败')

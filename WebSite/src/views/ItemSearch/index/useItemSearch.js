@@ -183,7 +183,6 @@ export function useItemSearch() {
       const img = new Image()
       img.onload = () => {
         imageCache.add(url)
-        console.log(`图片已缓存: ${url}`)
       }
       img.onerror = () => {
         console.error(`图片加载失败: ${url}`)
@@ -191,7 +190,6 @@ export function useItemSearch() {
       img.src = url
     })
     
-    console.log(`开始预加载 ${uniqueUrls.size} 张唯一图片，已缓存 ${imageCache.size} 张`)
   }
 
   // 实时搜索武器名称
@@ -220,7 +218,6 @@ export function useItemSearch() {
   // 选择搜索建议
   const handleSelect = (item) => {
     searchKeyword.value = item.value
-    console.log('已选择:', item.value)
   }
 
   // 搜索武器详情
@@ -235,7 +232,6 @@ export function useItemSearch() {
     currentPage.value = 1
 
     try {
-      console.log('搜索武器:', searchKeyword.value, '精确匹配:', exactMatch)
 
       const response = await axios.get(apiUrls.searchWeaponDetail(searchKeyword.value.trim(), exactMatch))
 
@@ -252,7 +248,6 @@ export function useItemSearch() {
           // 如果启用自动搜索全部，且只有一个结果，自动触发全部搜索
           if (autoSearchAll && searchResults.value.length === 1) {
             const firstResult = searchResults.value[0]
-            console.log('自动触发全部搜索，武器:', firstResult.market_listing_item_name)
 
             // 延迟500ms执行，确保搜索结果已渲染
             setTimeout(() => {
@@ -291,13 +286,11 @@ export function useItemSearch() {
   const loadSteamIdList = async () => {
     try {
       const response = await axios.get(apiUrls.inventorySteamIds())
-      console.log('Steam ID列表响应:', response.data)
       if (response.data.success) {
         steamIdList.value = response.data.data
         if (steamIdList.value.length > 0) {
           // 默认选择第一个 - 使用新格式 steamID（大写）
           selectedSteamId.value = steamIdList.value[0].steamID
-          console.log('默认选择Steam ID:', selectedSteamId.value)
         } else {
           ElMessage.warning('没有找到库存数据，请先获取Steam库存')
         }
@@ -310,27 +303,23 @@ export function useItemSearch() {
 
   // Steam ID 改变处理
   const handleSteamIdChange = (value) => {
-    console.log('Steam ID已改变:', value)
     selectedSteamId.value = value
   }
 
   // 外观筛选改变处理
   const handleExteriorChange = (value) => {
-    console.log('外观筛选已改变:', value)
     selectedExterior.value = value
     currentPage.value = 1 // 重置到第一页
   }
 
   // StatTrak筛选改变处理
   const handleStatTrakChange = (value) => {
-    console.log('StatTrak筛选已改变:', value)
     selectedStatTrak.value = value
     currentPage.value = 1 // 重置到第一页
   }
 
   // 处理从高级搜索组件选择单个武器
   const handleSelectWeaponFromSearch = (weapon) => {
-    console.log('从高级搜索选择武器:', weapon)
     // 将选中的武器添加到搜索结果中
     const exists = searchResults.value.some(item => 
       item.market_listing_item_name === weapon.market_listing_item_name
@@ -348,7 +337,6 @@ export function useItemSearch() {
 
   // 处理从高级搜索组件选择全部武器
   const handleSelectAllWeaponsFromSearch = (weapons) => {
-    console.log('从高级搜索添加全部武器:', weapons.length)
     let addedCount = 0
     
     weapons.forEach(weapon => {
@@ -761,29 +749,21 @@ export function useItemSearch() {
 
   // 通过行数据搜索悠悠有品
   const handleSearchYYYPByRow = async (row) => {
-    console.log('=== 开始执行 handleSearchYYYPByRow ===')
-    console.log('row数据:', row)
-    console.log('row.yyyp_id:', row.yyyp_id)
-    console.log('selectedSteamId.value:', selectedSteamId.value)
     
     if (!row.yyyp_id) {
-      console.log('没有yyyp_id，退出')
       ElMessage.warning('该武器没有悠悠有品ID')
       return
     }
 
     if (!selectedSteamId.value) {
-      console.log('没有选择Steam账号，退出')
       ElMessage.warning('请先选择Steam账号')
       return
     }
 
-    console.log('通过验证，开始请求')
     isSearching.value = true
     searchSource.value = 'yyyp'
     
     try {
-      console.log('搜索悠悠有品:', row.market_listing_item_name, 'ID:', row.yyyp_id, 'SteamID:', selectedSteamId.value)
       
       // 构建请求数据（在售时带上排序、磨损、筛选参数）
       const requestData = buildYYYPListRequest(row.yyyp_id, 1, 50)
@@ -807,23 +787,17 @@ export function useItemSearch() {
           apiUrl = `${API_CONFIG.SPIDER_BASE_URL}/spiderApiV2/src/web_site/youping/units/item_search/on_sale/getCommodityList`
       }
       
-      console.log('请求URL:', apiUrl)
-      console.log('请求数据:', requestData)
       
       // 调用悠悠有品商品列表API（使用Spider服务器地址）
       const response = await axios.post(apiUrl, requestData)
       
-      console.log('API响应:', response.data)
       
       if (response.data.success) {
         const parsedData = response.data.data
-        console.log('获取到悠悠有品已解析数据:', parsedData)
         
         // 直接使用Spider解析后的数据
         const commodityList = parsedData.commodityList || []
         const totalCount = parsedData.totalCount || 0
-        console.log('商品列表:', commodityList)
-        console.log('在售总数:', totalCount)
         
         // 在售时保存列表配置（排序选项、磨损区间、筛选字段）供前端动态渲染
         if (yyypFilterType.value === 'on_sale' && (parsedData.buyPriceSortList?.length || parsedData.abradeRangeList?.length || parsedData.filters?.length)) {
@@ -877,7 +851,6 @@ export function useItemSearch() {
       const errorMessage = error.response?.data?.message || error.message || '搜索失败，请检查网络连接'
       ElMessage.error(errorMessage)
     } finally {
-      console.log('请求完成，重置加载状态')
       isSearching.value = false
       searchSource.value = ''
     }
@@ -893,7 +866,6 @@ export function useItemSearch() {
     const nextPage = yyypCurrentPage.value + 1
     
     try {
-      console.log(`加载悠悠有品第 ${nextPage} 页数据`)
       
       const requestData = buildYYYPListRequest(yyypCurrentWeapon.value.yyyp_id, nextPage, 50)
 
@@ -929,7 +901,6 @@ export function useItemSearch() {
           // 判断是否还有更多
           yyypHasMore.value = yyypCommodities.value.length < yyypTotalCount.value
           
-          console.log(`加载了 ${newCommodities.length} 条数据，当前共 ${yyypCommodities.value.length} 条`)
           
           // 预加载新图片
           preloadImages(newCommodities)
@@ -974,7 +945,6 @@ export function useItemSearch() {
     const nextPage = buffCurrentPage.value + 1
     
     try {
-      console.log(`加载BUFF第 ${nextPage} 页数据`)
       
       const requestData = {
         steamId: selectedSteamId.value || '',
@@ -997,7 +967,6 @@ export function useItemSearch() {
           // 判断是否还有更多
           buffHasMore.value = nextPage < buffTotalPage.value
           
-          console.log(`加载了 ${newCommodities.length} 条数据，当前共 ${buffCommodities.value.length} 条`)
           
           // 预加载新图片
           preloadImages(newCommodities)
@@ -1031,14 +1000,12 @@ export function useItemSearch() {
 
   // 查看商品详情（暂未对接）
   const handleViewDetail = (commodity) => {
-    console.log('查看商品详情:', commodity)
     ElMessage.info(`查看详情功能开发中... 商品ID: ${commodity.id}`)
     // TODO: 对接查看详情接口
   }
 
   // 购买商品
   const handleBuyCommodity = async (commodity) => {
-    console.log('处理商品操作:', commodity)
 
     // 判断是求购供应还是普通购买
     if (commodity.isPurchaseOrder) {
@@ -1210,7 +1177,6 @@ export function useItemSearch() {
 
   // 处理供应到求购订单
   const handleSupplyToPurchaseOrder = async (purchaseOrder) => {
-    console.log('供应到求购订单:', purchaseOrder)
 
     // 检查是否选择了 Steam ID
     if (!selectedSteamId.value) {
@@ -1689,17 +1655,14 @@ export function useItemSearch() {
     const commoditiesWithNameTag = commodityList.filter(item => item.haveNameTag === 1)
     
     if (commoditiesWithNameTag.length === 0) {
-      console.log('没有需要获取改名信息的商品')
       return
     }
 
     // 只自动获取第一条
-    console.log(`共有 ${commoditiesWithNameTag.length} 个商品有改名标签，自动获取第一个`)
     
     const commodity = commoditiesWithNameTag[0]
     
     try {
-      console.log(`正在获取商品 ${commodity.id} 的改名信息`)
       
       // 调用接口获取详细信息 - 使用V2 API
       const response = await axios.post(
@@ -1718,7 +1681,6 @@ export function useItemSearch() {
         commodity.nameTags = nameTags
         commodity.nameTagText = nameTags.length > 0 ? nameTags[0].replace(/^名称标签：[""]?|[""]$/g, '') : ''
         
-        console.log(`商品 ${commodity.id} 改名信息:`, nameTags)
       } else {
         console.error(`获取商品 ${commodity.id} 改名信息失败:`, response.data.message)
       }
@@ -1726,7 +1688,6 @@ export function useItemSearch() {
       console.error(`获取商品 ${commodity.id} 改名信息异常:`, error)
     }
     
-    console.log(`自动获取改名信息完成`)
   }
 
   // 获取单个商品的改名信息（点击按钮时调用）
@@ -1735,7 +1696,6 @@ export function useItemSearch() {
       // 设置加载状态
       commodity.nameTagLoading = true
 
-      console.log('正在获取改名信息，商品ID:', commodity.id)
 
       // 调用接口获取详细信息 - 使用V2 API
       const response = await axios.post(
@@ -1746,7 +1706,6 @@ export function useItemSearch() {
         }
       )
 
-      console.log('改名信息响应:', response.data)
 
       if (response.data.success && response.data.data) {
         const detailData = response.data.data.Data
@@ -1776,7 +1735,6 @@ export function useItemSearch() {
       return
     }
 
-    console.log('开始批量获取印花/挂件价格')
 
     // 收集所有需要查询的 steam_hash_name
     const steamHashNames = new Set()
@@ -1807,19 +1765,16 @@ export function useItemSearch() {
     })
 
     if (steamHashNames.size === 0) {
-      console.log('没有需要查询价格的印花/挂件')
       commodityList.forEach(item => {
         item.priceLoading = false
       })
       return
     }
 
-    console.log(`共需要查询 ${steamHashNames.size} 个印花/挂件的价格`)
 
     try {
       // 调用批量查询接口
       const apiUrl = apiUrls.itemSearchBatchStickerPrices()
-      console.log('准备调用API:', apiUrl)
       const response = await axios.post(
         apiUrl,
         {
@@ -1829,7 +1784,6 @@ export function useItemSearch() {
 
       if (response.data.success) {
         const priceMap = response.data.data
-        console.log('获取到价格数据:', priceMap)
 
         // 更新每个商品的印花/挂件价格信息
         commodityList.forEach(item => {
@@ -1872,7 +1826,6 @@ export function useItemSearch() {
           item.priceLoading = false
         })
 
-        console.log('印花/挂件价格更新完成')
       } else {
         console.error('批量查询价格失败:', response.data.message)
         commodityList.forEach(item => {
@@ -2083,11 +2036,8 @@ export function useItemSearch() {
 
   // 同时搜索悠悠有品和BUFF
   const handleSearchAllPlatforms = async (row) => {
-    console.log('=== 开始执行 handleSearchAllPlatforms ===')
-    console.log('row数据:', row)
     
     if (!selectedSteamId.value) {
-      console.log('没有选择Steam账号，退出')
       ElMessage.warning('请先选择Steam账号')
       return
     }
@@ -2135,29 +2085,21 @@ export function useItemSearch() {
 
   // 通过行数据搜索BUFF
   const handleSearchBuffByRow = async (row) => {
-    console.log('=== 开始执行 handleSearchBuffByRow ===')
-    console.log('row数据:', row)
-    console.log('row.buff_id:', row.buff_id)
-    console.log('selectedSteamId.value:', selectedSteamId.value)
     
     if (!row.buff_id) {
-      console.log('没有buff_id，退出')
       ElMessage.warning('该武器没有BUFF ID')
       return
     }
 
     if (!selectedSteamId.value) {
-      console.log('没有选择Steam账号，退出')
       ElMessage.warning('请先选择Steam账号')
       return
     }
 
-    console.log('通过验证，开始请求')
     isSearching.value = true
     searchSource.value = 'buff'
     
     try {
-      console.log('搜索BUFF:', row.market_listing_item_name, 'ID:', row.buff_id, 'SteamID:', selectedSteamId.value)
       
       // 构建请求数据
       const requestData = {
@@ -2167,17 +2109,13 @@ export function useItemSearch() {
       
       const apiUrl = apiUrls.buffGetCommodities()
       
-      console.log('请求URL:', apiUrl)
-      console.log('请求数据:', requestData)
       
       // 调用BUFF商品列表API
       const response = await axios.post(apiUrl, requestData)
       
-      console.log('API响应:', response.data)
       
       if (response.data.success) {
         const parsedData = response.data.data
-        console.log('获取到BUFF已解析数据:', parsedData)
         
         // 直接使用Spider解析后的数据
         const commodityList = parsedData.commodityList || []
@@ -2187,10 +2125,6 @@ export function useItemSearch() {
         const rentNum = parsedData.rent_num || 0
         const totalPage = parsedData.totalPage || 1
         
-        console.log('商品列表:', commodityList)
-        console.log('在售总数:', totalCount)
-        console.log('总页数:', totalPage)
-        console.log('求购数:', buyNum, '在售数:', sellNum, '租赁数:', rentNum)
         
         // 更新BUFF状态，显示商品列表
         buffCurrentWeapon.value = row
@@ -2234,7 +2168,6 @@ export function useItemSearch() {
       const errorMessage = error.response?.data?.message || error.message || '搜索失败，请检查网络连接'
       ElMessage.error(errorMessage)
     } finally {
-      console.log('请求完成，重置加载状态')
       isSearching.value = false
       searchSource.value = ''
     }
@@ -2251,7 +2184,6 @@ export function useItemSearch() {
     searchSource.value = 'csfloat'
     
     try {
-      console.log('搜索CsFloat:', row.market_listing_item_name, 'Hash Name:', row.steam_hash_name)
       
       // 对hash name进行URL编码
       const encodedName = encodeURIComponent(row.steam_hash_name)
@@ -2505,7 +2437,6 @@ export function useItemSearch() {
           
           try {
             // BUFF购买逻辑（暂未实现）
-            console.log('购买BUFF商品:', item)
             // TODO: 实现BUFF购买
             successCount++
           } catch (error) {
@@ -2542,7 +2473,6 @@ export function useItemSearch() {
             
             if (response.data.success) {
               successCount++
-              console.log(`购买成功 [${i + 1}/${selectedCommodities.value.length}]:`, item.commodityName)
             } else {
               failCount++
               failedItems.push(item.commodityName || '未知商品')
@@ -2594,7 +2524,6 @@ export function useItemSearch() {
       
       // 如果有成功购买的商品，自动刷新列表
       if (successCount > 0) {
-        console.log('批量购买成功，自动刷新列表...')
         setTimeout(async () => {
           if (selectedCommodityType.value === 'yyyp' && yyypCurrentWeapon.value) {
             await handleRefreshYYYP()
@@ -2771,7 +2700,6 @@ export function useItemSearch() {
 
   // 悠悠有品筛选处理
   const handleYYYPFilterChange = async (filterType) => {
-    console.log('悠悠有品筛选类型:', filterType)
 
     // 更新筛选类型
     yyypFilterType.value = filterType
@@ -2935,10 +2863,8 @@ export function useItemSearch() {
   // 页面加载时获取Steam ID列表
   onMounted(async () => {
     const deviceType = applyDeviceClass()
-    console.log('[ItemSearch] 当前设备类型:', deviceType)
 
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[ItemSearch] 设备类型已变更:', newDeviceType)
     })
 
     await loadSteamIdList()

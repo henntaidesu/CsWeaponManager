@@ -322,7 +322,6 @@ export function useRental() {
   const searchByName = async (itemName) => {
     loading.value = true
     try {
-      console.log('正在搜索借入武器(过滤接口):', itemName)
       const count = await fetchRentalDataFiltered({
         min: 0,
         max: 10000,
@@ -526,7 +525,6 @@ export function useRental() {
   const loadRentalData = async () => {
     // 如果是搜索模式且有搜索关键词，不需要重新加载数据
     if (isSearchMode.value && searchText.value.trim()) {
-      console.log('搜索模式下，使用现有搜索结果进行分页')
       return
     }
     
@@ -547,7 +545,6 @@ export function useRental() {
       const max = pageSize.value
       
 
-      console.log(`正在请求数据... 页码: ${currentPage.value}, 每页: ${pageSize.value}, min: ${min}, max: ${max}`)
       
       // 根据状态/子状态筛选选择不同的API（子状态优先）
       let apiUrl = apiUrls.rentalData(min, max)
@@ -571,14 +568,12 @@ export function useRental() {
         return
       }
 
-      console.log('响应状态:', response.status)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const rawData = await response.json()
-      console.log('接收到的原始数据:', rawData)
       
       // 检查数据格式
       if (!Array.isArray(rawData)) {
@@ -618,7 +613,6 @@ export function useRental() {
         }
       }).filter(item => item !== null)
       
-      console.log('转换后的数据:', rentalData.value)
 
       // 并行刷新统计（内部会更新 totalItems）
       await loadFilteredStats()
@@ -764,7 +758,6 @@ export function useRental() {
   }
 
   const handleDateRangeChange = (value) => {
-    console.log('日期范围变更:', value)
   }
 
   // 高级搜索处理
@@ -806,7 +799,6 @@ export function useRental() {
     loading.value = true
     try {
       const [startDate, endDate] = dateRange.value
-      console.log('按时间搜索:', startDate, '至', endDate)
       
       const response = await fetch(apiUrls.rentalSearchByTime(startDate, endDate), {
         method: 'GET',
@@ -827,7 +819,6 @@ export function useRental() {
       }
 
       const rawData = await response.json()
-      console.log('时间搜索结果:', rawData)
 
       if (!Array.isArray(rawData)) {
         throw new Error('搜索结果格式错误')
@@ -891,7 +882,6 @@ export function useRental() {
 
   const loadTimeRangeStats = async (startDate, endDate) => {
     try {
-      console.log('正在获取时间范围统计...', { startDate, endDate })
       
       const response = await fetch(apiUrls.rentalStatsByTime(startDate, endDate), {
         method: 'GET',
@@ -912,7 +902,6 @@ export function useRental() {
       }
 
       const statsData = await response.json()
-      console.log('获取到的时间范围统计:', statsData)
       
       if (statsData) {
         allDataStats.value = {
@@ -925,7 +914,6 @@ export function useRental() {
           completedCount: statsData.completed_count || 0,
           cancelledCount: statsData.cancelled_count || 0
         }
-        console.log('设置时间范围统计为:', allDataStats.value)
       } else {
         console.error('时间范围统计API返回数据格式错误:', statsData)
       }
@@ -999,7 +987,6 @@ export function useRental() {
 
       const response = await fetch(apiUrls.rentalStatusList())
       const result = await response.json()
-      console.log('借入 status 列表原始返回:', result)
       if (result && result.success && Array.isArray(result.data)) {
         statusList.value = result.data
         setCachedData(cacheKey, result.data)
@@ -1017,7 +1004,6 @@ export function useRental() {
       const statusParam = statusFilter.value || 'all'
       const response = await fetch(apiUrls.rentalStatusSubList(statusParam))
       const result = await response.json()
-      console.log('借入 status_sub 列表原始返回:', statusParam, result)
       if (result && result.success && Array.isArray(result.data)) {
         statusSubList.value = result.data
       } else {
@@ -1256,11 +1242,9 @@ export function useRental() {
   onMounted(async () => {
     // 应用设备类型类到 body
     const deviceType = applyDeviceClass()
-    console.log('[Rental] 当前设备类型:', deviceType)
 
     // 监听设备类型变化
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[Rental] 设备类型已变更:', newDeviceType)
     })
 
     // 优化：先加载主数据，其他数据按需加载

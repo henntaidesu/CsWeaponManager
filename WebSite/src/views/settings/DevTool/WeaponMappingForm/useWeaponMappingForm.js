@@ -95,7 +95,6 @@ export default function useWeaponMappingForm() {
     ElMessage.info('开始同步饰品映射...')
     
     try {
-      console.log('开始同步悠悠有品饰品映射, Steam ID:', selectedSteamIdYoupin.value)
 
       const response = await axios.post(apiUrls.youpinSyncWeaponTemplates(), {
         steamId: selectedSteamIdYoupin.value,
@@ -104,7 +103,6 @@ export default function useWeaponMappingForm() {
 
       if (response.data.success) {
         ElMessage.success(`同步成功！${response.data.message}`)
-        console.log('同步结果:', response.data)
         lastSyncTime.value = new Date().toLocaleString('zh-CN')
       } else {
         ElMessage.error(`同步失败: ${response.data.message}`)
@@ -156,7 +154,6 @@ export default function useWeaponMappingForm() {
     ElMessage.info('开始同步BUFF饰品映射...')
 
     try {
-      console.log('开始同步BUFF饰品映射, Steam ID:', selectedSteamIdBuff.value)
 
       const response = await axios.post(apiUrls.buffSyncTemplates(), {
         steamId: selectedSteamIdBuff.value
@@ -164,7 +161,6 @@ export default function useWeaponMappingForm() {
 
       if (response.data.success) {
         ElMessage.success(`同步成功！${response.data.message}`)
-        console.log('同步结果:', response.data)
         lastSyncTime.value = new Date().toLocaleString('zh-CN')
       } else {
         ElMessage.error(`同步失败: ${response.data.message}`)

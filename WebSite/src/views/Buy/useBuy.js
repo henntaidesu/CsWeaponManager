@@ -424,7 +424,6 @@ export function useBuy() {
 
   const loadTotalCount = async () => {
     try {
-      console.log('正在获取总数...')
       const response = await fetch(apiUrls.buyCountNumber(), {
         method: 'GET',
         mode: 'cors',
@@ -438,11 +437,9 @@ export function useBuy() {
       }
 
       const countData = await response.json()
-      console.log('获取到的总数:', countData)
 
       if (countData && typeof countData.count === 'number') {
         totalItems.value = countData.count
-        console.log('设置总数为:', totalItems.value)
       } else {
         console.error('总数API返回数据格式错误:', countData)
       }
@@ -455,7 +452,6 @@ export function useBuy() {
   const searchByName = async (itemName) => {
     loading.value = true
     try {
-      console.log('正在搜索武器:', itemName)
 
       const filters = {
         source: sourceFilter.value || null,
@@ -491,7 +487,6 @@ export function useBuy() {
       }
 
       const rawData = await response.json()
-      console.log('搜索结果:', rawData)
 
       if (!Array.isArray(rawData)) {
         throw new Error('搜索结果格式错误')
@@ -544,7 +539,6 @@ export function useBuy() {
 
   const loadBuyData = async () => {
     if (isSearchMode.value && searchText.value.trim()) {
-      console.log('搜索模式下，使用现有搜索结果进行分页')
       return
     }
 
@@ -561,7 +555,6 @@ export function useBuy() {
       const min = (currentPage.value - 1) * pageSize.value
       const max = pageSize.value
 
-      console.log(`正在请求数据... 页码: ${currentPage.value}, 每页: ${pageSize.value}, min: ${min}, max: ${max}`)
 
       const filters = {
         source: sourceFilter.value || null,
@@ -592,14 +585,12 @@ export function useBuy() {
         })
       })
 
-      console.log('响应状态:', response.status)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const rawData = await response.json()
-      console.log('接收到的原始数据:', rawData)
 
       if (!Array.isArray(rawData)) {
         console.error('数据格式错误，期望数组格式，实际收到:', typeof rawData)
@@ -642,7 +633,6 @@ export function useBuy() {
 
       buyData.value = transformedData
 
-      console.log('转换后的数据:', buyData.value)
 
       await loadTotalStats()
 
@@ -681,7 +671,6 @@ export function useBuy() {
     loading.value = true
     try {
       const [startDate, endDate] = dateRange.value
-      console.log('按时间搜索:', startDate, '至', endDate)
 
       const response = await fetch(apiUrls.buySearchTimeRange(startDate, endDate), {
         method: 'GET',
@@ -696,7 +685,6 @@ export function useBuy() {
       }
 
       const rawData = await response.json()
-      console.log('时间搜索结果:', rawData)
 
       if (!Array.isArray(rawData)) {
         throw new Error('搜索结果格式错误')
@@ -751,7 +739,6 @@ export function useBuy() {
 
   const loadTimeRangeStats = async (startDate, endDate) => {
     try {
-      console.log('正在获取时间范围统计...', { startDate, endDate })
 
       const response = await fetch(apiUrls.buyStatsTimeRange(startDate, endDate), {
         method: 'GET',
@@ -766,7 +753,6 @@ export function useBuy() {
       }
 
       const statsData = await response.json()
-      console.log('获取到的时间范围统计:', statsData)
 
       if (statsData) {
         totalStats.value = {
@@ -777,7 +763,6 @@ export function useBuy() {
           cancelledCount: statsData.cancelled_count || 0,
           pendingCount: statsData.pending_count || 0
         }
-        console.log('设置时间范围统计为:', totalStats.value)
       } else {
         console.error('时间范围统计API返回数据格式错误:', statsData)
       }
@@ -1027,7 +1012,6 @@ export function useBuy() {
   }
 
   const handleSortChange = ({ column, prop, order }) => {
-    console.log('排序变更:', { column, prop, order })
     if (prop === 'order_time') {
       sortOrder.value = order || 'descending'
       if (isSearchMode.value && allSearchResults.value.length > 0) {
@@ -1043,7 +1027,6 @@ export function useBuy() {
   }
 
   const handleDateRangeChange = (value) => {
-    console.log('日期范围变更:', value)
   }
 
   const handleAdvancedSearch = async () => {
@@ -1102,7 +1085,6 @@ export function useBuy() {
 
   const loadYyypPriceInfo = async (steamHashName) => {
     if (!steamHashName) {
-      console.log('未提供 steam_hash_name，跳过查询')
       yyypPriceInfo.value = {
         yyyp_price: null,
         yyyp_on_sale_count: null
@@ -1111,23 +1093,19 @@ export function useBuy() {
     }
 
     try {
-      console.log('正在查询悠悠有品价格信息，steam_hash_name:', steamHashName)
       const url = apiUrls.buyYyypPriceInfo(steamHashName)
-      console.log('API URL:', url)
 
       const response = await fetch(url, {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
       })
 
-      console.log('API响应状态:', response.status)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const result = await response.json()
-      console.log('API返回结果:', result)
 
       if (result.success && result.data) {
         // 使用 Object.assign 确保 Vue 的响应式系统能检测到变化
@@ -1135,10 +1113,7 @@ export function useBuy() {
           yyyp_price: result.data.yyyp_price,
           yyyp_on_sale_count: result.data.yyyp_on_sale_count
         })
-        console.log('成功获取价格信息:', yyypPriceInfo.value)
-        console.log('yyyp_price 值类型:', typeof yyypPriceInfo.value.yyyp_price, '值:', yyypPriceInfo.value.yyyp_price)
       } else {
-        console.log('API返回成功但无数据')
         Object.assign(yyypPriceInfo.value, {
           yyyp_price: null,
           yyyp_on_sale_count: null
@@ -1161,7 +1136,6 @@ export function useBuy() {
       const parsed = typeof stickersData === 'string' ? JSON.parse(stickersData) : stickersData
       if (!Array.isArray(parsed) || parsed.length === 0) return
 
-      console.log('解析的印花数据:', parsed)
 
       const pricePromises = parsed.map(async (sticker) => {
         const rawHashName = sticker.hashName || sticker.steam_hash_name || sticker.steamHashName
@@ -1172,12 +1146,10 @@ export function useBuy() {
           ? `Sticker | ${rawHashName}`
           : rawHashName
 
-        console.log('印花查询 - name:', name, 'rawHashName:', rawHashName, 'hashName:', hashName)
         if (!hashName) return null
 
         try {
           const url = apiUrls.buyYyypPriceInfo(hashName)
-          console.log('请求URL:', url)
 
           const response = await fetch(url, {
             method: 'GET',
@@ -1187,7 +1159,6 @@ export function useBuy() {
             }
           })
 
-          console.log('响应状态:', response.status, response.statusText)
 
           if (!response.ok) {
             console.warn(`请求失败 (${hashName}): ${response.status} ${response.statusText}`)
@@ -1195,7 +1166,6 @@ export function useBuy() {
           }
 
           const result = await response.json()
-          console.log('响应数据:', result)
 
           if (result.success && result.data) {
             return {
@@ -1217,7 +1187,6 @@ export function useBuy() {
 
       const results = await Promise.all(pricePromises)
       stickersPriceInfo.value = results.filter(item => item !== null)
-      console.log('印花价格信息:', stickersPriceInfo.value)
     } catch (error) {
       console.error('解析印花价格信息失败:', error)
       stickersPriceInfo.value = []
@@ -1244,7 +1213,6 @@ export function useBuy() {
       if (!hashName) return
 
       const url = apiUrls.buyYyypPriceInfo(hashName)
-      console.log('挂件请求URL:', url, 'rawHashName:', rawHashName, 'hashName:', hashName)
 
       const response = await fetch(url, {
         method: 'GET',
@@ -1254,7 +1222,6 @@ export function useBuy() {
         }
       })
 
-      console.log('挂件响应状态:', response.status, response.statusText)
 
       if (!response.ok) {
         console.warn(`挂件请求失败 (${hashName}): ${response.status} ${response.statusText}`)
@@ -1262,7 +1229,6 @@ export function useBuy() {
       }
 
       const result = await response.json()
-      console.log('挂件响应数据:', result)
 
       if (result.success && result.data) {
         pendantPriceInfo.value = {
@@ -1274,7 +1240,6 @@ export function useBuy() {
           buff_on_sale_count: result.data.buff_on_sale_count,
           market_listing_item_name: result.data.market_listing_item_name
         }
-        console.log('挂件价格信息:', pendantPriceInfo.value)
       }
     } catch (error) {
       console.error('查询挂件价格信息失败:', error.message || error)
@@ -1296,13 +1261,11 @@ export function useBuy() {
     })
 
     if (!steamHashName) {
-      console.log('未提供武器 steam_hash_name，跳过查询')
       return
     }
 
     try {
       const url = apiUrls.buyYyypPriceInfo(steamHashName)
-      console.log('武器主体请求URL:', url, 'steamHashName:', steamHashName)
 
       const response = await fetch(url, {
         method: 'GET',
@@ -1312,7 +1275,6 @@ export function useBuy() {
         }
       })
 
-      console.log('武器主体响应状态:', response.status, response.statusText)
 
       if (!response.ok) {
         console.warn(`武器主体请求失败 (${steamHashName}): ${response.status} ${response.statusText}`)
@@ -1320,7 +1282,6 @@ export function useBuy() {
       }
 
       const result = await response.json()
-      console.log('武器主体响应数据:', result)
 
       if (result.success && result.data) {
         // 更新悠悠有品价格
@@ -1334,8 +1295,6 @@ export function useBuy() {
           buff_price: result.data.buff_price,
           buff_on_sale_count: result.data.buff_on_sale_count
         })
-        console.log('武器主体价格信息 - 悠悠:', yyypPriceInfo.value)
-        console.log('武器主体价格信息 - BUFF:', buffPriceInfo.value)
       }
     } catch (error) {
       console.error('查询武器主体价格信息失败:', error.message || error)
@@ -1477,11 +1436,9 @@ export function useBuy() {
   onMounted(() => {
     // 应用设备类型类到 body
     const deviceType = applyDeviceClass()
-    console.log('[Buy] 当前设备类型:', deviceType)
 
     // 监听设备类型变化
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('[Buy] 设备类型已变更:', newDeviceType)
     })
 
     normalizeFilters()

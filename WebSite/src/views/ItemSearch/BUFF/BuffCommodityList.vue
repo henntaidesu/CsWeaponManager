@@ -512,7 +512,6 @@ const wearRangeOptions = computed(() => {
 
 // 筛选相关方法
 const handleFilterChange = (filterType) => {
-  console.log('BUFF筛选变更:', filterType)
   emit('filter-change', filterType)
 }
 
@@ -539,30 +538,25 @@ const handleResetFilter = () => {
 
 // 应用筛选
 const handleApplyFilter = () => {
-  console.log('应用BUFF筛选:', filterForm.value)
   emit('advanced-filter', filterForm.value)
   filterDialogVisible.value = false
 }
 
 const handleOpenWearRanking = () => {
-  console.log('打开磨损排行')
   emit('open-wear-ranking')
 }
 
 const handleOpenPriceTrend = () => {
-  console.log('打开价格走势')
   emit('open-price-trend')
 }
 
 // 排序变更处理
 const handleSortChange = (value) => {
-  console.log('BUFF排序变更:', value)
   emit('sort-change', value)
 }
 
 // 磨损区间变更处理
 const handleWearRangeChange = (value) => {
-  console.log('BUFF磨损区间变更:', value)
   emit('wear-range-change', value)
 }
 

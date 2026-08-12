@@ -1375,31 +1375,26 @@ export function useHome() {
 
   // 处理数据源切换
   const handleDataSourceChange = async () => {
-    console.log('数据源切换为:', dataSource.value)
     // 数据源切换时不需要重新加载，因为数据已经加载过了
   }
 
   // 处理库存图表Steam ID切换
   const handleInventorySteamIdChange = async () => {
-    console.log('库存图表Steam ID切换为:', selectedInventorySteamId.value)
     await loadInventoryStats(selectedInventorySteamId.value)
   }
 
   // 处理组件图表Steam ID切换
   const handleComponentSteamIdChange = async () => {
-    console.log('组件图表Steam ID切换为:', selectedComponentSteamId.value)
     await loadComponentsStats(selectedComponentSteamId.value)
   }
 
   // 处理购入图表Steam ID切换
   const handleBuySteamIdChange = async () => {
-    console.log('购入图表Steam ID切换为:', selectedBuySteamId.value)
     await loadBuyChartData(selectedBuySteamId.value)
   }
 
   // 处理出售图表Steam ID切换
   const handleSellSteamIdChange = async () => {
-    console.log('出售图表Steam ID切换为:', selectedSellSteamId.value)
     await loadSellChartData(selectedSellSteamId.value)
   }
 
@@ -1457,11 +1452,9 @@ export function useHome() {
   onMounted(async () => {
     // 应用设备类型类到 body
     const deviceType = applyDeviceClass()
-    console.log('当前设备类型:', deviceType)
 
     // 监听设备类型变化
     unwatchDevice = watchDeviceType((newDeviceType) => {
-      console.log('设备类型已变更:', newDeviceType)
       // 设备类型变化时重新加载图表
       if (inventoryChart) inventoryChart.resize()
       if (componentChart) componentChart.resize()

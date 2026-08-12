@@ -65,7 +65,6 @@ export function useWeaponSearch(options = {}) {
       
       if (response.data.success) {
         weaponNameList.value = response.data.data || []
-        console.log(`✅ 加载武器名称列表: ${weaponNameList.value.length} 个`, weaponType ? `(类型: ${weaponType})` : '(全部)')
       } else {
         ElMessage.error('获取武器名称失败')
       }
@@ -184,19 +183,11 @@ export function useWeaponSearch(options = {}) {
         } else {
           // 追加数据
           searchResults.value.push(...newData)
-          console.log(`📥 追加 ${newData.length} 条数据，总计 ${searchResults.value.length} 条`)
         }
         
         // 判断是否还有更多数据
         hasMore.value = newData.length >= pageSize.value
         
-        console.log('📊 加载状态', {
-          hasMore: hasMore.value,
-          currentTotal: searchResults.value.length,
-          newDataLength: newData.length,
-          pageSize: pageSize.value,
-          currentPage: currentPage.value
-        })
       } else {
         ElMessage.error(response.data.message || '搜索失败')
       }
@@ -216,11 +207,6 @@ export function useWeaponSearch(options = {}) {
       return
     }
     
-    console.log('🔄 开始加载更多', {
-      currentPage: currentPage.value,
-      hasMore: hasMore.value,
-      isLoadingMore: isLoadingMore.value
-    })
     
     currentPage.value++
     await loadWeaponData()
@@ -350,20 +336,9 @@ export function useWeaponSearch(options = {}) {
       const clientHeight = window.innerHeight
       const distanceToBottom = scrollHeight - scrollTop - clientHeight
       
-      console.log('📏 页面滚动位置检查', {
-        scrollTop: Math.round(scrollTop),
-        scrollHeight,
-        clientHeight,
-        distanceToBottom: Math.round(distanceToBottom),
-        hasMore: hasMore.value,
-        isLoadingMore: isLoadingMore.value,
-        currentPage: currentPage.value,
-        resultsCount: searchResults.value.length
-      })
       
       // 滚动到底部触发加载更多（距离底部200px时触发）
       if (distanceToBottom < 200 && hasMore.value && !isLoadingMore.value) {
-        console.log('✅ 触发加载更多数据')
         loadMoreWeapons()
       }
     }, 100) // 100ms 防抖延迟

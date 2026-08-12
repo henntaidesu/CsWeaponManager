@@ -780,7 +780,6 @@ export function useSteamMarket() {
   }
 
   const handleBuyDateRangeChange = (value) => {
-    console.log('购买日期范围变更:', value)
   }
 
   // Sell事件处理
@@ -852,7 +851,6 @@ export function useSteamMarket() {
   }
 
   const handleSellDateRangeChange = (value) => {
-    console.log('销售日期范围变更:', value)
   }
 
   // 加载Buy游戏名称列表

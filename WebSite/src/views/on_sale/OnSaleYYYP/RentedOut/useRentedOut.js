@@ -189,14 +189,12 @@ export default {
     // 上架过户
     const handleTransfer = (item) => {
       ElMessage.info(`上架过户功能开发中 - ${item.item_name}`)
-      console.log('上架过户:', item)
       // TODO: 实现上架过户功能
     }
 
     // 取消转租
     const handleCancelSublease = (item) => {
       ElMessage.info(`取消转租功能开发中 - ${item.item_name}`)
-      console.log('取消转租:', item)
       // TODO: 实现取消转租功能
     }
 
