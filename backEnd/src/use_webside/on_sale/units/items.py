@@ -24,6 +24,59 @@ class OnSaleItems:
         )
         return rows[0][0] if rows else None
 
+    @staticmethod
+    def _get_igxe_steam_id(account_id):
+        """从 config 表取 IGXE 账号的 steamID"""
+        db = DatabaseManager()
+        rows = db.execute_query(
+            "SELECT steamID FROM config WHERE key1 = ? AND key2 = ? AND dataID = ?",
+            ('igxe', 'config', account_id)
+        )
+        return rows[0][0] if rows else None
+
+    @staticmethod
+    def _call_igxe_spider(endpoint, payload, action):
+        """统一调用 IGXE Spider 的在售接口"""
+        try:
+            resp = requests.post(
+                f"{SPIDER_API_ADDRESS}/spiderApiV2/src/web_site/igxe/units/on_sale/{endpoint}",
+                json=payload,
+                timeout=30
+            )
+            if resp.status_code != 200:
+                return jsonify({
+                    'success': False,
+                    'message': f'IGXE {action}失败: HTTP {resp.status_code}'
+                }), 502
+            result = resp.json() or {}
+            if not result.get('success'):
+                return jsonify({
+                    'success': False,
+                    'message': result.get('message') or f'IGXE {action}失败'
+                }), 400
+            return jsonify(result), 200
+        except requests.exceptions.RequestException as exc:
+            return jsonify({'success': False, 'message': f'无法连接IGXE爬虫服务: {exc}'}), 502
+
+    @staticmethod
+    def _get_igxe_on_sale_items(account_id, trade_type):
+        """IGXE 在售页列表：只支持 sale 类型"""
+        if trade_type != 'sale':
+            return jsonify({
+                'success': False,
+                'message': f'IGXE 暂不支持 {trade_type} 类型'
+            }), 400
+
+        steam_id = OnSaleItems._get_igxe_steam_id(account_id)
+        if not steam_id:
+            return jsonify({'success': False, 'message': '未找到IGXE账号配置'}), 404
+
+        return OnSaleItems._call_igxe_spider(
+            'getSellList',
+            {'steamID': steam_id, 'pageSize': 100},
+            '在售列表获取'
+        )
+
     # BUFF 支持的在售页子类型。转租/过户/秒到账是悠悠有品特有玩法，BUFF 没有
     BUFF_TRADE_TYPES = ('sale', 'offer', 'purchase_request', 'favorite', 'rented_out', 'lease')
 
@@ -120,7 +173,7 @@ class OnSaleItems:
                     'message': '缺少必要参数: platform 和 account_id'
                 }), 400
 
-            if platform not in ('yyyp', 'buff'):
+            if platform not in ('yyyp', 'buff', 'igxe'):
                 return jsonify({
                     'success': False,
                     'message': f'暂不支持 {platform} 平台'
@@ -128,6 +181,9 @@ class OnSaleItems:
 
             if platform == 'buff':
                 return OnSaleItems._get_buff_on_sale_items(account_id, trade_type)
+
+            if platform == 'igxe':
+                return OnSaleItems._get_igxe_on_sale_items(account_id, trade_type)
 
             db = DatabaseManager()
 
@@ -318,6 +374,24 @@ class OnSaleItems:
             if not item_id or new_price in (None, ''):
                 return jsonify({'success': False, 'message': '缺少必要参数: id 或 new_price'}), 400
 
+            if platform == 'igxe':
+                steam_id = OnSaleItems._get_igxe_steam_id(account_id)
+                if not steam_id:
+                    return jsonify({'success': False, 'message': '未找到IGXE账号配置'}), 404
+                return OnSaleItems._call_igxe_spider(
+                    'changePrice',
+                    {
+                        'steamID': steam_id,
+                        'items': [{
+                            'id': item_id,
+                            'price': new_price,
+                            'market_hash_name': data.get('market_hash_name') or '',
+                            'float_wear': data.get('weapon_float') or '',
+                        }],
+                    },
+                    '改价'
+                )
+
             if platform != 'buff':
                 return jsonify({
                     'success': False,
@@ -370,6 +444,16 @@ class OnSaleItems:
 
             if platform == 'buff':
                 return OnSaleItems._buff_cancel(item_id, account_id)
+
+            if platform == 'igxe':
+                steam_id = OnSaleItems._get_igxe_steam_id(account_id)
+                if not steam_id:
+                    return jsonify({'success': False, 'message': '未找到IGXE账号配置'}), 404
+                return OnSaleItems._call_igxe_spider(
+                    'offShelf',
+                    {'steamID': steam_id, 'ids': [item_id]},
+                    '下架'
+                )
 
             # 下面整段只实现了悠悠有品的下架（读 youpin 配置、调 youping 的 offShelf）。
             # 其他平台若放行，会把该平台的订单号发到悠悠有品去下架，属于静默错走，必须拦住。

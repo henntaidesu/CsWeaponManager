@@ -12,6 +12,8 @@ export function useOnSaleIGXE() {
   const weaponTypeFilter = ref('')
   const floatRangeFilter = ref('')
   const displayMode = ref('card')
+  const accountList = ref([])
+  const selectedAccount = ref('')
 
   // 弹窗相关
   const updatePriceDialogVisible = ref(false)
@@ -73,9 +75,17 @@ export function useOnSaleIGXE() {
 
   // 加载在售数据
   const loadOnSaleData = async () => {
+    if (!selectedAccount.value) {
+      ElMessage.warning('请先选择IGXE账号')
+      return
+    }
     loading.value = true
     try {
-      const response = await axios.get(apiUrls.getOnSaleItems())
+      const response = await axios.post(apiUrls.getOnSaleItems(), {
+        platform: 'igxe',
+        account_id: selectedAccount.value,
+        trade_type: 'sale'
+      })
       if (response.data && response.data.success) {
         onSaleData.value = response.data.data || []
         ElMessage.success('加载成功')
@@ -88,6 +98,30 @@ export function useOnSaleIGXE() {
     } finally {
       loading.value = false
     }
+  }
+
+  // 加载IGXE账号列表
+  const loadAccountList = async () => {
+    try {
+      const response = await axios.get(apiUrls.getIgxeAccounts())
+      if (response.data && response.data.success) {
+        accountList.value = response.data.data || []
+        if (accountList.value.length > 0) {
+          selectedAccount.value = accountList.value[0].id
+          loadOnSaleData()
+        } else {
+          ElMessage.warning('没有找到IGXE账号，请先在 设置-数据来源 添加')
+        }
+      }
+    } catch (error) {
+      console.error('加载IGXE账号列表失败:', error)
+      ElMessage.error('加载账号列表失败: ' + error.message)
+    }
+  }
+
+  // 切换账号
+  const handleAccountChange = () => {
+    loadOnSaleData()
   }
 
   // 重置筛选
@@ -239,10 +273,14 @@ export function useOnSaleIGXE() {
   }
 
   onMounted(() => {
-    loadOnSaleData()
+    loadAccountList()
   })
 
   return {
+    accountList,
+    selectedAccount,
+    loadAccountList,
+    handleAccountChange,
     loading,
     updating,
     onSaleData,

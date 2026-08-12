@@ -13,6 +13,7 @@ on_sale_blueprint = Blueprint('on_sale_v2', __name__)
 # 账号查询路由
 on_sale_blueprint.route('/on_sale/units/accounts/getYYYPAccounts', methods=['GET'])(OnSaleAccounts.get_yyyp_accounts)
 on_sale_blueprint.route('/on_sale/units/accounts/getBuffAccounts', methods=['GET'])(OnSaleAccounts.get_buff_accounts)
+on_sale_blueprint.route('/on_sale/units/accounts/getIgxeAccounts', methods=['GET'])(OnSaleAccounts.get_igxe_accounts)
 
 # 商品操作路由
 on_sale_blueprint.route('/on_sale/units/items/getOnSaleItems', methods=['POST'])(OnSaleItems.get_on_sale_items)

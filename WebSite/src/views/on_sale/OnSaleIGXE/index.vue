@@ -3,6 +3,19 @@
     <!-- 筛选器 -->
     <div class="filters card">
       <div class="flex flex-wrap gap-4 items-center">
+        <el-select
+          v-model="selectedAccount"
+          placeholder="选择IGXE账号"
+          class="type-select"
+          @change="handleAccountChange"
+        >
+          <el-option
+            v-for="acc in accountList"
+            :key="acc.id"
+            :label="acc.name"
+            :value="acc.id"
+          />
+        </el-select>
         <el-input
           v-model="searchText"
           placeholder="搜索饰品名称..."

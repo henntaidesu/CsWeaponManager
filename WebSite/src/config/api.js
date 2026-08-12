@@ -574,6 +574,7 @@ export const API_CONFIG = {
     ON_SALE_YYYP_ACCOUNTS: '/backENDV2/src/use_webside/on_sale/units/accounts/getYYYPAccounts',  // 获取悠悠有品账号列表
 
     ON_SALE_BUFF_ACCOUNTS: '/backENDV2/src/use_webside/on_sale/units/accounts/getBuffAccounts',  // 获取BUFF账号列表
+    ON_SALE_IGXE_ACCOUNTS: '/backENDV2/src/use_webside/on_sale/units/accounts/getIgxeAccounts',  // 获取IGXE账号列表
 
     ON_SALE_ITEMS: '/backENDV2/src/use_webside/on_sale/units/items/getOnSaleItems',  // 获取在售商品列表
 
@@ -1391,6 +1392,7 @@ export const apiUrls = {
   getYYYPAccounts: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_YYYP_ACCOUNTS),
 
   getBuffAccounts: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_BUFF_ACCOUNTS),
+  getIgxeAccounts: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_IGXE_ACCOUNTS),
 
   getOnSaleItems: () => getApiUrl(API_CONFIG.ENDPOINTS.ON_SALE_ITEMS),
 
