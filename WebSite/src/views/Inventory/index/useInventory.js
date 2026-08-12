@@ -13,6 +13,7 @@ export function useInventory() {
   const fetchingInventory = ref(false) // 获取库存中
   const fetchingYYYPPrice = ref(false) // 获取悠悠有品价格中
   const fetchingBuffPrice = ref(false) // 获取BUFF价格中
+  const fetchingIgxeStock = ref(false) // 获取IGXE仓库库存中
   const inventoryData = ref([])
   const searchText = ref('')
   const weaponTypeFilter = ref('')
@@ -2529,6 +2530,32 @@ export function useInventory() {
     }
   }
 
+  // 获取IGXE仓库库存并估价
+  // 与「获取BUFF价格」不同：这里拉的是寄存在 IGXE 的饰品，按 IGXE 参考单价汇总估值
+  const fetchIgxeStock = async () => {
+    try {
+      fetchingIgxeStock.value = true
+
+      const response = await axios.post(apiUrls.igxeGetStock(), {
+        steamID: selectedSteamId.value || ''
+      })
+
+      if (response.data.success) {
+        const info = response.data.data || {}
+        ElMessage.success(
+          `IGXE仓库共 ${info.total ?? 0} 件，估值 ${info.total_value ?? 0} 元`
+        )
+        return info
+      }
+      ElMessage.error(response.data.message || 'IGXE库存获取失败')
+    } catch (error) {
+      console.error('获取IGXE库存失败:', error)
+      ElMessage.error('获取IGXE库存失败: ' + (error.response?.data?.message || error.message))
+    } finally {
+      fetchingIgxeStock.value = false
+    }
+  }
+
   // 获取BUFF价格
   const fetchBuffPrice = async () => {
     if (!selectedSteamId.value) {
@@ -2793,6 +2820,8 @@ export function useInventory() {
     fetchSteamInventory,
     fetchYYYPPrice,
     fetchBuffPrice,
+    fetchIgxeStock,
+    fetchingIgxeStock,
     previewVisible,
     previewItem,
     stickersPriceInfo,

@@ -125,6 +125,11 @@ export const API_CONFIG = {
 
     BUFF_MESSAGE_TYPES: '/backENDV2/src/use_webside/settings/buff_message_box/units/data/getMessageTypes',
 
+    // IGXE 消息数据相关（igxe_messagebox 表）
+    IGXE_MESSAGE_DATA: (page, limit) => `/backENDV2/src/use_webside/settings/igxe_message_box/units/data/getMessageData/${page}/${limit}`,
+
+    IGXE_MESSAGE_CATEGORIES: '/backENDV2/src/use_webside/settings/igxe_message_box/units/data/getMessageCategories',
+
     
 
     // Steam市场数据相关
@@ -327,6 +332,9 @@ export const API_CONFIG = {
     // IGXE 消息同步（V2 API）
     IGXE_SYNC_NEW_MESSAGES: '/spiderApiV2/src/web_site/igxe/units/settings/igxe_message_box/syncNewMessages',  // 同步新消息（增量）
     IGXE_SYNC_HISTORY_MESSAGES: '/spiderApiV2/src/web_site/igxe/units/settings/igxe_message_box/syncHistoryMessages',  // 同步历史消息（全量）
+
+    // IGXE 库存（V2 API）
+    IGXE_GET_STOCK: '/spiderApiV2/src/web_site/igxe/units/inventory/getIgxeStock',  // 获取IGXE仓库库存并估价
 
     // 完美世界 库存组件（V2 API）
     PW_GET_INVENTORY_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/get_component/getInventoryComponent',  // 获取库存组件数据
@@ -934,6 +942,10 @@ export const apiUrls = {
 
   buffMessageTypes: () => getApiUrl(API_CONFIG.ENDPOINTS.BUFF_MESSAGE_TYPES),
 
+  igxeMessageData: (page, limit) => getApiUrl(API_CONFIG.ENDPOINTS.IGXE_MESSAGE_DATA(page, limit)),
+
+  igxeMessageCategories: () => getApiUrl(API_CONFIG.ENDPOINTS.IGXE_MESSAGE_CATEGORIES),
+
   
 
   // Steam购买数据
@@ -1261,6 +1273,8 @@ export const apiUrls = {
   igxeSyncNewMessages: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_NEW_MESSAGES),
 
   igxeSyncHistoryMessages: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_HISTORY_MESSAGES),
+
+  igxeGetStock: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_GET_STOCK),
 
   pwGetInventoryComponent: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.PW_GET_INVENTORY_COMPONENT),
 

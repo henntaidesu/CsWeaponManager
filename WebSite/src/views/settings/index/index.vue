@@ -88,6 +88,15 @@
             <span>BUFF消息</span>
           </li>
           <li
+            :class="{ active: $route.name === 'IgxeMessageBox' }"
+            @click="navigateTo('/settings/igxe-message-box')"
+          >
+            <el-icon :size="18">
+              <ChatLineRound />
+            </el-icon>
+            <span>IGXE消息</span>
+          </li>
+          <li
             :class="{ active: $route.name === 'SysMessage' }"
             @click="navigateTo('/settings/sys-message')"
           >

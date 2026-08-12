@@ -82,6 +82,9 @@
         <el-button type="success" @click="fetchBuffPrice" :loading="fetchingBuffPrice" class="action-button">
           获取BUFF价格
         </el-button>
+        <el-button type="success" @click="fetchIgxeStock" :loading="fetchingIgxeStock" class="action-button">
+          获取IGXE仓库
+        </el-button>
         <el-button 
           :type="showPriceDiff ? 'primary' : 'info'" 
           @click="showPriceDiff = !showPriceDiff" 

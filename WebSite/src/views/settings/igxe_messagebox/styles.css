@@ -1,0 +1,15 @@
+.stats-summary { margin-bottom: 20px; }
+.card { background: var(--bg-secondary); border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.search-section { margin-bottom: 20px; }
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-4 { gap: 1rem; }
+.items-center { align-items: center; }
+.search-input { width: 300px; }
+.type-select { width: 250px; }
+.date-picker { width: 280px; }
+.table-container { background: var(--bg-secondary); border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.pagination { display: flex; justify-content: center; padding: 20px 0; }
+.pagination-top { border-bottom: 1px solid var(--border-color); }
+.pagination-bottom { border-top: 1px solid var(--border-color); }
+

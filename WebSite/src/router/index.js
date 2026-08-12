@@ -176,6 +176,12 @@ const routes = [
             meta: { title: 'BUFF消息' }
           },
           {
+            path: 'igxe-message-box',
+            name: 'IgxeMessageBox',
+            component: () => import('@/views/settings/igxe_messagebox/index.vue'),
+            meta: { title: 'IGXE消息' }
+          },
+          {
             path: 'version-update',
             name: 'VersionUpdate',
             component: () => import('@/views/settings/VersionUpdate/index.vue'),
