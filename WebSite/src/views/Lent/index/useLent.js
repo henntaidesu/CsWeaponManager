@@ -197,6 +197,11 @@ export function useLent() {
     if (!steamHashName) {
       return null
     }
+    // steam_hash_name 应当是 Steam 市场名；历史数据里可能残留平台图床 URL，
+    // 那种值拼不出本地文件名，直接放弃，避免刷一片 404
+    if (/^https?:\/\//i.test(steamHashName)) {
+      return null
+    }
     const imageName = steamHashName
       .replace(/\s*\|\s*/g, '___')
       .replace(/\s/g, '_')

@@ -6,6 +6,7 @@ import json
 from flask import jsonify, request
 from src.db_manager.database import DatabaseManager
 from src.db_manager.manager import LentModel
+from src.use_spider.igxe.hash_name import resolve_steam_hash_name
 
 
 def _normalize_json_text(value):
@@ -87,9 +88,15 @@ class LentHandler:
             if not order_id:
                 return jsonify({"success": False, "error": "缺少 order_id"}), 400
 
-            market_hash_name = data.get('market_hash_name')
-            img_url = data.get('img_url')
-            steam_hash_name = market_hash_name if market_hash_name else (img_url if img_url else None)
+            # steam_hash_name 只能是 Steam 市场名，前端要拿它拼本地图片路径。
+            # IGXE 租赁详情的 assets 实测为空，以前回退成图片 URL 写进来，
+            # 前端把 URL 当文件名去请求必然 404。解析不出就留空。
+            steam_hash_name = resolve_steam_hash_name(
+                data.get('market_hash_name'),
+                data.get('weaponitem_name'),
+                data.get('item_name'),
+                data.get('weapon_float'),
+            )
 
             lent_data = {
                 'ID': order_id,

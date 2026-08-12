@@ -184,6 +184,11 @@ export function useItemSearch() {
     if (!steamHashName) {
       return null
     }
+    // steam_hash_name 应当是 Steam 市场名；历史数据里可能残留平台图床 URL，
+    // 那种值拼不出本地文件名，直接放弃，避免刷一片 404
+    if (/^https?:\/\//i.test(steamHashName)) {
+      return null
+    }
     // 检查是否已经在404缓存中
     if (image404Cache.value.has(steamHashName)) {
       return null

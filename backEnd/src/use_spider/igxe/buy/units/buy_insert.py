@@ -5,6 +5,7 @@ IGXE buy 写入模块
 import json
 from flask import jsonify, request
 from src.db_manager.index.model.buy import BuyModel
+from src.use_spider.igxe.hash_name import resolve_steam_hash_name
 
 
 def _normalize_json_text(value):
@@ -47,7 +48,13 @@ class BuyInsert:
             buy_record.sticker = _normalize_json_text(data.get("sticker"))
             buy_record.pendant = _normalize_json_text(data.get("pendant"))
             buy_record.rename = data.get("rename")
-            buy_record.steam_hash_name = data.get("market_hash_name") or data.get("img_url")
+            # 只存 Steam 市场名，绝不回退成图片 URL
+            buy_record.steam_hash_name = resolve_steam_hash_name(
+                data.get("market_hash_name"),
+                data.get("weaponitem_name"),
+                data.get("item_name"),
+                data.get("weapon_float"),
+            )
             buy_record.steam_id = data.get("seller_id")
             # 以下来自订单详情 user/order/info
             buy_record.buy_number = data.get("buy_number")

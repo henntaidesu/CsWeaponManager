@@ -5,6 +5,7 @@ IGXE sell 写入模块
 import json
 from flask import jsonify, request
 from src.db_manager.index.model.sell import SellModel
+from src.use_spider.igxe.hash_name import resolve_steam_hash_name
 
 
 def _normalize_json_text(value):
@@ -48,7 +49,13 @@ class SellInsert:
             sell_record.sticker = _normalize_json_text(data.get("sticker"))
             sell_record.pendant = _normalize_json_text(data.get("pendant"))
             sell_record.rename = data.get("rename")
-            sell_record.steam_hash_name = data.get("market_hash_name") or data.get("img_url")
+            # 只存 Steam 市场名，绝不回退成图片 URL
+            sell_record.steam_hash_name = resolve_steam_hash_name(
+                data.get("market_hash_name"),
+                data.get("weaponitem_name"),
+                data.get("item_name"),
+                data.get("weapon_float"),
+            )
             sell_record.steam_id = data.get("buyer_id")
             sell_record.assetid = data.get("assetid")
             setattr(sell_record, "from", "igxe")
