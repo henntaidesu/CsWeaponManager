@@ -12,7 +12,7 @@ from .index.model import ConfigModel, FundsModel, BuyModel, SellModel, LeaseMode
 from .youpin.model import YyypBuyModel, YyypSellModel, YyypLentModel, YyypMessageboxModel
 from .BUFF.model import BuffLentModel, BuffMessageboxModel
 from .csfloat.model import CsFloatBuyModel, CsFloatSellModel
-from .igxe.model import IgxeMessageboxModel
+from .igxe.model import IgxeMessageboxModel, IgxeProductModel
 from .steam.model import SteamMarketModel, SteamInventoryHistoryModel, SteamInventoryHistoryIndexModel, SteamInventoryModel, SteamStockComponentsModel, UserInventoryMiningModel
 
 
@@ -65,6 +65,7 @@ class DBManager:
 
             # IGXE 表
             IgxeMessageboxModel,
+            IgxeProductModel,  # IGXE饰品映射表（product_id ↔ steam_hash_name）
         ]
     
     def initialize_database(self) -> bool:

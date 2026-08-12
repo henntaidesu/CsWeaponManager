@@ -43,6 +43,22 @@
   min-width: 220px;
 }
 
+/* Steam 采集：断点输入框与说明文字 */
+.steam-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.steam-cursor-input {
+  width: 120px;
+}
+
+.steam-hint {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
 /* CSQAQ 区块：选择文件、提交上传 平齐高度，文件获取路径 同一行 */
 .csqaq-group {
   flex-wrap: wrap;

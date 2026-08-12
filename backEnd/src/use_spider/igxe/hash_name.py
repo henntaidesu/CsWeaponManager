@@ -57,6 +57,50 @@ def pick_by_exterior(hash_names, exterior):
     return None
 
 
+def resolve_by_chinese_name(weapon_name, item_name, float_range):
+    """
+    按中文名精确反查 steam_hash_name（IGXE 饰品映射用）。
+
+    home/search_product 既不给 market_hash_name 也不给磨损值，只有中文
+    market_name；而 weapon_classID 的 weapon_name/item_name/float_range
+    同样存中文，三列精确匹配即可定位，无需中英外观对照表。
+    ★ / ★ StatTrak™ 已包含在 weapon_name 里，StatTrak 天然区分。
+
+    匹配不到或候选不唯一时返回 None —— 宁可留空也不写错。
+    """
+    if not weapon_name and not item_name:
+        return None
+
+    conditions = []
+    params = []
+    for column, value in (
+        ('weapon_name', weapon_name),
+        ('item_name', item_name),
+        ('float_range', float_range),
+    ):
+        if value:
+            conditions.append(f"[{column}] = ?")
+            params.append(value)
+
+    if not conditions:
+        return None
+
+    try:
+        records = WeaponClassIDModel.find_all(
+            where=" AND ".join(conditions), params=tuple(params))
+    except Exception as e:
+        print(f"按中文名查询 weapon_classID 失败: {e}")
+        return None
+
+    candidates = [
+        getattr(r, 'steam_hash_name', None) for r in (records or [])
+        if getattr(r, 'steam_hash_name', None)
+    ]
+    # 去重后仍多于一个说明无法判定（如印花的全息/闪亮变体），留空
+    unique = list(dict.fromkeys(candidates))
+    return unique[0] if len(unique) == 1 else None
+
+
 def resolve_steam_hash_name(market_hash_name, weapon_name, item_name, weapon_float=None):
     """
     解析出可用于本地图片查找的 steam_hash_name。

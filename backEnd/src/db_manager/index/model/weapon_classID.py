@@ -654,6 +654,100 @@ class WeaponClassIDModel(BaseModel):
         return success_count
 
     @classmethod
+    def batch_upsert_steam_mapping(cls, weapon_list: List[Dict[str, Any]]) -> int:
+        """
+        Steam专用：批量写入 Steam 饰品映射ID（classid / instanceid）。
+        已存在的记录直接覆盖 classid / instanceid，其余字段仅在原值为空时补齐，
+        避免把 BUFF / 悠悠有品 已经写好的名称与图标冲掉。
+        :param weapon_list: 武器数据列表，每项包含 data_hash_name, market_listing_item_name, weapon_type,
+                           weapon_name, item_name, float_range, Rarity, icon_url, icon_from, classid, instanceid
+        :return: 成功处理的数量
+        """
+        success_count = 0
+        skip_count = 0
+        update_count = 0
+        insert_count = 0
+        db = cls().db
+
+        # 已存在的记录中，仅在原值为空时才补齐的字段
+        fill_if_empty_fields = [
+            'market_listing_item_name', 'weapon_type', 'weapon_name',
+            'item_name', 'float_range', 'Rarity'
+        ]
+
+        for weapon_data in weapon_list:
+            try:
+                data_hash_name = weapon_data.get('data_hash_name')
+                classid = weapon_data.get('classid', '')
+                instanceid = weapon_data.get('instanceid', '')
+                icon_url = weapon_data.get('icon_url', '')
+                icon_from = weapon_data.get('icon_from') or ('steam' if icon_url else None)
+
+                if not data_hash_name:
+                    skip_count += 1
+                    continue
+
+                existing_records = cls.find_by_steam_hash_name(data_hash_name)
+
+                if existing_records:
+                    existing = existing_records[0]
+
+                    # 映射ID 是本次采集的目标，直接覆盖
+                    set_fields = ["[classid] = ?", "[instanceid] = ?"]
+                    params = [classid, instanceid]
+
+                    for field in fill_if_empty_fields:
+                        value = weapon_data.get(field)
+                        if value and not getattr(existing, field, None):
+                            set_fields.append(f"[{field}] = ?")
+                            params.append(value)
+
+                    # 只有原记录没有图标时才补 Steam 图标
+                    if icon_url and not getattr(existing, 'icon_url', None):
+                        set_fields.extend(["[icon_url] = ?", "[icon_from] = ?"])
+                        params.extend([icon_url, icon_from])
+
+                    params.append(data_hash_name)
+                    sql_update = f'''UPDATE {cls.get_table_name()}
+                                    SET {", ".join(set_fields)}
+                                    WHERE [steam_hash_name] = ?'''
+                    affected_rows = db.execute_update(sql_update, tuple(params))
+
+                    if affected_rows > 0:
+                        success_count += 1
+                        update_count += 1
+                        print(f"✅ 更新Steam映射ID: steam_hash_name={data_hash_name}, classid={classid}, instanceid={instanceid}")
+                else:
+                    sql_insert = f'''INSERT INTO {cls.get_table_name()}
+                                    ([steam_hash_name], [market_listing_item_name], [weapon_type], [weapon_name],
+                                     [item_name], [float_range], [Rarity], [icon_url], [icon_from], [classid], [instanceid])
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
+                    affected_rows = db.execute_insert(sql_insert, (
+                        data_hash_name,
+                        weapon_data.get('market_listing_item_name', ''),
+                        weapon_data.get('weapon_type', ''),
+                        weapon_data.get('weapon_name', ''),
+                        weapon_data.get('item_name', ''),
+                        weapon_data.get('float_range', ''),
+                        weapon_data.get('Rarity', ''),
+                        icon_url, icon_from, classid, instanceid
+                    ))
+
+                    if affected_rows > 0:
+                        success_count += 1
+                        insert_count += 1
+                        print(f"✅ 插入Steam映射ID: steam_hash_name={data_hash_name}, classid={classid}, instanceid={instanceid}")
+
+            except Exception as e:
+                print(f"处理Steam映射ID失败: {e}")
+                import traceback
+                print(f"错误堆栈: {traceback.format_exc()}")
+                continue
+
+        print(f"Steam映射ID写入完成: 总成功 {success_count} 条 (更新 {update_count} 条, 插入 {insert_count} 条), 跳过 {skip_count} 条")
+        return success_count
+
+    @classmethod
     def batch_insert_steam_hash_name_if_not_exists(cls, weapon_list: List[Dict[str, Any]]) -> int:
         """
         Steam专用：仅在记录不存在时插入 steam_hash_name，不对已有记录做任何更新。

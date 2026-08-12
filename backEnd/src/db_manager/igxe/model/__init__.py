@@ -4,5 +4,6 @@ IGXE相关表模型
 """
 
 from .igxe_messagebox import IgxeMessageboxModel
+from .igxe_product import IgxeProductModel
 
-__all__ = ['IgxeMessageboxModel']
+__all__ = ['IgxeMessageboxModel', 'IgxeProductModel']

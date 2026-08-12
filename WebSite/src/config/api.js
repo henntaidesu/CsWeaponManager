@@ -336,6 +336,8 @@ export const API_CONFIG = {
     // IGXE 库存（V2 API）
     IGXE_GET_STOCK: '/spiderApiV2/src/web_site/igxe/units/inventory/getIgxeStock',  // 获取IGXE仓库库存并估价
 
+    IGXE_SYNC_TEMPLATES: '/spiderApiV2/src/web_site/igxe/units/settings/dev_tools/syncIgxeTemplates',  // 同步IGXE饰品映射
+
     // 完美世界 库存组件（V2 API）
     PW_GET_INVENTORY_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/get_component/getInventoryComponent',  // 获取库存组件数据
     PW_DEPOSIT_TO_COMPONENT: '/spiderApiV2/src/web_site/prefectworld/units/stock_components/move_component/depositToComponent',  // 存入/取出物品到组件
@@ -351,6 +353,10 @@ export const API_CONFIG = {
     STEAM_COLLECT_HASH_NAMES: '/spiderApiV2/src/web_site/steam/units/market/hash_name/collectMarketHashNames',  // 采集Steam市场Hash Names
     STEAM_FETCH_HASH_NAMES: '/spiderApiV2/src/web_site/steam/units/market/hash_name/fetchSteamHashNames',  // 获取Steam饰品哈希（批量）
     STEAM_FETCH_HASH_NAMES_BY_WEAPON: '/spiderApiV2/src/web_site/steam/units/market/hash_name/fetchSteamHashNamesByWeapon',  // 获取Steam饰品哈希（单个武器）
+    STEAM_START_MAPPING_ID_TASK: '/spiderApiV2/src/web_site/steam/units/market/hash_name/startSteamMappingIdTask',  // 后台采集Steam饰品映射ID
+    STEAM_START_HASH_NAME_LIST_TASK: '/spiderApiV2/src/web_site/steam/units/market/hash_name/startSteamHashNameListTask',  // 后台采集Steam全量hash_name名单
+    STEAM_MAPPING_TASK_STATUS: '/spiderApiV2/src/web_site/steam/units/market/hash_name/getSteamMappingTaskStatus',  // 查询Steam映射采集任务状态
+    STEAM_STOP_MAPPING_TASK: '/spiderApiV2/src/web_site/steam/units/market/hash_name/stopSteamMappingTask',  // 停止Steam映射采集任务
     STEAM_SEARCH_RENAME: '/spiderApiV2/src/web_site/steam/units/mining/search_rename/searchRenameWeapon',  // Steam 改名饰品搜索
     STEAM_BUY_MARKET_ITEM: '/spiderApiV2/src/web_site/steam/units/market/buy/buyMarketItem',  // Steam 市场购买物品
 
@@ -1126,6 +1132,10 @@ export const apiUrls = {
   steamCollectHashNames: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_COLLECT_HASH_NAMES),
   steamFetchHashNames: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_FETCH_HASH_NAMES),
   steamFetchHashNamesByWeapon: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_FETCH_HASH_NAMES_BY_WEAPON),
+  steamStartMappingIdTask: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_START_MAPPING_ID_TASK),
+  steamStartHashNameListTask: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_START_HASH_NAME_LIST_TASK),
+  steamMappingTaskStatus: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_MAPPING_TASK_STATUS),
+  steamStopMappingTask: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_STOP_MAPPING_TASK),
   steamMineInventory: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_MINE_INVENTORY),
   steamCancelMining: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.STEAM_CANCEL_MINING),
 
@@ -1275,6 +1285,8 @@ export const apiUrls = {
   igxeSyncHistoryMessages: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_HISTORY_MESSAGES),
 
   igxeGetStock: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_GET_STOCK),
+
+  igxeSyncTemplates: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.IGXE_SYNC_TEMPLATES),
 
   pwGetInventoryComponent: () => getSpiderApiUrl(API_CONFIG.ENDPOINTS.PW_GET_INVENTORY_COMPONENT),
 

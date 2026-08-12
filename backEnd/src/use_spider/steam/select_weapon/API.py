@@ -8,3 +8,4 @@ from .units.select_weapon_handler import SelectWeaponHandler
 select_weapon_spider_blueprint = Blueprint('steam_select_weapon_spider', __name__)
 
 select_weapon_spider_blueprint.route('/select_weapon/batchInsertSteamHashName', methods=['POST'])(SelectWeaponHandler.batch_insert_steam_hash_name)
+select_weapon_spider_blueprint.route('/select_weapon/batchUpsertSteamMapping', methods=['POST'])(SelectWeaponHandler.batch_upsert_steam_mapping)
