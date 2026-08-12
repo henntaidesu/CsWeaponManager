@@ -246,6 +246,26 @@ def _source_table_exists(src_type, src_conn, table_name):
             pass
 
 
+def _source_row_count(src_type, src_conn, table_name):
+    """源表实际行数；源库中没有这张表时返回 None"""
+    if not _source_table_exists(src_type, src_conn, table_name):
+        return None
+    cursor = src_conn.cursor()
+    try:
+        quoted = f"`{table_name}`" if src_type == 'mysql' else f"[{table_name}]"
+        cursor.execute(f"SELECT COUNT(*) FROM {quoted}")
+        row = cursor.fetchone()
+        return row[0] if row else 0
+    except Exception as e:
+        Log().write_log(f"统计源表 {table_name} 行数失败: {e}", 'ERROR')
+        return None
+    finally:
+        try:
+            cursor.close()
+        except Exception:
+            pass
+
+
 def _clear_target_table(dm, table_name):
     """清空目标表，避免主键冲突"""
     if dm.db_type == 'mysql':
@@ -262,9 +282,11 @@ def _copy_table(dm, src_type, src_conn, table_name, target_columns, dedup_keys=N
     dedup_keys 非空时，源表的主键在 MySQL 语义下有重复：按该主键分组，
     每组只取 rowid 最大的一行（即最后写入、状态最新的那条）。
     """
-    # 模型已定义但源库中还没建过的表（如新增模型），按空表处理
+    # 模型已定义但源库中还没建过的表（如新增模型），按空表处理。
+    # 用 ERROR 级别记录：默认日志级别是 error，用 INFO 会被过滤掉，
+    # 一旦是意外缺表就完全没有痕迹。
     if not _source_table_exists(src_type, src_conn, table_name):
-        Log().write_log(f"源库中不存在表 {table_name}，按空表迁移", 'INFO')
+        Log().write_log(f"源库中不存在表 {table_name}，按空表迁移", 'ERROR')
         _clear_target_table(dm, table_name)
         return 0
 
@@ -288,7 +310,11 @@ def _copy_table(dm, src_type, src_conn, table_name, target_columns, dedup_keys=N
         src_index = {name: i for i, name in enumerate(src_cols)}
         use_cols = [c for c in target_columns if c in src_index]
         if not use_cols:
-            return 0
+            # 源表与模型没有任何同名列：这不是"空表"，是列定义对不上，
+            # 直接抛出而不是静默返回 0，否则整张表会被无声丢掉
+            raise RuntimeError(
+                f"源表 {table_name} 与模型字段无任何同名列（源列: {src_cols[:8]}...），"
+                f"无法迁移")
         picks = [src_index[c] for c in use_cols]
 
         _clear_target_table(dm, table_name)
@@ -351,6 +377,31 @@ def _maintenance_mode(note):
         if scheduler is not None:
             scheduler.resume()
             print('[迁移] 已恢复后台任务调度器', flush=True)
+
+
+def _check_copied_against_source(stats, source_counts, conflicts):
+    """
+    核对每张表"实际复制的行数"与"源库应有的行数"是否吻合。
+
+    这一步是漏表的唯一防线：此前只比对「目标库行数 vs 本次复制行数」，
+    两者都为 0 时恒等成立，源表缺失或列对不上导致整表没迁过去也照样判定成功，
+    随后本地 SQLite 还会被清空。必须拿源库行数当基准。
+
+    返回问题描述列表（为空表示全部吻合）。
+    """
+    problems = []
+    for table_name, copied in stats.items():
+        if not isinstance(copied, int):
+            continue
+        src_rows = source_counts.get(table_name)
+        if src_rows is None:
+            # 源库中没有这张表：仅当确实是新增模型时才正常，交由调用方提示
+            continue
+        expected = src_rows - conflicts.get(table_name, {}).get('dropped', 0)
+        if copied != expected:
+            problems.append(
+                f"{table_name}(源库 {src_rows} 行，去重后应为 {expected} 行，实际复制 {copied} 行)")
+    return problems
 
 
 def _verify_target_rows(dm, stats):
@@ -498,16 +549,25 @@ def _run_migration(source_type, target_type, target_mysql_cfg):
 
         # 逐表复制数据（日志级别通常是 error，进度直接打到控制台）
         total = len(models)
+        source_counts = {}
+        missing_in_source = []
         for seq, model in enumerate(models, 1):
             table_name = model.get_table_name()
             target_columns = list(model.get_fields().keys())
             print(f"[迁移] ({seq}/{total}) {table_name} ...", flush=True)
             try:
+                # 先记下源表行数，作为复制结果的比对基准
+                src_rows = _source_row_count(source_type, src_conn, table_name)
+                source_counts[table_name] = src_rows
+                if src_rows is None:
+                    missing_in_source.append(table_name)
+
                 copied = _copy_table(
                     dm, source_type, src_conn, table_name, target_columns,
                     dedup_keys=conflicts.get(table_name, {}).get('keys'))
                 stats[table_name] = copied
-                print(f"[迁移] ({seq}/{total}) {table_name} 完成，{copied} 行", flush=True)
+                src_desc = '源库无此表' if src_rows is None else f'源库 {src_rows} 行'
+                print(f"[迁移] ({seq}/{total}) {table_name} 完成，{copied} 行（{src_desc}）", flush=True)
             except Exception as e:
                 Log().write_log(f"迁移表 {table_name} 失败: {e}", 'ERROR')
                 print(f"[迁移] ({seq}/{total}) {table_name} 失败: {e}", flush=True)
@@ -517,6 +577,16 @@ def _run_migration(source_type, target_type, target_mysql_cfg):
         if failed:
             raise RuntimeError(
                 '以下表迁移失败：' + '、'.join(failed) +
+                '；源数据库保持不变，目标库中的数据不完整')
+
+        # 与源库行数比对：源表存在却一行都没迁过去（或数量对不上）属于静默漏表，
+        # 必须在写引导配置、清空本地 SQLite 之前拦住
+        row_problems = _check_copied_against_source(stats, source_counts, conflicts)
+        if row_problems:
+            for p in row_problems:
+                Log().write_log(f"迁移行数与源库不符: {p}", 'ERROR')
+            raise RuntimeError(
+                '以下表迁移后行数与源库不符：' + '、'.join(row_problems) +
                 '；源数据库保持不变，目标库中的数据不完整')
 
         # 持久化引导配置（目标后端成为默认）
@@ -536,6 +606,10 @@ def _run_migration(source_type, target_type, target_mysql_cfg):
         dm.reconfigure()
         total_rows = sum(v for v in stats.values() if isinstance(v, int))
         message = f'迁移完成：{len(stats)} 张表，共 {total_rows} 行'
+        if missing_in_source:
+            # 新增模型首次迁移时属正常；但若是本该有数据的表，这里就是唯一的提示
+            message += ('\n注意：以下表在源库中不存在，已按空表建立，'
+                        '如果它本该有数据请核对源库：' + '、'.join(missing_in_source))
         if conflicts:
             dropped = sum(c['dropped'] for c in conflicts.values())
             detail = '、'.join(f"{n} {c['dropped']} 行" for n, c in conflicts.items())
