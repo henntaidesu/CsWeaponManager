@@ -72,13 +72,19 @@ class DBManager:
         print("正在初始化数据库...")
 
         # 获取代码中定义的所有表名
+        # 用小写集合比对：MySQL 在 Windows 下 lower_case_table_names=1，
+        # get_all_tables() 返回的一律是小写表名，而模型里 weapon_classID、
+        # steam_stockComponents 这类是混合大小写，直接比会判定成"不在代码中定义"
+        # 而被当成孤儿表删掉（每次启动都删一次）。
         defined_table_names = {model_class.get_table_name() for model_class in self.models}
+        defined_table_names_lower = {name.lower() for name in defined_table_names}
         
         # 获取数据库中所有表名
         db_tables = self.db.get_all_tables()
         
         # 找出数据库中存在但代码中不存在的表（需要删除的表）
-        tables_to_drop = [table for table in db_tables if table not in defined_table_names]
+        tables_to_drop = [table for table in db_tables
+                          if table.lower() not in defined_table_names_lower]
         
         # 删除不存在的表
         if tables_to_drop:
