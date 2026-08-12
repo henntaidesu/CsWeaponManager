@@ -512,6 +512,7 @@ export function useLent() {
         lenter_name: item[7] || '',
         status: item[8] || '',
         last_status: item[9] || '',
+        status_sub: item[9] || '',
         from: item[10] || '',
         lean_start_time: item[11] || '',
         lean_end_time: item[12] || '',
@@ -520,7 +521,8 @@ export function useLent() {
         steam_hash_name: item[15] || '',
         sticker: item[16] || null,
         pendant: item[17] || null,
-        rename: item[18] || ''
+        rename: item[18] || '',
+        data_user: item[19] || ''
       }
     }).filter(Boolean)
 
@@ -560,74 +562,15 @@ export function useLent() {
 
       console.log(`正在请求数据... 页码: ${currentPage.value}, 每页: ${pageSize.value}, min: ${min}, max: ${max}`)
       
-      // 根据状态/子状态筛选选择不同的API（子状态优先）
-      let apiUrl = apiUrls.lentData(min, max)
-      if (statusSubFilter.value && statusSubFilter.value !== 'all') {
-        apiUrl = apiUrls.lentDataByStatusSub(statusSubFilter.value, min, max)
-      } else if (statusFilter.value && statusFilter.value !== 'all') {
-        apiUrl = apiUrls.lentDataByStatus(statusFilter.value, min, max)
-      }
-      
-      const response = await fetch(apiUrl, {
-        method: 'GET',
-        mode: 'cors',
-        signal: createAbortSignal(dataController),
-        headers: {
-          'Accept': 'application/json',
-        },
-      })
+      // 统一走筛选接口：平台/用户/武器类型/磨损等条件必须下发到后端，
+      // 否则只会在当前页的若干行里做前端过滤，翻不到的记录会被漏掉
+      await fetchLentDataFiltered({ min, max })
 
-      // 检查请求是否已被取消
+      // 请求被取消时不继续
       if (dataController.value?.signal.aborted) {
         return
       }
 
-      console.log('响应状态:', response.status)
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const rawData = await response.json()
-      console.log('接收到的原始数据:', rawData)
-      
-      // 检查数据格式
-      if (!Array.isArray(rawData)) {
-        console.error('数据格式错误，期望数组格式，实际收到:', typeof rawData)
-        throw new Error('数据格式错误')
-      }
-      
-      // 转换数组格式数据为对象格式
-      lentData.value = rawData.map((item, index) => {
-        if (!Array.isArray(item)) {
-          console.error('数据项格式错误，期望数组，实际收到:', item)
-          return null
-        }
-
-        return {
-          id: index + 1,
-          ID: item[0] || '',
-          weapon_name: item[1] || '',
-          weapon_type: item[2] || '',
-          item_name: item[3] || '',
-          weapon_float: item[4] || 0,
-          float_range: item[5] || '',
-          price: item[6] || 0,
-          lenter_name: item[7] || '',
-          status: item[8] || '',
-          status_sub: item[9] || '',
-          from: item[10] || '',
-          lean_start_time: item[11] || '',
-          lean_end_time: item[12] || '',
-          total_Lease_Days: item[13] || 0,
-          max_Lease_Days: item[14] || 0,
-          steam_hash_name: item[15] || '',
-          sticker: item[16] || null,
-          pendant: item[17] || null,
-          rename: item[18] || '',
-          data_user: item[19] || ''
-        }
-      }).filter(item => item !== null)
       
       console.log('转换后的数据:', lentData.value)
 
